@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Portfolio - Hari Prasad Sanjel</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="./tailwind.config.js"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="icon" href="./images/favicon.ico" type="images/x-icon" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+	</head>
+	<body class="overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('./images/page-bg.png')] bg-cover">
+		<div class="fixed top-0 right-0 w-full -z-10 translate-y-[-80%]">
+			<img src="#" alt="" class="w-full opacity-5" />
+		</div>
+		<nav class="w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50">
+			<img src="./images/logo-black.png" alt="logo" class="w-24 cursor-pointer mr-14 dark:hidden" />
+			<img src="./images/logo-white.png" alt="logo" class="w-24 cursor-pointer mr-14 hidden dark:block" />
+			<ul class="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm bg-opacity-50 font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
+				<li><a href="#">Home</a></li>
+				<li><a href="#about">About Me</a></li>
+				<li><a href="#services">Services</a></li>
+				<li><a href="#work">My Work</a></li>
+				<li><a href="#blog">Blogs</a></li>
+			</ul>
+			<div class="flex items-center gap-4">
+				<button onclick="toggleTheme()">
+					<img src="./images/moon.svg" alt="Moon Icon" class="w-5 dark:hidden" />
+					<img src="./images/sun.svg" alt="Sun Icon" class="w-6 hidden dark:block" />
+				</button>
+				<a href="#contact" class="hidden lg:flex items-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Outfit dark:border-white/50 hover:bg-black/10 duration-500"
+					>Contact
+					<img src="./images/arrow-right.svg" alt="Phone Icon" class="w-4 dark:hidden" />
+					<img src="./images/arrow-right-white.svg" alt="Phone Icon" class="w-4 hidden dark:block"
+				/></a>
+				<button class="block md:hidden ml-3" onclick="openSideMenu()">
+					<img src="./images/menu.svg" alt="Mobile Menu" class="w-6 dark:hidden" />
+					<img src="./images/menu-white.svg" alt="Mobile Menu" class="w-6 hidden dark:block" />
+				</button>
+			</div>
+
+			<ul id="sideMenu" class="flex md:hidden flex-col items-center justify-center gap-4 px-10 py-20 fixed -right-64 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 font-Outfit dark:bg-darkHover dark:text-white">
+				<div class="absolute right-6 top-5" onclick="closeSideMenu()">
+					<img src="./images/close.svg" alt="close side menu" class="w-6 cursor-pointer dark:hidden" />
+					<img src="./images/close-dark.svg" alt="close side menu" class="w-6 cursor-pointer hidden dark:block" />
+				</div>
+				<li><a href="#" onclick="closeSideMenu()">Home</a></li>
+				<li><a href="#about" onclick="closeSideMenu()">About Me</a></li>
+				<li><a href="#services" onclick="closeSideMenu()">Services</a></li>
+				<li><a href="#work" onclick="closeSideMenu()">My Work</a></li>
+				<li><a href="#blog" onclick="closeSideMenu()">Blogs</a></li>
+				<li><a href="#contact" onclick="closeSideMenu()">Contact Me</a></li>
+			</ul>
+		</nav>
+
+		<div class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4">
+			<img src="./images/logo.png" alt="Profile Image" class="rounded-full w-32 shadow shadow-sm shadow-black" />
+			<h3 class="text-xl md:text-2xl mb-3 font-Outfit">Hei, jeg heter Hari!</h3>
+			<h1 class="text-3xl sm:text-6xl lg:text-[66px] font-Outfit">Frontend Web Developer based in Oslo</h1>
+			<p class="max-w-2xl mx-auto font-Outfit">Motivated and detail-oriented front-end developer with over 2 years of experience of creating responsive and user-friendly web applications. Committed to continuous learning and eager to solve complex problems and eventually contribute to the team.</p>
+			<div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
+				<a href="#work" class="px-10 py-3 border rounded-full bg-gradient-to-r from-[#eda40d] to-[#c17e0a] text-white flex items-center gap-2 dark:border-transparent">Explore My Work <img src="./images/arrow-right-white.svg" alt="contact icon" class="w-5" /> </a>
+				<a href="./assets/CV_Hari Prasad Sanjel.pdf" target="_blank" class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black hover:opacity-85 duration-500">Download Resume <img src="./images/download.svg" alt="contact icon" class="w-5" /> </a>
+			</div>
+		</div>
+
+		<!----------- about me section ------------->
+
+		<div id="about" class="w-full px-[12%] py-10 scroll-mt-20">
+			<h4 class="text-center mb-2 text-lg font-Outfit">Introduction</h4>
+			<h2 class="text-center text-5xl font-Outfit">About Me</h2>
+
+			<div class="flex w-full flex-col lg:flex-row items-center gap-20 my-20">
+				<div class="max-w-max mx-auto relative">
+					<img src="./images/profile.jpeg" alt="My Profile Image" class="w-64 sm:w-80 rounded-3xl max-w-none" />
+				</div>
+				<div class="flex-1">
+					<p class="mb-10 max-w-2xl font-Outfit">
+						As a passionate frontend web developer, I am dedicated to crafting visually appealing and highly functional web applications. Though currently, I am serving as a Teaching Assistant at Oslo Metropolitan University, where I support students of Technology and Society ICT program(Bachelor Level), I want to work as a MERN Stack web developer. <br />
+						<br />With a keen eye for detail and a strong foundation in web development, I am excited to bring innovative solutions to real-world challenges.Let's connect and explore how we can work together to build the future of the web!
+					</p>
+					<ul class="grid grid-cols-1 sm:grid-cols-auto gap-6 max-w-2xl">
+						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+							<!-- <img src="./images/language.svg" alt="Image 1" class="w-7 mt-3" /> -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-braces hidden dark:block" viewBox="0 0 16 16">
+								<path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6" stroke="#ffffff" />
+							</svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-braces dark:hidden" viewBox="0 0 16 16">
+								<path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6" stroke="#cacaca" />
+							</svg>
+
+							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Languages</h3>
+							<p class="text-gray-600 text-sm dark:text-white/80">Javascript, Python, SQL</p>
+						</li>
+						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+							<!-- <img src="./images/web-development.svg" alt="Image 1" class="w-7 mt-3" /> -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash hidden dark-block" viewBox="0 0 16 16">
+								<path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0" stroke="#ffffff" />
+							</svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash dark:hidden" viewBox="0 0 16 16">
+								<path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0" stroke="#cacaca" />
+							</svg>
+							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Web Development</h3>
+							<p class="text-gray-600 text-sm dark:text-white/80">HTML, CSS,Javascript</p>
+						</li>
+						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
+							<!-- <img src="./images/education.svg" alt="Image 1" class="w-8 mt-3" /> -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="bi bi-mortarboard hidden dark:block" viewBox="0 0 16 16">
+								<path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z" stroke="#ffffff" />
+								<path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z" stroke="#ffffff" />
+							</svg>
+							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="bi bi-mortarboard dark:hidden" viewBox="0 0 16 16">
+								<path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z" stroke="#cacaca" />
+								<path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z" stroke="#cacaca" />
+							</svg>
+							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Education</h3>
+							<p class="text-gray-600 text-sm dark:text-white/80">Masters in Applied Computer and Information Technology</p>
+						</li>
+					</ul>
+					<h4 class="my-6 text-gray-700 font-Outfit dark:text-white/80">My Favourites</h4>
+					<ul class="flex items-center gap-3 sm:gap-5">
+						<li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:hover:-translate-y-1 duration-500">
+							<img src="./images/vscode.svg" alt="VS Code Image" class="w-6" />
+						</li>
+						<li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:hover:-translate-y-1 duration-500">
+							<img src="./images/react.webp" alt="React Image" class="w-6" />
+						</li>
+						<li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:hover:-translate-y-1 duration-500">
+							<img src="./images/git.png" alt="Git Image" class="w-6" />
+						</li>
+						<li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:hover:-translate-y-1 duration-500">
+							<img src="./images/js.png" alt="Javascript Image" class="w-6" />
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<!----------- services section ------------->
+		<div id="services" class="w-full px-[12%] py-10 scroll-mt-20">
+			<h4 class="text-center mb-2 text-lg font-Outfit">What I Offer</h4>
+			<h2 class="text-center text-5xl font-Outfit">My Services</h2>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let’s collaborate to create a web presence that not only looks great but also performs exceptionally.</p>
+			<div class="grid grid-cols-1 sm:grid-cols-auto gap-6 my-10">
+				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+					<img src="./images/webdesign.png" alt="Web Design Icon" class="w-12" />
+					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Web Design</h3>
+					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Crafting visually stunning and user-friendly websites to elevate your online presence.</p>
+					<a href="" class="flex items-center gap-2 text-sm mt-5"
+						>Read more
+						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
+						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
+					</a>
+				</div>
+				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+					<img src="./images/mobileapp.png" alt="Mobile App Development Icon" class="w-12" />
+					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Mobile App Development</h3>
+					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Building intuitive and responsive mobile applications for seamless user experiences.</p>
+					<a href="" class="flex items-center gap-2 text-sm mt-5"
+						>Read more
+						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
+						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
+					</a>
+				</div>
+				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+					<img src="./images/animation.png" alt="Animation Icon" class="w-12" />
+					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Animation</h3>
+					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Bringing ideas to life through engaging and dynamic animations.</p>
+					<a href="" class="flex items-center gap-2 text-sm mt-5"
+						>Read more
+						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
+						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
+					</a>
+				</div>
+				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
+					<img src="./images/uxui.png" alt="UX UI Icon " class="w-12" />
+					<h3 class="text-lg my-4 text-gray-700 dark:text-white">UX-UI Design</h3>
+					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Designing user-centric interfaces that enhance usability and delight users.</p>
+					<a href="" class="flex items-center gap-2 text-sm mt-5"
+						>Read more
+						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
+						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
+					</a>
+				</div>
+			</div>
+		</div>
+
+		<!----------- my work section ------------->
+		<div id="work" class="w-full px-[12%] py-10 scroll-mt-20">
+			<h4 class="text-center mb-2 text-lg font-Outfit">Portfolio</h4>
+			<h2 class="text-center text-5xl font-Outfit">My Recent Works</h2>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I’ve had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
+
+			<div class="grid grid-cols-2 sm:grid-cols-auto my-10 gap-5 dark:text-black">
+				<div class="aspect-square bg-[url('./images/fate-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+					<div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
+						<div>
+							<h2 class="font-semibold">Consultancy Website</h2>
+							<p class="text-sm text-gray-700">Web Development</p>
+						</div>
+						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
+							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
+						</div>
+					</div>
+				</div>
+				<div class="aspect-square bg-[url('./images/random-quote-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+					<div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://random-quote-generator-coral-kappa.vercel.app/';">
+						<div>
+							<h2 class="font-semibold">Quote Generator</h2>
+							<p class="text-sm text-gray-700">API Usage</p>
+						</div>
+						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
+							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
+						</div>
+					</div>
+				</div>
+				<div class="aspect-square bg-[url('./images/drum-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+					<div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://drum-fun.vercel.app/';">
+						<div>
+							<h2 class="font-semibold">Drum Fun</h2>
+							<p class="text-sm text-gray-700">Fun Web App</p>
+						</div>
+						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
+							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
+						</div>
+					</div>
+				</div>
+				<div class="aspect-square bg-[url('./images/clock-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
+					<div class="bg-white w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://twentyfive-five-clock.vercel.app/';">
+						<div>
+							<h2 class="font-semibold">Session & Break Clock</h2>
+							<p class="text-sm text-gray-700">Web App</p>
+						</div>
+						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
+							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
+						</div>
+					</div>
+				</div>
+			</div>
+			<a href="https://github.com/hpsanjel" target="_blank" class="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-black/10 duration-500 dark:text-white dark:border-white dark:hover:bg-darkHover"
+				>Show More
+				<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
+				<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
+			</a>
+
+			<!----------- blogs section ------------->
+			<div id="blog" class="w-full px-[12%] py-10 scroll-mt-20">
+				<h4 class="text-center mb-2 text-lg font-Outfit">Blogs</h4>
+				<h2 class="text-center text-5xl font-Outfit">Thoughts and Insights</h2>
+				<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Dive into my blog where I share my thoughts on web development, design trends, and the tech industry. Whether you’re a fellow developer or just curious, there’s something here for everyone interested in the world of web technology.</p>
+				<div class="grid grid-cols-1 sm:grid-cols-auto gap-6">
+					<div class="blog-container max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+						<a href="#">
+							<img class="rounded-t-lg" src="./images/logo.png" alt="Blog Image" />
+						</a>
+						<div class="p-5">
+							<a href="#">
+								<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Top Web Design Trends 2024</h5>
+							</a>
+							<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Web design is shifting towards minimalism and accessibility. AI and dark mode designs will be key trends to watch in 2024.</p>
+							<a href="#" class="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white">
+								Read more
+								<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+								</svg>
+							</a>
+						</div>
+					</div>
+					<div class="blog-container max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+						<a href="#">
+							<img class="rounded-t-lg" src="./images/logo.png" alt="Blog Image" />
+						</a>
+						<div class="p-5">
+							<a href="#">
+								<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Why Mobile Apps Matter</h5>
+							</a>
+							<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Mobile apps are essential for staying competitive in today’s market. They boost customer engagement and drive business growth.</p>
+							<a href="#" class="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white">
+								Read more
+								<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+								</svg>
+							</a>
+						</div>
+					</div>
+					<div class="blog-container max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
+						<a href="#">
+							<img class="rounded-t-lg" src="./images/logo.png" alt="Blog Image" />
+						</a>
+						<div class="p-5">
+							<a href="#">
+								<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Power of Animation in UX</h5>
+							</a>
+							<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Animation enhances user experience by making interactions more intuitive. It adds visual feedback that keeps users engaged.</p>
+							<a href="#" class="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white">
+								Read more
+								<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
+								</svg>
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!----------- contact section ------------->
+			<div id="contact" class="w-full px-[12%] py-10 scroll-mt-20">
+				<h4 class="text-center mb-2 text-lg font-Outfit">Let's Connect</h4>
+				<h2 class="text-center text-5xl font-Outfit">Get in Touch</h2>
+				<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Whether you have a project in mind, a question, or just want to say hello, I’d love to hear from you. Reach out through the contact form or connect with me on social media. Let’s start a conversation!</p>
+				<form action="https://api.web3forms.com/submit" method="POST" class="max-w-2xl mx-auto">
+					<input type="hidden" name="access_key" value="cf9615fd-9901-4e6b-a50e-241719bbcda6" />
+
+					<div class="grid grid-cols-auto gap-6 mt-10 mb-8">
+						<input type="text" name="name" placeholder="Enter your name" class="flex-1 p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" required />
+						<input type="email" name="email" placeholder="Enter your email" class="flex-1 p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" required />
+					</div>
+					<textarea rows="6" name="message" id="" placeholder="Enter your message" class="w-full p-4 outline-none border-[0.5px] border-gray-400 rounded-md bg-white mb-6 dark:bg-darkHover/30 dark:border-white/90"></textarea>
+					<button type="submit" class="py-3 px-8 w-max flex items-center justify-between gap-2 bg-black/80 text-white rounded-full mx-auto hover:bg-black duration-500 dark:bg-transparent dark:border-[0.5px] dark:hover:bg-darkHover">Submit Now <img src="./images/arrow-right-white.svg" alt="" class="w-4" /></button>
+				</form>
+			</div>
+		</div>
+
+		<!--- footer -->
+		<div class="mt-20">
+			<div class="text-center">
+				<img src="./images/logo-black.png" alt="logo" class="w-24 mx-auto cursor-pointer dark:hidden" />
+				<img src="./images/logo-white.png" alt="logo" class="w-24 mx-auto cursor-pointer hidden dark:block" />
+				<!-- <div class="w-max flex items-center gap-2 mx-auto">
+                <img src="#" alt="mail icon" class="w-6">
+              @2024  harisanjel
+
+            </div> -->
+			</div>
+			<div class="text-center sm:flex items-center justify-between border-t border-gray-400 mx-[10%] mt-12 py-6">
+				<p>@ 2024 Hari Prasad Sanjel. All rights reserved.</p>
+				<ul class="flex items-center gap-8 justify-center mt-4 sm:mt-0">
+					<li><a href="https://www.linkedin.com/in/hpsanjel/">LinkedIn</a></li>
+					<li><a href="https://github.com/hpsanjel">GitHub</a></li>
+					<li><a href="https://www.facebook.com/hpsanjel/">Facebook</a></li>
+				</ul>
+			</div>
+		</div>
+		<script src="./script.js"></script>
+	</body>
+</html>
