@@ -20,6 +20,15 @@ tailwind.config = {
 				black: "4px 4px 0 #000",
 				white: "4px 4px 0 #fff",
 			},
+			keyframes: {
+				bounceSlow: {
+					"0%, 100%": { transform: "translateY(0)" },
+					"50%": { transform: "translateY(-5px)" },
+				},
+			},
+			animation: {
+				"bounce-slow": "bounceSlow 2s infinite",
+			},
 		},
 	},
 	darkMode: "selector",

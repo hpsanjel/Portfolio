@@ -55,10 +55,10 @@
 			</ul>
 		</nav>
 
-		<div class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4">
-			<img src="./images/logo.png" alt="Profile Image" class="rounded-full w-32 shadow shadow-sm shadow-black" />
+		<div id="main" class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4">
+			<img src="./images/logo.png" alt="Profile Image" class="rounded-full w-32 shadow shadow-sm shadow-black animate-bounce-slow" />
 			<h3 class="text-xl md:text-2xl mb-3 font-Outfit">Hei, jeg heter Hari!</h3>
-			<h1 class="text-3xl sm:text-6xl lg:text-[66px] font-Outfit">Frontend Web Developer based in Oslo</h1>
+			<h1 class="text-3xl sm:text-6xl lg:text-[66px] font-Outfit">Frontend Web Developer</h1>
 			<p class="max-w-2xl mx-auto font-Outfit">Motivated and detail-oriented front-end developer with over 2 years of experience of creating responsive and user-friendly web applications. Committed to continuous learning and eager to solve complex problems and eventually contribute to the team.</p>
 			<div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
 				<a href="#work" class="px-10 py-3 border rounded-full bg-gradient-to-r from-[#eda40d] to-[#c17e0a] text-white flex items-center gap-2 dark:border-transparent">Explore My Work <img src="./images/arrow-right-white.svg" alt="contact icon" class="w-5" /> </a>
@@ -72,54 +72,17 @@
 			<h4 class="text-center mb-2 text-lg font-Outfit">Introduction</h4>
 			<h2 class="text-center text-5xl font-Outfit">About Me</h2>
 
-			<div class="flex w-full flex-col lg:flex-row items-center gap-20 my-20">
-				<div class="max-w-max mx-auto relative">
+			<div class="flex w-full md:max-w-6xl mx-auto flex-col lg:flex-row items-center gap-20 my-20">
+				<div>
 					<img src="./images/profile.jpeg" alt="My Profile Image" class="w-64 sm:w-80 rounded-3xl max-w-none" />
 				</div>
 				<div class="flex-1">
-					<p class="mb-10 max-w-2xl font-Outfit">
+					<p class="mb-10 font-Outfit">
 						As a passionate frontend web developer, I am dedicated to crafting visually appealing and highly functional web applications. Though currently, I am serving as a Teaching Assistant at Oslo Metropolitan University, where I support students of Technology and Society ICT program(Bachelor Level), I want to work as a MERN Stack web developer. <br />
 						<br />With a keen eye for detail and a strong foundation in web development, I am excited to bring innovative solutions to real-world challenges.Let's connect and explore how we can work together to build the future of the web!
 					</p>
-					<ul class="grid grid-cols-1 sm:grid-cols-auto gap-6 max-w-2xl">
-						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
-							<!-- <img src="./images/language.svg" alt="Image 1" class="w-7 mt-3" /> -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-braces hidden dark:block" viewBox="0 0 16 16">
-								<path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6" stroke="#ffffff" />
-							</svg>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="bi bi-braces dark:hidden" viewBox="0 0 16 16">
-								<path d="M2.114 8.063V7.9c1.005-.102 1.497-.615 1.497-1.6V4.503c0-1.094.39-1.538 1.354-1.538h.273V2h-.376C3.25 2 2.49 2.759 2.49 4.352v1.524c0 1.094-.376 1.456-1.49 1.456v1.299c1.114 0 1.49.362 1.49 1.456v1.524c0 1.593.759 2.352 2.372 2.352h.376v-.964h-.273c-.964 0-1.354-.444-1.354-1.538V9.663c0-.984-.492-1.497-1.497-1.6M13.886 7.9v.163c-1.005.103-1.497.616-1.497 1.6v1.798c0 1.094-.39 1.538-1.354 1.538h-.273v.964h.376c1.613 0 2.372-.759 2.372-2.352v-1.524c0-1.094.376-1.456 1.49-1.456V7.332c-1.114 0-1.49-.362-1.49-1.456V4.352C13.51 2.759 12.75 2 11.138 2h-.376v.964h.273c.964 0 1.354.444 1.354 1.538V6.3c0 .984.492 1.497 1.497 1.6" stroke="#cacaca" />
-							</svg>
 
-							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Languages</h3>
-							<p class="text-gray-600 text-sm dark:text-white/80">Javascript, Python, SQL</p>
-						</li>
-						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
-							<!-- <img src="./images/web-development.svg" alt="Image 1" class="w-7 mt-3" /> -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash hidden dark-block" viewBox="0 0 16 16">
-								<path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0" stroke="#ffffff" />
-							</svg>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-code-slash dark:hidden" viewBox="0 0 16 16">
-								<path d="M10.478 1.647a.5.5 0 1 0-.956-.294l-4 13a.5.5 0 0 0 .956.294zM4.854 4.146a.5.5 0 0 1 0 .708L1.707 8l3.147 3.146a.5.5 0 0 1-.708.708l-3.5-3.5a.5.5 0 0 1 0-.708l3.5-3.5a.5.5 0 0 1 .708 0m6.292 0a.5.5 0 0 0 0 .708L14.293 8l-3.147 3.146a.5.5 0 0 0 .708.708l3.5-3.5a.5.5 0 0 0 0-.708l-3.5-3.5a.5.5 0 0 0-.708 0" stroke="#cacaca" />
-							</svg>
-							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Web Development</h3>
-							<p class="text-gray-600 text-sm dark:text-white/80">HTML, CSS,Javascript</p>
-						</li>
-						<li class="border-[0.5px] border-gray-400 rounded-xl p-6 cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 hover:shadow-black dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover/50">
-							<!-- <img src="./images/education.svg" alt="Image 1" class="w-8 mt-3" /> -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="bi bi-mortarboard hidden dark:block" viewBox="0 0 16 16">
-								<path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z" stroke="#ffffff" />
-								<path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z" stroke="#ffffff" />
-							</svg>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" class="bi bi-mortarboard dark:hidden" viewBox="0 0 16 16">
-								<path d="M8.211 2.047a.5.5 0 0 0-.422 0l-7.5 3.5a.5.5 0 0 0 .025.917l7.5 3a.5.5 0 0 0 .372 0L14 7.14V13a1 1 0 0 0-1 1v2h3v-2a1 1 0 0 0-1-1V6.739l.686-.275a.5.5 0 0 0 .025-.917zM8 8.46 1.758 5.965 8 3.052l6.242 2.913z" stroke="#cacaca" />
-								<path d="M4.176 9.032a.5.5 0 0 0-.656.327l-.5 1.7a.5.5 0 0 0 .294.605l4.5 1.8a.5.5 0 0 0 .372 0l4.5-1.8a.5.5 0 0 0 .294-.605l-.5-1.7a.5.5 0 0 0-.656-.327L8 10.466zm-.068 1.873.22-.748 3.496 1.311a.5.5 0 0 0 .352 0l3.496-1.311.22.748L8 12.46z" stroke="#cacaca" />
-							</svg>
-							<h3 class="my-4 font-semibold text-gray-700 dark:text-white">Education</h3>
-							<p class="text-gray-600 text-sm dark:text-white/80">Masters in Applied Computer and Information Technology</p>
-						</li>
-					</ul>
-					<h4 class="my-6 text-gray-700 font-Outfit dark:text-white/80">My Favourites</h4>
+					<h4 class="my-6 text-gray-700 font-Outfit dark:text-white/80">I love using these</h4>
 					<ul class="flex items-center gap-3 sm:gap-5">
 						<li class="flex items-center justify-center w-12 sm:w-14 aspect-square border border-gray-400 rounded-lg cursor-pointer hover:hover:-translate-y-1 duration-500">
 							<img src="./images/vscode.svg" alt="VS Code Image" class="w-6" />
@@ -257,12 +220,12 @@
 						</a>
 						<div class="p-5">
 							<a href="#">
-								<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Top Web Design Trends 2024</h5>
+								<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Web Design Trends 2024</h5>
 							</a>
 							<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Web design is shifting towards minimalism and accessibility. AI and dark mode designs will be key trends to watch in 2024.</p>
 							<a href="#" class="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white">
 								Read more
-								<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
+								<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2 transition-transform duration-300 hover:translate-x-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
 									<path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
 								</svg>
 							</a>
@@ -307,7 +270,7 @@
 
 			<!----------- contact section ------------->
 			<div id="contact" class="w-full px-[12%] py-10 scroll-mt-20">
-				<h4 class="text-center mb-2 text-lg font-Outfit">Let's Connect</h4>
+				<h4 class="text-center mb-2 text-lg font-Outfit">Let's Get Connected</h4>
 				<h2 class="text-center text-5xl font-Outfit">Get in Touch</h2>
 				<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Whether you have a project in mind, a question, or just want to say hello, I’d love to hear from you. Reach out through the contact form or connect with me on social media. Let’s start a conversation!</p>
 				<form action="https://api.web3forms.com/submit" method="POST" class="max-w-2xl mx-auto">
@@ -334,12 +297,19 @@
 
             </div> -->
 			</div>
-			<div class="text-center sm:flex items-center justify-between border-t border-gray-400 mx-[10%] mt-12 py-6">
+			<div class="text-center flex items-center justify-between border-t border-gray-400 mx-[10%] mt-12 py-6">
 				<p>@ 2024 Hari Prasad Sanjel. All rights reserved.</p>
-				<ul class="flex items-center gap-8 justify-center mt-4 sm:mt-0">
-					<li><a href="https://www.linkedin.com/in/hpsanjel/">LinkedIn</a></li>
-					<li><a href="https://github.com/hpsanjel">GitHub</a></li>
-					<li><a href="https://www.facebook.com/hpsanjel/">Facebook</a></li>
+				<ul class="float bottom-0 right-0 flex flex-col gap-2">
+					<!-- <ul class="flex items-center gap-2 justify-center mt-4 sm:mt-0"> -->
+					<li class="bg-gray-300 hover:bg-gray-100 rounded-md">
+						<a href="https://www.linkedin.com/in/hpsanjel/"><img src="./images/linkedin.png" alt="LinkedIn Icon" width="48px" /></a>
+					</li>
+					<li class="bg-gray-300 hover:bg-gray-100 rounded-md">
+						<a href="https://github.com/hpsanjel"><img src="./images/github.png" alt="Github Icon" width="48px" /></a>
+					</li>
+					<li class="bg-gray-300 hover:bg-gray-100 rounded-md">
+						<a href="https://www.facebook.com/hpsanjel/"><img src="./images/facebook.png" alt="Facebook Icon" width="48px" /></a>
+					</li>
 				</ul>
 			</div>
 		</div>
