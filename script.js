@@ -1,6 +1,7 @@
 const sideMenu = document.querySelector("#sideMenu");
 const navBar = document.querySelector("nav");
 const navLinks = document.querySelector("nav ul");
+const body = document.querySelector("body");
 
 function openSideMenu() {
 	sideMenu.style.transform = "translateX(-16rem)";
