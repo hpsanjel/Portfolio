@@ -10,6 +10,105 @@
 		<link rel="icon" href="./images/favicon.ico" type="images/x-icon" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+		<style>
+			/* body {
+				font-family: "Arial", sans-serif;
+				background-color: #f0f0f0;
+				margin: 0;
+				padding: 0;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				min-height: 100vh;
+			} */
+
+			.portfolio-container {
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				max-width: 1200px;
+				padding: 20px;
+			}
+
+			.portfolio-item {
+				width: 260px;
+				height: 380px;
+				margin: 15px;
+				position: relative;
+				clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+				transition: transform 0.3s ease-in-out;
+			}
+
+			.portfolio-item:hover {
+				transform: scale(1.05);
+			}
+
+			.portfolio-item::before {
+				content: "";
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: inherit;
+				transition: transform 0.3s ease-in-out;
+			}
+
+			.portfolio-item:hover::before {
+				transform: scale(1.1);
+			}
+
+			.portfolio-content {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				text-align: center;
+				background: rgba(0, 0, 0, 0.7);
+				color: white;
+				opacity: 0;
+				transition: opacity 0.3s ease-in-out;
+			}
+
+			.portfolio-item:hover .portfolio-content {
+				opacity: 1;
+			}
+
+			.portfolio-title {
+				font-size: 1.5em;
+				margin-bottom: 5px;
+			}
+
+			.portfolio-category {
+				font-size: 0.9em;
+				margin-bottom: 15px;
+			}
+
+			.portfolio-link {
+				background-color: #eda40d;
+				color: black;
+				text-decoration: none;
+				padding: 8px 15px;
+				border-radius: 20px;
+				transition: background-color 0.3s ease-in-out;
+			}
+
+			.portfolio-link:hover {
+				background-color: #ffc107;
+			}
+
+			@media (max-width: 768px) {
+				.portfolio-item {
+					width: 200px;
+					height: 230px;
+				}
+			}
+		</style>
 	</head>
 	<body class="overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('./images/page-bg.png')] bg-cover">
 		<div class="fixed top-0 right-0 w-full -z-10 translate-y-[-80%]">
@@ -192,7 +291,37 @@
 			<h2 class="text-center text-5xl font-Outfit">My Recent Works</h2>
 			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I’ve had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
 
-			<div class="grid grid-cols-2 sm:grid-cols-auto my-10 gap-5 dark:text-black">
+			<div class="portfolio-container">
+				<div class="portfolio-item" style="background-image: url('./images/fate.png'); background-size: cover; background-position: center">
+					<div class="portfolio-content">
+						<h2 class="portfolio-title">Consultancy Website</h2>
+						<p class="portfolio-category">Web Development</p>
+						<a href="https://fateedu.vercel.app/" class="portfolio-link">View Project</a>
+					</div>
+				</div>
+				<div class="portfolio-item" style="background-image: url('./images/seeek.png'); background-size: cover; background-position: center">
+					<div class="portfolio-content">
+						<h2 class="portfolio-title">Rental Platform</h2>
+						<p class="portfolio-category">Next.js</p>
+						<a href="https://seeek.no/" class="portfolio-link">View Project</a>
+					</div>
+				</div>
+				<div class="portfolio-item" style="background-image: url('./images/achar.png'); background-size: cover; background-position: center">
+					<div class="portfolio-content">
+						<h2 class="portfolio-title">Home Pickles</h2>
+						<p class="portfolio-category">Online Sales App</p>
+						<a href="https://ourghareluachar.vercel.app/" class="portfolio-link">View Project</a>
+					</div>
+				</div>
+				<div class="portfolio-item" style="background-image: url('./images/kns.png'); background-size: cover; background-position: center">
+					<div class="portfolio-content">
+						<h2 class="portfolio-title">Event Management Company Site</h2>
+						<p class="portfolio-category">Official Website</p>
+						<a href="https://knsentertainment.eu/" class="portfolio-link">View Project</a>
+					</div>
+				</div>
+			</div>
+			<!-- <div class="grid grid-cols-2 sm:grid-cols-auto my-10 gap-5 dark:text-black">
 				<div class="aspect-square bg-[url('./images/fate.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
 					<div class="bg-white border border-gray-700 w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
 						<div>
@@ -237,7 +366,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div> -->
 			<a href="https://github.com/hpsanjel" target="_blank" class="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-black/10 duration-500 dark:text-white dark:border-white dark:hover:bg-darkHover"
 				>Show More
 				<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
