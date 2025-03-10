@@ -108,6 +108,160 @@
 					height: 230px;
 				}
 			}
+
+			/* New Project Card Styles */
+			.project-card {
+				background-color: white;
+				border-radius: 12px;
+				overflow: hidden;
+				box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+				transition: all 0.3s ease;
+				height: 100%;
+				display: flex;
+				flex-direction: column;
+				border: 1px solid rgba(0, 0, 0, 0.1);
+			}
+
+			.dark .project-card {
+				background-color: #1e293b;
+				border: 1px solid rgba(255, 255, 255, 0.1);
+			}
+
+			.project-card:hover {
+				transform: translateY(-8px);
+				box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+			}
+
+			.project-image-container {
+				position: relative;
+				overflow: hidden;
+				height: 220px;
+			}
+
+			.project-image {
+				width: 100%;
+				height: 100%;
+				object-fit: cover;
+				transition: transform 0.5s ease;
+			}
+
+			.project-card:hover .project-image {
+				transform: scale(1.05);
+			}
+
+			.project-overlay {
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background: linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.7));
+				opacity: 0;
+				display: flex;
+				align-items: flex-end;
+				padding: 20px;
+				transition: opacity 0.3s ease;
+			}
+
+			.project-card:hover .project-overlay {
+				opacity: 1;
+			}
+
+			.project-tech-stack {
+				display: flex;
+				flex-wrap: wrap;
+				gap: 8px;
+			}
+
+			.tech-tag {
+				background-color: #eda40d;
+				color: black;
+				font-size: 0.75rem;
+				padding: 4px 10px;
+				border-radius: 20px;
+				font-weight: 500;
+			}
+
+			.project-details {
+				padding: 24px;
+				flex-grow: 1;
+				display: flex;
+				flex-direction: column;
+			}
+
+			.project-title {
+				font-size: 1.25rem;
+				font-weight: 600;
+				margin-bottom: 12px;
+				color: #333;
+			}
+
+			.dark .project-title {
+				color: white;
+			}
+
+			.project-description {
+				font-size: 0.95rem;
+				color: #666;
+				margin-bottom: 20px;
+				flex-grow: 1;
+				line-height: 1.5;
+			}
+
+			.dark .project-description {
+				color: #cbd5e1;
+			}
+
+			.project-links {
+				display: flex;
+				gap: 12px;
+				margin-top: auto;
+			}
+
+			.project-link {
+				display: flex;
+				align-items: center;
+				gap: 6px;
+				font-size: 0.9rem;
+				font-weight: 500;
+				padding: 8px 16px;
+				border-radius: 8px;
+				transition: all 0.2s ease;
+			}
+
+			.primary-link {
+				background-color: #eda40d;
+				color: black;
+			}
+
+			.primary-link:hover {
+				background-color: #ffc107;
+			}
+
+			.secondary-link {
+				background-color: transparent;
+				color: #666;
+				border: 1px solid #ddd;
+			}
+
+			.dark .secondary-link {
+				color: #cbd5e1;
+				border-color: #475569;
+			}
+
+			.secondary-link:hover {
+				background-color: #f5f5f5;
+			}
+
+			.dark .secondary-link:hover {
+				background-color: #334155;
+			}
+
+			@media (max-width: 768px) {
+				.project-image-container {
+					height: 180px;
+				}
+			}
 		</style>
 	</head>
 	<body class="overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('./images/page-bg.png')] bg-cover">
@@ -181,7 +335,7 @@
 
 						<br /><br />Committed to creating user-focused, accessible, and visually compelling applications, I bring both certified expertise and a strong drive to contribute and collaborate within dynamic teams.
 
-						<br /><br />Let’s connect and explore how we can build impactful digital experiences together!
+						<br /><br />Let's connect and explore how we can build impactful digital experiences together!
 					</p>
 
 					<h4 class="my-6 text-gray-700 font-Outfit dark:text-white/80">I love using following tools and technologies.</h4>
@@ -240,7 +394,7 @@
 		<div id="services" class="w-full px-[12%] py-10 scroll-mt-20">
 			<h4 class="text-center mb-2 text-lg font-Outfit">What I Offer</h4>
 			<h2 class="text-center text-5xl font-Outfit">My Services</h2>
-			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let’s collaborate to create a web presence that not only looks great but also performs exceptionally.</p>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally.</p>
 			<div class="grid grid-cols-1 sm:grid-cols-auto gap-6 my-10">
 				<div class="border border-gray-400 rounded-lg px-8 py-8 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
 					<img src="./images/webdesign.png" alt="Web Design Icon" class="w-12" />
@@ -289,86 +443,140 @@
 		<div id="work" class="w-full px-[12%] py-10 scroll-mt-20">
 			<h4 class="text-center mb-2 text-lg font-Outfit">Portfolio</h4>
 			<h2 class="text-center text-5xl font-Outfit">My Recent Works</h2>
-			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I’ve had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I've had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
 
-			<div class="portfolio-container">
-				<div class="portfolio-item" style="background-image: url('./images/fate.png'); background-size: cover; background-position: center">
-					<div class="portfolio-content">
-						<h2 class="portfolio-title">Consultancy Website</h2>
-						<p class="portfolio-category">Web Development</p>
-						<a href="https://fateedu.vercel.app/" class="portfolio-link">View Project</a>
+			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+				<!-- Project Card 1 -->
+				<div class="project-card group">
+					<div class="project-image-container">
+						<img src="./images/fate.png" alt="Consultancy Website" class="project-image" />
+						<div class="project-overlay">
+							<div class="project-tech-stack">
+								<span class="tech-tag">React</span>
+								<span class="tech-tag">Tailwind</span>
+								<span class="tech-tag">Firebase</span>
+							</div>
+						</div>
+					</div>
+					<div class="project-details">
+						<h3 class="project-title">Consultancy Website</h3>
+						<p class="project-description">A modern website for an educational consultancy firm with responsive design and interactive elements.</p>
+						<div class="project-links">
+							<a href="https://fateedu.vercel.app/" target="_blank" class="project-link primary-link">
+								<span>View Live</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+							<a href="#" class="project-link secondary-link">
+								<span>Code</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						</div>
 					</div>
 				</div>
-				<div class="portfolio-item" style="background-image: url('./images/seeek.png'); background-size: cover; background-position: center">
-					<div class="portfolio-content">
-						<h2 class="portfolio-title">Rental Platform</h2>
-						<p class="portfolio-category">Next.js</p>
-						<a href="https://seeek.no/" class="portfolio-link">View Project</a>
+
+				<!-- Project Card 2 -->
+				<div class="project-card group">
+					<div class="project-image-container">
+						<img src="./images/seeek.png" alt="Rental Platform" class="project-image" />
+						<div class="project-overlay">
+							<div class="project-tech-stack">
+								<span class="tech-tag">Next.js</span>
+								<span class="tech-tag">MongoDB</span>
+								<span class="tech-tag">Tailwind</span>
+							</div>
+						</div>
+					</div>
+					<div class="project-details">
+						<h3 class="project-title">Rental Platform</h3>
+						<p class="project-description">A comprehensive rental platform with search functionality, user authentication, and payment integration.</p>
+						<div class="project-links">
+							<a href="https://seeek.no/" target="_blank" class="project-link primary-link">
+								<span>View Live</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+							<a href="#" class="project-link secondary-link">
+								<span>Code</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						</div>
 					</div>
 				</div>
-				<div class="portfolio-item" style="background-image: url('./images/achar.png'); background-size: cover; background-position: center">
-					<div class="portfolio-content">
-						<h2 class="portfolio-title">Home Pickles</h2>
-						<p class="portfolio-category">Online Sales App</p>
-						<a href="https://ourghareluachar.vercel.app/" class="portfolio-link">View Project</a>
+
+				<!-- Project Card 3 -->
+				<div class="project-card group">
+					<div class="project-image-container">
+						<img src="./images/achar.png" alt="Home Pickles" class="project-image" />
+						<div class="project-overlay">
+							<div class="project-tech-stack">
+								<span class="tech-tag">React</span>
+								<span class="tech-tag">Node.js</span>
+								<span class="tech-tag">Express</span>
+							</div>
+						</div>
+					</div>
+					<div class="project-details">
+						<h3 class="project-title">Home Pickles</h3>
+						<p class="project-description">An e-commerce platform for homemade pickles with shopping cart functionality and order management.</p>
+						<div class="project-links">
+							<a href="https://ourghareluachar.vercel.app/" target="_blank" class="project-link primary-link">
+								<span>View Live</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+							<a href="#" class="project-link secondary-link">
+								<span>Code</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						</div>
 					</div>
 				</div>
-				<div class="portfolio-item" style="background-image: url('./images/kns.png'); background-size: cover; background-position: center">
-					<div class="portfolio-content">
-						<h2 class="portfolio-title">Event Management Company Site</h2>
-						<p class="portfolio-category">Official Website</p>
-						<a href="https://knsentertainment.eu/" class="portfolio-link">View Project</a>
+
+				<!-- Project Card 4 -->
+				<div class="project-card group">
+					<div class="project-image-container">
+						<img src="./images/kns.png" alt="Event Management Company Site" class="project-image" />
+						<div class="project-overlay">
+							<div class="project-tech-stack">
+								<span class="tech-tag">WordPress</span>
+								<span class="tech-tag">CSS</span>
+								<span class="tech-tag">JavaScript</span>
+							</div>
+						</div>
+					</div>
+					<div class="project-details">
+						<h3 class="project-title">Event Management Company</h3>
+						<p class="project-description">A professional website for an event management company with event booking and gallery features.</p>
+						<div class="project-links">
+							<a href="https://knsentertainment.eu/" target="_blank" class="project-link primary-link">
+								<span>View Live</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+							<a href="#" class="project-link secondary-link">
+								<span>Code</span>
+								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+								</svg>
+							</a>
+						</div>
 					</div>
 				</div>
 			</div>
-			<!-- <div class="grid grid-cols-2 sm:grid-cols-auto my-10 gap-5 dark:text-black">
-				<div class="aspect-square bg-[url('./images/fate.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
-					<div class="bg-white border border-gray-700 w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
-						<div>
-							<h2 class="font-semibold">Consultancy Website</h2>
-							<p class="text-sm text-gray-700">Web Development</p>
-						</div>
-						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
-							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
-						</div>
-					</div>
-				</div>
-				<div class="aspect-square bg-[url('./images/random-quote-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
-					<div class="bg-white border border-gray-700 w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
-						<div>
-							<h2 class="font-semibold">Quote Generator</h2>
-							<p class="text-sm text-gray-700">API Usage</p>
-						</div>
-						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
-							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
-						</div>
-					</div>
-				</div>
-				<div class="aspect-square bg-[url('./images/drum-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
-					<div class="bg-white border border-gray-700 w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
-						<div>
-							<h2 class="font-semibold">Drum Fun</h2>
-							<p class="text-sm text-gray-700">Fun Web App</p>
-						</div>
-						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
-							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
-						</div>
-					</div>
-				</div>
-				<div class="aspect-square bg-[url('./images/clock-preview.png')] bg-no-repeat bg-cover bg-center rounded-lg relative cursor-pointer group">
-					<div class="bg-white border border-gray-700 w-10/12 rounded-md absolute bottom-5 left-1/2 -translate-x-1/2 py-3 px-5 flex items-center justify-between duration-500 group-hover:bottom-7" onclick="location.href='https://fateedu.vercel.app/';">
-						<div>
-							<h2 class="font-semibold">Session & Break Clock</h2>
-							<p class="text-sm text-gray-700">Web App</p>
-						</div>
-						<div class="border rounded-full border-black w-9 aspect-square flex items-center justify-center shadow-[2px_2px_0_#000] group-hover:bg-[#eda40d] transition">
-							<img src="./images/arrow-up.svg" alt="Latest Work Icon" class="w-5" />
-						</div>
-					</div>
-				</div>
-			</div> -->
+
 			<a href="https://github.com/hpsanjel" target="_blank" class="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-black/10 duration-500 dark:text-white dark:border-white dark:hover:bg-darkHover"
-				>Show More
+				>View More Projects
 				<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
 				<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
 			</a>
@@ -378,7 +586,7 @@
 		<div id="blog" class="w-full px-[12%] py-10 scroll-mt-20">
 			<h4 class="text-center mb-2 text-lg font-Outfit">Blogs</h4>
 			<h2 class="text-center text-5xl font-Outfit">Thoughts and Insights</h2>
-			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Dive into my blog where I share my thoughts on web development, design trends, and the tech industry. Whether you’re a fellow developer or just curious, there’s something here for everyone interested in the world of web technology.</p>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Dive into my blog where I share my thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology.</p>
 			<div class="grid grid-cols-1 sm:grid-cols-auto gap-6">
 				<div class="blog-container max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
 					<a href="#">
@@ -405,7 +613,7 @@
 						<a href="#">
 							<h5 class="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title">Why Mobile Apps Matter</h5>
 						</a>
-						<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Mobile apps are essential for staying competitive in today’s market. They boost customer engagement and drive business.</p>
+						<p class="mb-3 font-normal text-gray-700 dark:text-gray-400">Mobile apps are essential for staying competitive in today's market. They boost customer engagement and drive business.</p>
 						<a href="#" class="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white">
 							Read more
 							<svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -438,7 +646,7 @@
 		<div id="contact" class="w-full px-[12%] py-10 scroll-mt-20">
 			<h4 class="text-center mb-2 text-lg font-Outfit">Let's Get Connected</h4>
 			<h2 class="text-center text-5xl font-Outfit">Get in Touch</h2>
-			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Whether you have a project in mind, a question, or just want to say hello, I’d love to hear from you. Reach out through the contact form or connect with me on social media. Let’s start a conversation!</p>
+			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Whether you have a project in mind, a question, or just want to say hello, I'd love to hear from you. Reach out through the contact form or connect with me on social media. Let's start a conversation!</p>
 			<form action="https://api.web3forms.com/submit" method="POST" class="max-w-2xl mx-auto">
 				<input type="hidden" name="access_key" value="cf9615fd-9901-4e6b-a50e-241719bbcda6" />
 
