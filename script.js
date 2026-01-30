@@ -38,8 +38,10 @@ function toggleTheme() {
 
 // ========== Dynamic Blog Posts Functionality ==========
 
-// Configuration: Update this with your actual backend API URL
-const BLOG_API_URL = "http://localhost:3000/api/blogs";
+// Configuration: Automatically detect environment
+const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+const API_BASE = isLocal ? 'http://localhost:3000' : '';
+const BLOG_API_URL = `${API_BASE}/api/blogs`;
 
 // Function to fetch blog posts from backend
 async function fetchBlogPosts() {
@@ -187,8 +189,8 @@ document.addEventListener("DOMContentLoaded", initializeBlogPosts);
 
 // ========== Dynamic Projects Functionality ==========
 
-// Configuration: Update this with your actual backend API URL
-const PROJECT_API_URL = "http://localhost:3000/api/projects";
+// PROJECT_API_URL uses the same API_BASE from above
+const PROJECT_API_URL = `${API_BASE}/api/projects`;
 
 // Function to fetch projects from backend
 async function fetchProjects() {
@@ -334,8 +336,8 @@ document.addEventListener("DOMContentLoaded", initializeProjects);
 
 // ========== Dynamic Services Functionality ==========
 
-// Configuration: Update this with your actual backend API URL
-const SERVICE_API_URL = "http://localhost:3000/api/services";
+// SERVICE_API_URL uses the same API_BASE from above
+const SERVICE_API_URL = `${API_BASE}/api/services`;
 
 // Function to fetch services from backend
 async function fetchServices() {
