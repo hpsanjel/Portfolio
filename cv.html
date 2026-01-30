@@ -1,0 +1,1078 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Hari Prasad Sanjel - Frontend Developer</title>
+		<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+		<style>
+			:root {
+				--primary: #1a1a2e;
+				--accent: #0f4c75;
+				--accent-light: #3282b8;
+				--text: #2d3436;
+				--text-light: #636e72;
+				--bg: #ffffff;
+				--bg-alt: #f8f9fa;
+				--border: #e1e8ed;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+			}
+
+			body {
+				font-family: "IBM Plex Sans", sans-serif;
+				color: var(--text);
+				background: linear-gradient(135deg, #f5f7fa 0%, #ffffff 100%);
+				line-height: 1.6;
+				padding: 2rem 1rem;
+			}
+
+			.container {
+				max-width: 900px;
+				margin: 0 auto;
+				background: var(--bg);
+				box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+				border-radius: 2px;
+				overflow: hidden;
+				position: relative;
+			}
+
+			.accent-bar {
+				height: 8px;
+				background: linear-gradient(90deg, var(--accent) 0%, var(--accent-light) 100%);
+				animation: slideIn 1s ease-out;
+			}
+
+			@keyframes slideIn {
+				from {
+					transform: translateX(-100%);
+				}
+				to {
+					transform: translateX(0);
+				}
+			}
+
+			header {
+				background: white;
+				color: var(--text);
+				padding: 3.5rem 3rem 3rem;
+				position: relative;
+				overflow: hidden;
+				animation: fadeIn 0.8s ease-out;
+				border-bottom: 3px solid var(--accent);
+			}
+
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(-20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			header::before {
+				display: none;
+			}
+
+			h1 {
+				font-family: "Playfair Display", serif;
+				font-size: 3rem;
+				font-weight: 700;
+				margin-bottom: 0.5rem;
+				letter-spacing: -1px;
+				position: relative;
+				z-index: 1;
+				color: var(--primary);
+			}
+
+			.title {
+				font-size: 1.1rem;
+				color: var(--accent);
+				font-weight: 300;
+				margin-bottom: 1.5rem;
+				letter-spacing: 2px;
+				text-transform: uppercase;
+				position: relative;
+				z-index: 1;
+			}
+
+			.contact-info {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 0.8rem;
+				font-size: 0.9rem;
+				position: relative;
+				z-index: 1;
+			}
+
+			.contact-info a {
+				color: var(--accent);
+				text-decoration: none;
+				transition: color 0.3s ease;
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+			}
+
+			.contact-info a:hover {
+				color: var(--accent-light);
+			}
+
+			.contact-info a::before {
+				content: "→";
+				font-size: 0.8rem;
+				opacity: 0.6;
+			}
+
+			main {
+				padding: 3rem;
+			}
+
+			section {
+				margin-bottom: 3rem;
+				animation: fadeInUp 0.6s ease-out backwards;
+			}
+
+			section:nth-child(1) {
+				animation-delay: 0.1s;
+			}
+			section:nth-child(2) {
+				animation-delay: 0.2s;
+			}
+			section:nth-child(3) {
+				animation-delay: 0.3s;
+			}
+			section:nth-child(4) {
+				animation-delay: 0.4s;
+			}
+			section:nth-child(5) {
+				animation-delay: 0.5s;
+			}
+			section:nth-child(6) {
+				animation-delay: 0.6s;
+			}
+
+			@keyframes fadeInUp {
+				from {
+					opacity: 0;
+					transform: translateY(20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			h2 {
+				font-family: "Playfair Display", serif;
+				font-size: 1.8rem;
+				color: var(--primary);
+				margin-bottom: 1.5rem;
+				padding-bottom: 0.5rem;
+				border-bottom: 3px solid var(--accent);
+				display: inline-block;
+			}
+
+			h3 {
+				font-size: 1.3rem;
+				color: var(--accent);
+				margin-bottom: 0.5rem;
+				font-weight: 600;
+			}
+
+			h4 {
+				font-size: 1rem;
+				color: var(--text-light);
+				font-weight: 500;
+				margin-bottom: 1rem;
+			}
+
+			.summary p {
+				font-size: 1.05rem;
+				line-height: 1.8;
+				color: var(--text);
+			}
+
+			.competencies {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+				gap: 1.5rem;
+			}
+
+			.competency-item {
+				background: var(--bg-alt);
+				padding: 1.5rem;
+				border-radius: 4px;
+				border-left: 4px solid var(--accent-light);
+				transition:
+					transform 0.3s ease,
+					box-shadow 0.3s ease;
+			}
+
+			.competency-item:hover {
+				transform: translateX(5px);
+				box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+			}
+
+			.competency-item strong {
+				display: block;
+				color: var(--accent);
+				margin-bottom: 0.5rem;
+				font-size: 0.95rem;
+			}
+
+			.competency-item span {
+				color: var(--text);
+				font-size: 0.95rem;
+			}
+
+			.experience-item,
+			.education-item,
+			.project-item {
+				margin-bottom: 2rem;
+				padding-left: 1.5rem;
+				border-left: 2px solid var(--border);
+				position: relative;
+			}
+
+			.experience-item::before,
+			.education-item::before,
+			.project-item::before {
+				content: "";
+				position: absolute;
+				left: -6px;
+				top: 5px;
+				width: 10px;
+				height: 10px;
+				background: var(--accent);
+				border-radius: 50%;
+			}
+
+			.date {
+				font-size: 0.9rem;
+				color: var(--text-light);
+				font-weight: 500;
+				margin-bottom: 0.3rem;
+			}
+
+			ul {
+				list-style: none;
+				margin-top: 1rem;
+			}
+
+			ul li {
+				padding-left: 1.5rem;
+				margin-bottom: 0.5rem;
+				position: relative;
+				color: var(--text);
+				font-size: 0.95rem;
+			}
+
+			ul li::before {
+				content: "▹";
+				position: absolute;
+				left: 0;
+				color: var(--accent-light);
+				font-weight: bold;
+			}
+
+			.project-links {
+				margin-top: 0.8rem;
+				display: flex;
+				gap: 1rem;
+			}
+
+			.project-links a {
+				color: var(--accent);
+				text-decoration: none;
+				font-size: 0.9rem;
+				font-weight: 500;
+				padding: 0.4rem 1rem;
+				border: 1px solid var(--accent);
+				border-radius: 3px;
+				transition: all 0.3s ease;
+			}
+
+			.project-links a:hover {
+				background: var(--accent);
+				color: white;
+			}
+
+			.certifications-grid {
+				display: grid;
+				gap: 0.8rem;
+			}
+
+			.cert-item {
+				padding: 1rem 1.5rem;
+				background: var(--bg-alt);
+				border-radius: 4px;
+				font-size: 0.95rem;
+				transition: background 0.3s ease;
+			}
+
+			.cert-item:hover {
+				background: #e8edf2;
+			}
+
+			.cert-item strong {
+				color: var(--accent);
+			}
+
+			.languages {
+				display: flex;
+				gap: 2rem;
+				flex-wrap: wrap;
+			}
+
+			.language-item {
+				flex: 1;
+				min-width: 150px;
+				padding: 1rem;
+				background: var(--bg-alt);
+				border-radius: 4px;
+				text-align: center;
+			}
+
+			.language-item strong {
+				display: block;
+				color: var(--accent);
+				margin-bottom: 0.3rem;
+				font-size: 1.1rem;
+			}
+
+			.references {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+				gap: 2rem;
+			}
+
+			.reference-card {
+				background: var(--bg-alt);
+				padding: 1.5rem;
+				border-radius: 4px;
+				border-top: 4px solid var(--accent);
+			}
+
+			.reference-card h4 {
+				color: var(--primary);
+				font-size: 1.1rem;
+				margin-bottom: 0.3rem;
+			}
+
+			.reference-card p {
+				font-size: 0.9rem;
+				color: var(--text-light);
+				margin-bottom: 0.3rem;
+			}
+
+			.reference-card a {
+				color: var(--accent);
+				text-decoration: none;
+				font-size: 0.9rem;
+			}
+
+			.reference-card a:hover {
+				text-decoration: underline;
+			}
+
+			@media (max-width: 768px) {
+				body {
+					padding: 1rem 0.5rem;
+				}
+
+				header {
+					padding: 2rem 1.5rem;
+				}
+
+				h1 {
+					font-size: 2.2rem;
+				}
+
+				main {
+					padding: 2rem 1.5rem;
+				}
+
+				.competencies {
+					grid-template-columns: 1fr;
+				}
+
+				.contact-info {
+					grid-template-columns: 1fr;
+				}
+			}
+
+			@media print {
+				@page {
+					size: A4;
+					margin: 0.8cm 1.2cm;
+				}
+
+				body {
+					background: white;
+					padding: 0;
+					font-size: 9pt;
+					line-height: 1.3;
+				}
+
+				.container {
+					box-shadow: none;
+					max-width: 100%;
+					border-radius: 0;
+				}
+
+				.accent-bar {
+					animation: none;
+					height: 3px;
+				}
+
+				header {
+					padding: 1rem 1.5rem 0.8rem;
+					page-break-after: avoid;
+					background: white !important;
+					color: var(--text) !important;
+				}
+
+				header::before {
+					display: none;
+				}
+
+				h1 {
+					font-size: 1.6rem;
+					margin-bottom: 0.2rem;
+					letter-spacing: -0.5px;
+					color: var(--primary) !important;
+				}
+
+				.title {
+					font-size: 0.85rem;
+					margin-bottom: 0.5rem;
+					letter-spacing: 1px;
+					color: var(--accent) !important;
+				}
+
+				.contact-info {
+					font-size: 0.75rem;
+					gap: 0.3rem;
+					grid-template-columns: repeat(3, 1fr);
+				}
+
+				.contact-info div,
+				.contact-info a {
+					color: var(--text) !important;
+				}
+
+				main {
+					padding: 1rem 1.5rem;
+				}
+
+				section {
+					animation: none;
+					margin-bottom: 1rem;
+					page-break-inside: avoid;
+				}
+
+				h2 {
+					font-size: 1.1rem;
+					margin-bottom: 0.5rem;
+					padding-bottom: 0.2rem;
+					border-bottom-width: 2px;
+				}
+
+				h3 {
+					font-size: 0.95rem;
+					margin-bottom: 0.2rem;
+				}
+
+				h4 {
+					font-size: 0.8rem;
+					margin-bottom: 0.3rem;
+				}
+
+				.summary p {
+					font-size: 0.85rem;
+					line-height: 1.4;
+				}
+
+				.competencies {
+					gap: 0.5rem;
+					grid-template-columns: repeat(3, 1fr);
+				}
+
+				.competency-item {
+					padding: 0.5rem 0.7rem;
+					margin-bottom: 0;
+				}
+
+				.competency-item strong {
+					font-size: 0.8rem;
+					margin-bottom: 0.15rem;
+				}
+
+				.competency-item span {
+					font-size: 0.75rem;
+					line-height: 1.3;
+				}
+
+				.experience-item,
+				.education-item,
+				.project-item {
+					margin-bottom: 0.8rem;
+					padding-left: 0.8rem;
+					border-left-width: 1.5px;
+				}
+
+				.experience-item::before,
+				.education-item::before,
+				.project-item::before {
+					width: 8px;
+					height: 8px;
+					left: -5px;
+					top: 3px;
+				}
+
+				.date {
+					font-size: 0.75rem;
+					margin-bottom: 0.15rem;
+				}
+
+				ul {
+					margin-top: 0.3rem;
+				}
+
+				ul li {
+					font-size: 0.8rem;
+					margin-bottom: 0.2rem;
+					padding-left: 0.8rem;
+					line-height: 1.3;
+				}
+
+				.project-links {
+					margin-top: 0.3rem;
+					gap: 0.4rem;
+				}
+
+				.project-links a {
+					font-size: 0.75rem;
+					padding: 0.15rem 0.5rem;
+				}
+
+				.certifications-grid {
+					gap: 0.35rem;
+					grid-template-columns: repeat(2, 1fr);
+				}
+
+				.cert-item {
+					padding: 0.4rem 0.7rem;
+					font-size: 0.8rem;
+					line-height: 1.3;
+				}
+
+				.languages {
+					gap: 0.7rem;
+				}
+
+				.language-item {
+					padding: 0.5rem;
+					min-width: 100px;
+				}
+
+				.language-item strong {
+					font-size: 0.85rem;
+					margin-bottom: 0.15rem;
+				}
+
+				.language-item span {
+					font-size: 0.75rem;
+				}
+
+				.references {
+					gap: 0.8rem;
+					grid-template-columns: repeat(2, 1fr);
+				}
+
+				.reference-card {
+					padding: 0.7rem 0.8rem;
+					border-top-width: 2px;
+				}
+
+				.reference-card h4 {
+					font-size: 0.85rem;
+					margin-bottom: 0.15rem;
+				}
+
+				.reference-card p {
+					font-size: 0.75rem;
+					margin-bottom: 0.15rem;
+					line-height: 1.3;
+				}
+
+				.reference-card a {
+					font-size: 0.75rem;
+				}
+
+				.competency-item:hover,
+				.experience-item:hover {
+					transform: none;
+					box-shadow: none;
+				}
+
+				/* Optimize page breaks */
+				.summary {
+					margin-bottom: 0.8rem;
+				}
+
+				.competencies-section {
+					page-break-after: avoid;
+					margin-bottom: 0.8rem;
+				}
+
+				.experience {
+					page-break-before: avoid;
+					margin-bottom: 0.8rem;
+				}
+
+				.projects {
+					page-break-before: avoid;
+					margin-bottom: 0.8rem;
+				}
+
+				.projects > h2 {
+					width: 100%;
+				}
+
+				.projects .project-item {
+					display: inline-block;
+					width: 48%;
+					margin-right: 4%;
+					vertical-align: top;
+					margin-bottom: 0.5rem;
+					box-sizing: border-box;
+				}
+
+				.projects .project-item:nth-child(even) {
+					margin-right: 0;
+				}
+
+				.education {
+					page-break-before: avoid;
+					margin-bottom: 0.8rem;
+				}
+
+				.certifications {
+					page-break-before: auto;
+					margin-bottom: 0.8rem;
+				}
+
+				.languages-section {
+					margin-bottom: 0.8rem;
+				}
+
+				.references-section {
+					page-break-before: auto;
+					margin-bottom: 0;
+				}
+
+				/* Hide print buttons */
+				.print-buttons {
+					display: none !important;
+				}
+			}
+
+			/* Print buttons styling */
+			.print-buttons {
+				position: fixed;
+				top: 20px;
+				right: 20px;
+				z-index: 1000;
+				display: flex;
+				gap: 10px;
+			}
+
+			.print-btn {
+				background: var(--accent);
+				color: white;
+				border: none;
+				padding: 12px 24px;
+				border-radius: 4px;
+				cursor: pointer;
+				font-family: "IBM Plex Sans", sans-serif;
+				font-size: 0.9rem;
+				font-weight: 500;
+				display: flex;
+				align-items: center;
+				gap: 8px;
+				transition: all 0.3s ease;
+				box-shadow: 0 2px 8px rgba(15, 76, 117, 0.3);
+			}
+
+			.print-btn:hover {
+				background: var(--primary);
+				transform: translateY(-2px);
+				box-shadow: 0 4px 12px rgba(15, 76, 117, 0.4);
+			}
+
+			.print-btn svg {
+				width: 18px;
+				height: 18px;
+			}
+
+			.back-btn {
+				background: var(--text-light);
+			}
+
+			.back-btn:hover {
+				background: var(--text);
+			}
+		</style>
+	</head>
+	<body>
+		<!-- Print/Download Buttons -->
+		<div class="print-buttons">
+			<button class="print-btn" onclick="window.print()">
+				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+				</svg>
+				Print CV
+			</button>
+
+			<a href="index.html" class="print-btn back-btn" style="text-decoration: none">
+				<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+				</svg>
+				Back
+			</a>
+		</div>
+
+		<div class="container">
+			<div class="accent-bar"></div>
+
+			<header>
+				<h1 id="cv-name">Hari Prasad Sanjel</h1>
+				<div class="title" id="cv-title">Frontend Developer</div>
+				<div class="contact-info">
+					<div id="cv-address">Storgata 79, 0182 Oslo, Norway</div>
+					<div><a id="cv-phone" href="tel:+4746344530">+47 46344530</a></div>
+					<div><a id="cv-email" href="mailto:harisanjel@gmail.com">harisanjel@gmail.com</a></div>
+					<div><a id="cv-linkedin" href="https://www.linkedin.com/in/harisanjel" target="_blank">LinkedIn</a></div>
+					<div><a id="cv-github" href="https://github.com/harisanjel" target="_blank">GitHub</a></div>
+					<div><a id="cv-portfolio" href="#" target="_blank">Portfolio Site</a></div>
+				</div>
+			</header>
+
+			<main>
+				<section class="summary">
+					<h2>Summary</h2>
+					<p id="cv-summary">Motivated and detail-oriented front-end developer with over 2 years of experience at ProActive Developers Pvt. Ltd. specializing in creating responsive and user-friendly web applications. Committed to continuous learning and eager to solve complex problems and eventually contribute to team.</p>
+				</section>
+
+				<section class="competencies-section">
+					<h2>Key Competencies</h2>
+					<div class="competencies" id="cv-competencies">
+						<div class="competency-item">
+							<strong>Programming Languages</strong>
+							<span>Python, JavaScript, SQL</span>
+						</div>
+						<div class="competency-item">
+							<strong>Web Development</strong>
+							<span>HTML, CSS (Bootstrap, Tailwind, Material UI), JavaScript (ReactJS)</span>
+						</div>
+						<div class="competency-item">
+							<strong>Tools</strong>
+							<span>Postman, Git, Figma</span>
+						</div>
+					</div>
+				</section>
+
+				<section class="experience">
+					<h2>Professional Experience</h2>
+
+					<div id="cv-experience">
+						<div class="experience-item">
+							<h3>Junior Frontend Web Developer</h3>
+							<h4>ProActive Web Developers, Kathmandu, Nepal</h4>
+							<div class="date">June 2020 – July 2022</div>
+							<ul>
+								<li>Converting design mock-ups into functional web pages using HTML, CSS, and JavaScript in collaboration with design team</li>
+								<li>Implementing responsive design by using CSS frameworks like Bootstrap or Tailwind CSS</li>
+								<li>Ensuring cross-browser compatibility</li>
+								<li>Identifying and fixing bugs in front-end code</li>
+								<li>Learning and applying React.js, Material-UI, Git, RESTful APIs</li>
+								<li>Participating in team meetings and brainstorming sessions to share progress, challenges, and exchange knowledge and ideas</li>
+								<li>Support senior developers by handling routine tasks and minor projects</li>
+								<li>Taking on additional responsibilities as needed</li>
+							</ul>
+						</div>
+
+						<div class="experience-item">
+							<h3>Teacher Assistant (Bachelor, Technology and Society)</h3>
+							<h4>Oslo Metropolitan University, Oslo</h4>
+							<div class="date">August 2023 – December 2023</div>
+							<ul>
+								<li>Developed and maintained course website, ensuring a user-friendly experience for students</li>
+								<li>Created interactive web-based tutorials and learning modules using HTML, CSS, and JavaScript</li>
+								<li>Provided technical support and troubleshooting for online course materials and resources</li>
+								<li>Collaborated with faculty to integrate new web technologies and manage content with Git</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				<section class="projects">
+					<h2>Portfolio Projects</h2>
+
+					<div id="cv-projects">
+						<div class="project-item">
+							<h3>Personal Portfolio</h3>
+							<h4>HTML, CSS, JavaScript</h4>
+							<div class="project-links">
+								<a href="#" target="_blank">GitHub</a>
+								<a href="#" target="_blank">Live Preview</a>
+							</div>
+						</div>
+
+						<div class="project-item">
+							<h3>FATE – Consultancy Website</h3>
+							<h4>React.js, Tailwind</h4>
+							<div class="project-links">
+								<a href="#" target="_blank">GitHub</a>
+								<a href="#" target="_blank">Live Preview</a>
+							</div>
+						</div>
+
+						<div class="project-item">
+							<h3>Markdown Previewer</h3>
+							<h4>React.js</h4>
+							<div class="project-links">
+								<a href="#" target="_blank">GitHub</a>
+								<a href="#" target="_blank">Live Preview</a>
+							</div>
+						</div>
+
+						<div class="project-item">
+							<h3>Random Quote Generator</h3>
+							<h4>React.js, API</h4>
+							<div class="project-links">
+								<a href="#" target="_blank">GitHub</a>
+								<a href="#" target="_blank">Live Preview</a>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section class="education">
+					<h2>Education</h2>
+
+					<div id="cv-education">
+						<div class="education-item">
+							<h3>Master of Applied Computer and Information Technology</h3>
+							<h4>Oslo Metropolitan University, Oslo, Norway</h4>
+							<div class="date">August 2022 – June 2024</div>
+							<p><strong>Major Subject:</strong> Universal Design of Information and Communication Tech.</p>
+						</div>
+
+						<div class="education-item">
+							<h3>Master of Science in Information Technology</h3>
+							<h4>Sikkim Manipal University Distance Education, India</h4>
+							<div class="date">August 2011 – January 2014</div>
+							<p><strong>Subjects:</strong> OOP, Operating System, Database Management System</p>
+						</div>
+					</div>
+				</section>
+
+				<section class="certifications">
+					<h2>Relevant Certifications</h2>
+					<div class="certifications-grid" id="cv-certifications">
+						<div class="cert-item"><strong>Responsive Web Design</strong> – freeCodeCamp, August 5, 2024</div>
+						<div class="cert-item"><strong>Front End Development Libraries</strong> – freeCodeCamp, August 4, 2024</div>
+						<div class="cert-item"><strong>Data Analysis with Python</strong> – freeCodeCamp, September 9, 2023</div>
+						<div class="cert-item"><strong>JavaScript Algorithms and Data Structures</strong> – freeCodeCamp, August 23, 2023</div>
+						<div class="cert-item"><strong>Complete Python Mastery</strong> – Code with Mosh, Serial No: cert_mzgy28xz</div>
+						<div class="cert-item"><strong>Diploma in Computer Software</strong> – Milestone Institute Pvt. Ltd., Kathmandu Nepal (September 15, 2009 – March 14, 2010)</div>
+					</div>
+				</section>
+
+				<section class="languages-section">
+					<h2>Languages</h2>
+					<div class="languages" id="cv-languages">
+						<div class="language-item">
+							<strong>English</strong>
+							<span>Fluent</span>
+						</div>
+						<div class="language-item">
+							<strong>Norwegian</strong>
+							<span>Intermediate (B1)</span>
+						</div>
+						<div class="language-item">
+							<strong>Hindi</strong>
+							<span>Fluent</span>
+						</div>
+					</div>
+				</section>
+
+				<section class="references-section">
+					<h2>References</h2>
+					<div class="references" id="cv-references">
+						<div class="reference-card">
+							<h4>Barun Gautam</h4>
+							<p>Managing Director</p>
+							<p>ProActive Developers and Business Solution Pvt. Ltd.</p>
+							<p>Naxal, Kathmandu</p>
+							<p><a href="tel:+97714526893">+977-01-4526893</a></p>
+							<p><a href="tel:+9779851012337">+977-9851012337</a></p>
+							<p><a href="mailto:info@proactivedevelopers.com">info@proactivedevelopers.com</a></p>
+						</div>
+						<div class="reference-card">
+							<h4>Ole Sneltvedt</h4>
+							<p>University Lecturer</p>
+							<p>Oslomet University</p>
+							<p><a href="mailto:ole.sneltvedt@oslomet.no">ole.sneltvedt@oslomet.no</a></p>
+							<p><a href="tel:+4767238469">+47 672 38 469</a></p>
+						</div>
+					</div>
+				</section>
+			</main>
+		</div>
+
+		<script>
+			const CV_API_URL = "http://localhost:3000/api/cv";
+
+			// Load CV data from API
+			async function loadCVData() {
+				try {
+					const response = await fetch(CV_API_URL);
+					const cvData = await response.json();
+
+					// Update Header
+					document.getElementById("cv-name").textContent = cvData.header.name;
+					document.getElementById("cv-title").textContent = cvData.header.title;
+					document.getElementById("cv-address").textContent = cvData.header.address;
+					document.getElementById("cv-phone").textContent = cvData.header.phone;
+					document.getElementById("cv-phone").href = `tel:${cvData.header.phone}`;
+					document.getElementById("cv-email").textContent = cvData.header.email;
+					document.getElementById("cv-email").href = `mailto:${cvData.header.email}`;
+					document.getElementById("cv-linkedin").href = cvData.header.linkedin;
+					document.getElementById("cv-github").href = cvData.header.github;
+					document.getElementById("cv-portfolio").href = cvData.header.portfolio;
+
+					// Update Summary
+					document.getElementById("cv-summary").textContent = cvData.summary;
+
+					// Update Competencies
+					const competenciesContainer = document.getElementById("cv-competencies");
+					competenciesContainer.innerHTML = cvData.competencies
+						.map(
+							(comp) => `
+						<div class="competency-item">
+							<strong>${comp.category}</strong>
+							<span>${comp.skills}</span>
+						</div>
+					`,
+						)
+						.join("");
+
+					// Update Experience
+					const experienceContainer = document.getElementById("cv-experience");
+					experienceContainer.innerHTML = cvData.experience
+						.map(
+							(exp) => `
+						<div class="experience-item">
+							<h3>${exp.title}</h3>
+							<h4>${exp.company}, ${exp.location}</h4>
+							<div class="date">${exp.date}</div>
+							<ul>
+								${exp.responsibilities.map((resp) => `<li>${resp}</li>`).join("")}
+							</ul>
+						</div>
+					`,
+						)
+						.join("");
+
+					// Update Projects
+					const projectsContainer = document.getElementById("cv-projects");
+					projectsContainer.innerHTML = cvData.projects
+						.map(
+							(proj) => `
+						<div class="project-item">
+							<h3>${proj.title}</h3>
+							<h4>${proj.tech}</h4>
+							<div class="project-links">
+								<a href="${proj.github}" target="_blank">GitHub</a>
+								<a href="${proj.preview}" target="_blank">Live Preview</a>
+							</div>
+						</div>
+					`,
+						)
+						.join("");
+
+					// Update Education
+					const educationContainer = document.getElementById("cv-education");
+					educationContainer.innerHTML = cvData.education
+						.map(
+							(edu) => `
+						<div class="education-item">
+							<h3>${edu.degree}</h3>
+							<h4>${edu.institution}</h4>
+							<div class="date">${edu.date}</div>
+							${edu.details ? `<p><strong>${edu.details.split(":")[0]}:</strong> ${edu.details.split(":")[1]}</p>` : ""}
+						</div>
+					`,
+						)
+						.join("");
+
+					// Update Certifications
+					const certificationsContainer = document.getElementById("cv-certifications");
+					certificationsContainer.innerHTML = cvData.certifications
+						.map(
+							(cert) => `
+						<div class="cert-item"><strong>${cert.title}</strong> – ${cert.issuer}, ${cert.date}</div>
+					`,
+						)
+						.join("");
+
+					// Update Languages
+					const languagesContainer = document.getElementById("cv-languages");
+					languagesContainer.innerHTML = cvData.languages
+						.map(
+							(lang) => `
+						<div class="language-item">
+							<strong>${lang.language}</strong>
+							<span>${lang.level}</span>
+						</div>
+					`,
+						)
+						.join("");
+
+					// Update References
+					const referencesContainer = document.getElementById("cv-references");
+					referencesContainer.innerHTML = cvData.references
+						.map(
+							(ref) => `
+						<div class="reference-card">
+							<h4>${ref.name}</h4>
+							<p>${ref.position}</p>
+							<p>${ref.company}</p>
+							${ref.location ? `<p>${ref.location}</p>` : ""}
+							${ref.phone ? `<p><a href="tel:${ref.phone.replace(/[^0-9+]/g, "")}">${ref.phone}</a></p>` : ""}
+							${ref.email ? `<p><a href="mailto:${ref.email}">${ref.email}</a></p>` : ""}
+						</div>
+					`,
+						)
+						.join("");
+				} catch (error) {
+					console.error("Error loading CV data:", error);
+				}
+			}
+
+			// Load CV data when page loads
+			loadCVData();
+		</script>
+	</body>
+</html>

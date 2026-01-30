@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
@@ -11,6 +11,22 @@
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
 		<style>
+			/* Fade-in animation for blog cards */
+			@keyframes fadeIn {
+				from {
+					opacity: 0;
+					transform: translateY(20px);
+				}
+				to {
+					opacity: 1;
+					transform: translateY(0);
+				}
+			}
+
+			.animate-fadeIn {
+				animation: fadeIn 0.6s ease-out forwards;
+			}
+
 			/* body {
 				font-family: "Arial", sans-serif;
 				background-color: #f0f0f0;
@@ -142,6 +158,7 @@
 				width: 100%;
 				height: 100%;
 				object-fit: cover;
+				object-position: top;
 				transition: transform 0.5s ease;
 			}
 
@@ -308,14 +325,91 @@
 			</ul>
 		</nav>
 
-		<div id="main" class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4" data-scroll-controller>
+		<!-- <div id="main" class="w-11/12 max-w-3xl text-center mx-auto h-screen flex flex-col items-center justify-center gap-4" data-scroll-controller>
 			<img src="./images/logo.png" alt="Profile Image" class="rounded-full w-32 shadow shadow-sm shadow-black animate-bounce-slow" data-control />
-			<!-- <h3 class="text-xl md:text-2xl mb-3 font-Outfit" data-control data-scroll-speed="5">Hello!</h3> -->
+			 <h3 class="text-xl md:text-2xl mb-3 font-Outfit" data-control data-scroll-speed="5">Hello!</h3> 
 			<h1 class="text-3xl sm:text-5xl font-Outfit" data-control>Full Stack Developer</h1>
 			<p class="max-w-2xl mx-auto font-Outfit" data-scroll-controller>With over 2 years of experience of creating responsive and user-friendly web applications. Committed to continuous learning and eager to solve complex problems.</p>
 			<div class="flex flex-col sm:flex-row items-center gap-4 mt-4">
 				<a href="#work" class="px-10 py-3 border rounded-full bg-gradient-to-r from-[#eda40d] to-[#c17e0a] text-white flex items-center gap-2 dark:border-transparent">Explore My Work <img src="./images/arrow-right-white.svg" alt="contact icon" class="w-5" /> </a>
-				<a href="./assets/CV_Hari Prasad Sanjel.pdf" target="_blank" class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black hover:opacity-85 duration-500">Download My Resume <img src="./images/download.svg" alt="contact icon" class="w-5" /> </a>
+				<a href="cv.html" target="_blank" class="px-10 py-3 border rounded-full border-gray-500 flex items-center gap-2 bg-white dark:text-black hover:opacity-85 duration-500">Download My Resume <img src="./images/download.svg" alt="contact icon" class="w-5" /> </a>
+			</div>
+		</div> -->
+		<div id="main" class="w-11/12 max-w-3xl text-center mx-auto min-h-screen flex flex-col items-center justify-center gap-4 py-20 relative overflow-hidden" data-scroll-controller>
+			<!-- Animated Background Elements -->
+			<div class="absolute inset-0 -z-10 overflow-hidden">
+				<div class="absolute top-1/4 left-1/4 w-64 h-64 bg-gradient-to-r from-[#eda40d]/20 to-[#c17e0a]/20 rounded-full blur-3xl animate-pulse"></div>
+				<div class="absolute bottom-1/4 right-1/4 w-72 h-72 bg-gradient-to-r from-blue-500/10 to-purple-500/10 rounded-full blur-3xl animate-pulse delay-700"></div>
+			</div>
+
+			<!-- Profile Image with Enhanced Effects -->
+			<div class="relative group" data-control>
+				<div class="absolute inset-0 bg-gradient-to-r from-[#eda40d] to-[#c17e0a] rounded-full blur-xl opacity-50 group-hover:opacity-75 transition-opacity duration-500 animate-pulse"></div>
+				<img src="./images/logo.png" alt="Profile Image" class="relative rounded-full w-28 h-28 object-cover shadow-2xl border-4 border-white dark:border-gray-800 animate-bounce-slow hover:scale-110 transition-transform duration-500" />
+				<div class="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-[#eda40d] to-[#c17e0a] rounded-full flex items-center justify-center shadow-lg animate-ping"></div>
+				<div class="absolute -bottom-1 -right-1 w-6 h-6 bg-gradient-to-r from-[#eda40d] to-[#c17e0a] rounded-full flex items-center justify-center shadow-lg">
+					<span class="text-white text-xs">✓</span>
+				</div>
+			</div>
+
+			<!-- Animated Greeting -->
+			<div class="flex items-center gap-2 animate-fade-in-down" data-control>
+				<span class="text-2xl animate-wave">👋</span>
+				<h3 class="text-lg md:text-xl font-Outfit text-gray-600 dark:text-gray-300">Hello, I'm a</h3>
+			</div>
+
+			<!-- Main Title with Gradient -->
+			<h1 class="text-3xl sm:text-5xl font-bold font-Outfit bg-gradient-to-r from-[#eda40d] via-[#c17e0a] to-[#eda40d] bg-clip-text text-transparent animate-gradient bg-[length:200%_auto] hover:scale-105 transition-transform duration-300" data-control data-scroll-speed="5">Full Stack Developer</h1>
+
+			<!-- Enhanced Description -->
+			<p class="max-w-2xl mx-auto font-Outfit text-base text-gray-700 dark:text-gray-300 leading-relaxed animate-fade-in" data-scroll-controller>
+				With over <span class="font-bold text-[#eda40d]">2+ years</span> of experience crafting
+				<span class="relative inline-block">
+					<span class="relative z-10">responsive</span>
+					<span class="absolute bottom-0 left-0 w-full h-2 bg-[#eda40d]/30 -rotate-1"></span>
+				</span>
+				and
+				<span class="relative inline-block">
+					<span class="relative z-10">user-friendly</span>
+					<span class="absolute bottom-0 left-0 w-full h-2 bg-[#c17e0a]/30 rotate-1"></span>
+				</span>
+				web applications. Committed to continuous learning and passionate about solving complex problems.
+			</p>
+
+			<!-- Tech Stack Pills -->
+			<div class="flex flex-wrap justify-center gap-2 animate-fade-in-up">
+				<span class="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-[#c17e0a] dark:text-[#eda40d] rounded-full border border-[#eda40d]/30 hover:scale-110 transition-transform duration-300">React</span>
+				<span class="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-[#c17e0a] dark:text-[#eda40d] rounded-full border border-[#eda40d]/30 hover:scale-110 transition-transform duration-300">Node.js</span>
+				<span class="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-[#c17e0a] dark:text-[#eda40d] rounded-full border border-[#eda40d]/30 hover:scale-110 transition-transform duration-300">TypeScript</span>
+				<span class="px-3 py-1 text-xs font-semibold bg-gradient-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-[#c17e0a] dark:text-[#eda40d] rounded-full border border-[#eda40d]/30 hover:scale-110 transition-transform duration-300">Tailwind</span>
+			</div>
+
+			<!-- Enhanced CTA Buttons -->
+			<div class="flex flex-col sm:flex-row items-center gap-4 mt-2 animate-fade-in-up">
+				<a href="#work" class="group px-10 py-3 border rounded-full bg-gradient-to-r from-[#eda40d] to-[#c17e0a] text-white font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden">
+					<span class="relative z-10">Explore My Work</span>
+					<img src="./images/arrow-right-white.svg" alt="arrow icon" class="w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
+					<div class="absolute inset-0 bg-gradient-to-r from-[#c17e0a] to-[#eda40d] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+				</a>
+
+				<a href="cv.html" target="_blank" class="group px-10 py-3 border-2 rounded-full border-gray-300 dark:border-gray-600 flex items-center gap-2 bg-white dark:bg-gray-900 dark:text-white font-semibold hover:border-[#eda40d] hover:bg-gradient-to-r hover:from-[#eda40d]/5 hover:to-[#c17e0a]/5 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
+					<span>Download Resume</span>
+					<img src="./images/download.svg" alt="download icon" class="w-5 group-hover:animate-bounce" />
+				</a>
+			</div>
+
+			<!-- Social Proof Badge -->
+			<div class="animate-fade-in-up flex flex-wrap items-center justify-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+				<div class="flex items-center gap-2">
+					<div class="flex -space-x-2">
+						<div class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-blue-600 border-2 border-white dark:border-gray-900"></div>
+						<div class="w-6 h-6 rounded-full bg-gradient-to-r from-purple-400 to-purple-600 border-2 border-white dark:border-gray-900"></div>
+						<div class="w-6 h-6 rounded-full bg-gradient-to-r from-pink-400 to-pink-600 border-2 border-white dark:border-gray-900"></div>
+					</div>
+					<span class="font-medium">10+ Projects</span>
+				</div>
+				<span class="text-gray-400 hidden sm:inline">•</span>
+				<span class="font-medium">Available for Hire 🟢</span>
 			</div>
 		</div>
 
@@ -395,46 +489,10 @@
 			<h4 class="text-center mb-2 text-lg font-Outfit">What I Offer</h4>
 			<h2 class="text-center text-5xl font-Outfit">My Services</h2>
 			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally.</p>
-			<div class="grid grid-cols-1 sm:grid-cols-auto gap-6 my-10">
-				<div class="border border-gray-400 rounded-lg px-8 py-8 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
-					<img src="./images/webdesign.png" alt="Web Design Icon" class="w-12" />
-					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Web Design</h3>
-					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Crafting visually stunning and user-friendly websites to elevate your online presence.</p>
-					<a href="" class="flex items-center gap-2 text-sm mt-5"
-						>Read more
-						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
-						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
-					</a>
-				</div>
-				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
-					<img src="./images/mobileapp.png" alt="Mobile App Development Icon" class="w-12" />
-					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Mobile App Development</h3>
-					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Building intuitive and responsive mobile applications for seamless user experiences.</p>
-					<a href="" class="flex items-center gap-2 text-sm mt-5"
-						>Read more
-						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
-						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
-					</a>
-				</div>
-				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
-					<img src="./images/animation.png" alt="Animation Icon" class="w-12" />
-					<h3 class="text-lg my-4 text-gray-700 dark:text-white">Animation</h3>
-					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Bringing ideas to life through engaging and dynamic animations.</p>
-					<a href="" class="flex items-center gap-2 text-sm mt-5"
-						>Read more
-						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
-						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
-					</a>
-				</div>
-				<div class="border border-gray-400 rounded-lg px-8 py-12 hover:shadow-black cursor-pointer hover:bg-[lightHover] hover:-translate-y-1 duration-500 dark:hover:bg-darkHover dark:hover:shadow-white">
-					<img src="./images/uxui.png" alt="UX UI Icon " class="w-12" />
-					<h3 class="text-lg my-4 text-gray-700 dark:text-white">UX-UI Design</h3>
-					<p class="text-sm text-gray-600 leading-5 dark:text-white/80">Designing user-centric interfaces that enhance usability and delight users.</p>
-					<a href="" class="flex items-center gap-2 text-sm mt-5"
-						>Read more
-						<img src="./images/arrow-right-white.svg" alt="" class="w-4 hidden dark:block" />
-						<img src="./images/arrow-right.svg" alt="" class="w-4 dark:hidden" />
-					</a>
+			<div id="services-grid" class="grid grid-cols-1 sm:grid-cols-auto gap-6 my-10">
+				<!-- Services will be loaded dynamically -->
+				<div class="col-span-full flex justify-center items-center py-12">
+					<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
 				</div>
 			</div>
 		</div>
@@ -446,132 +504,9 @@
 			<p class="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I've had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
 
 			<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-				<!-- Project Card 1 -->
-				<div class="project-card group">
-					<div class="project-image-container">
-						<img src="./images/fate.png" alt="Consultancy Website" class="project-image" />
-						<div class="project-overlay">
-							<div class="project-tech-stack">
-								<span class="tech-tag">React</span>
-								<span class="tech-tag">Tailwind</span>
-								<span class="tech-tag">Firebase</span>
-							</div>
-						</div>
-					</div>
-					<div class="project-details">
-						<h3 class="project-title">Consultancy Website</h3>
-						<p class="project-description">A modern website for an educational consultancy firm with responsive design and interactive elements.</p>
-						<div class="project-links">
-							<a href="https://fateedu.vercel.app/" target="_blank" class="project-link primary-link">
-								<span>View Live</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-							<a href="#" class="project-link secondary-link">
-								<span>Code</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Project Card 2 -->
-				<div class="project-card group">
-					<div class="project-image-container">
-						<img src="./images/seeek.png" alt="Rental Platform" class="project-image" />
-						<div class="project-overlay">
-							<div class="project-tech-stack">
-								<span class="tech-tag">Next.js</span>
-								<span class="tech-tag">MongoDB</span>
-								<span class="tech-tag">Tailwind</span>
-							</div>
-						</div>
-					</div>
-					<div class="project-details">
-						<h3 class="project-title">Rental Platform</h3>
-						<p class="project-description">A comprehensive rental platform with search functionality, user authentication, and payment integration.</p>
-						<div class="project-links">
-							<a href="https://seeek.no/" target="_blank" class="project-link primary-link">
-								<span>View Live</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-							<a href="#" class="project-link secondary-link">
-								<span>Code</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Project Card 3 -->
-				<div class="project-card group">
-					<div class="project-image-container">
-						<img src="./images/achar.png" alt="Home Pickles" class="project-image" />
-						<div class="project-overlay">
-							<div class="project-tech-stack">
-								<span class="tech-tag">React</span>
-								<span class="tech-tag">Node.js</span>
-								<span class="tech-tag">Express</span>
-							</div>
-						</div>
-					</div>
-					<div class="project-details">
-						<h3 class="project-title">Home Pickles</h3>
-						<p class="project-description">An e-commerce platform for homemade pickles with shopping cart functionality and order management.</p>
-						<div class="project-links">
-							<a href="https://ourghareluachar.vercel.app/" target="_blank" class="project-link primary-link">
-								<span>View Live</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-							<a href="#" class="project-link secondary-link">
-								<span>Code</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-						</div>
-					</div>
-				</div>
-
-				<!-- Project Card 4 -->
-				<div class="project-card group">
-					<div class="project-image-container">
-						<img src="./images/kns.png" alt="Event Management Company Site" class="project-image" />
-						<div class="project-overlay">
-							<div class="project-tech-stack">
-								<span class="tech-tag">WordPress</span>
-								<span class="tech-tag">CSS</span>
-								<span class="tech-tag">JavaScript</span>
-							</div>
-						</div>
-					</div>
-					<div class="project-details">
-						<h3 class="project-title">Event Management Company</h3>
-						<p class="project-description">A professional website for an event management company with event booking and gallery features.</p>
-						<div class="project-links">
-							<a href="https://knsentertainment.eu/" target="_blank" class="project-link primary-link">
-								<span>View Live</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-							<a href="#" class="project-link secondary-link">
-								<span>Code</span>
-								<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-									<path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-								</svg>
-							</a>
-						</div>
-					</div>
+				<!-- Projects will be loaded dynamically from the backend -->
+				<div class="col-span-full flex justify-center items-center py-20">
+					<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
 				</div>
 			</div>
 

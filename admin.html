@@ -1,0 +1,1679 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Admin Panel - Portfolio CMS</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<!-- Quill Rich Text Editor -->
+		<link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet" />
+		<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+		<style>
+			.tab-button {
+				color: #6b7280;
+			}
+			.tab-button.active {
+				background-color: #3b82f6;
+				color: white;
+			}
+			.tab-content.hidden {
+				display: none;
+			}
+		</style>
+	</head>
+	<body class="bg-gray-100 min-h-screen">
+		<div class="container mx-auto px-4 py-8">
+			<h1 class="text-4xl font-bold text-center mb-8">Portfolio Admin Panel</h1>
+
+			<!-- Tab Navigation -->
+			<div class="flex justify-center mb-8">
+				<div class="inline-flex rounded-lg border border-gray-300 bg-white p-1" role="tablist">
+					<button id="blogsTab" onclick="switchTab('blogs')" class="tab-button active px-6 py-2 rounded-md text-sm font-medium transition-colors" role="tab">📝 Blogs</button>
+					<button id="projectsTab" onclick="switchTab('projects')" class="tab-button px-6 py-2 rounded-md text-sm font-medium transition-colors" role="tab">💼 Projects</button>
+					<button id="servicesTab" onclick="switchTab('services')" class="tab-button px-6 py-2 rounded-md text-sm font-medium transition-colors" role="tab">⚙️ Services</button>
+					<button id="cvTab" onclick="switchTab('cv')" class="tab-button px-6 py-2 rounded-md text-sm font-medium transition-colors" role="tab">📄 CV</button>
+				</div>
+			</div>
+
+			<!-- Blogs Section -->
+			<div id="blogsSection" class="tab-content">
+				<!-- Add New Blog Form -->
+				<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+					<h2 id="blogFormTitle" class="text-2xl font-bold mb-4">Add New Blog Post</h2>
+					<form id="blogForm" class="space-y-4">
+						<input type="hidden" id="editingBlogId" value="" />
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Title</label>
+							<input type="text" id="blogTitle" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Excerpt (Short Description)</label>
+							<textarea id="blogExcerpt" required rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Full Blog Content</label>
+							<div id="blogEditor" style="height: 300px" class="bg-white"></div>
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Image URL</label>
+							<input type="text" id="blogImage" required placeholder="./images/blog-image.jpg" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Publish Date</label>
+							<input type="date" id="blogDate" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Full Blog Link (optional)</label>
+							<input type="text" id="blogLink" placeholder="#" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Author</label>
+							<input type="text" id="blogAuthor" required value="Hari Prasad Sanjel" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Tags (comma separated)</label>
+							<input type="text" id="blogTags" placeholder="Web Design, JavaScript, React" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div class="flex gap-3">
+							<button type="submit" id="blogSubmitBtn" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Add Blog Post</button>
+							<button type="button" id="blogCancelBtn" onclick="cancelBlogEdit()" class="hidden px-6 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition duration-300 font-semibold">Cancel</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Existing Blogs List -->
+				<div class="bg-white rounded-lg shadow-md p-6">
+					<h2 class="text-2xl font-bold mb-4">Existing Blog Posts</h2>
+					<div id="blogsList" class="space-y-4">
+						<div class="text-center py-8 text-gray-500">Loading blogs...</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Projects Section -->
+			<div id="projectsSection" class="tab-content hidden">
+				<!-- Add New Project Form -->
+				<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+					<h2 id="projectFormTitle" class="text-2xl font-bold mb-4">Add New Project</h2>
+					<form id="projectForm" class="space-y-4">
+						<input type="hidden" id="editingProjectId" value="" />
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Project Title</label>
+							<input type="text" id="projectTitle" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Description</label>
+							<textarea id="projectDescription" required rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Image URL</label>
+							<input type="text" id="projectImage" required placeholder="./images/project-image.png" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Live URL</label>
+							<input type="url" id="projectLiveUrl" required placeholder="https://example.com" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Code URL (optional)</label>
+							<input type="url" id="projectCodeUrl" placeholder="https://github.com/username/repo" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Technologies (comma separated)</label>
+							<input type="text" id="projectTechnologies" required placeholder="React, Node.js, MongoDB" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div class="flex gap-3">
+							<button type="submit" id="projectSubmitBtn" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Add Project</button>
+							<button type="button" id="projectCancelBtn" onclick="cancelProjectEdit()" class="hidden px-6 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition duration-300 font-semibold">Cancel</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Existing Projects List -->
+				<div class="bg-white rounded-lg shadow-md p-6">
+					<h2 class="text-2xl font-bold mb-4">Existing Projects</h2>
+					<div id="projectsList" class="space-y-4">
+						<div class="text-center py-8 text-gray-500">Loading projects...</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Services Section -->
+			<div id="servicesSection" class="tab-content hidden">
+				<!-- Add New Service Form -->
+				<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+					<h2 id="serviceFormTitle" class="text-2xl font-bold mb-4">Add New Service</h2>
+					<form id="serviceForm" class="space-y-4">
+						<input type="hidden" id="editingServiceId" value="" />
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Service Title</label>
+							<input type="text" id="serviceTitle" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Description</label>
+							<textarea id="serviceDescription" required rows="3" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+						</div>
+
+						<div>
+							<label class="block text-gray-700 font-semibold mb-2">Icon URL</label>
+							<input type="text" id="serviceIcon" required placeholder="./images/service-icon.png" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+						</div>
+
+						<div class="flex gap-3">
+							<button type="submit" id="serviceSubmitBtn" class="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Add Service</button>
+							<button type="button" id="serviceCancelBtn" onclick="cancelServiceEdit()" class="hidden px-6 bg-gray-500 text-white py-3 rounded-lg hover:bg-gray-600 transition duration-300 font-semibold">Cancel</button>
+						</div>
+					</form>
+				</div>
+
+				<!-- Existing Services List -->
+				<div class="bg-white rounded-lg shadow-md p-6">
+					<h2 class="text-2xl font-bold mb-4">Existing Services</h2>
+					<div id="servicesList" class="space-y-4">
+						<div class="text-center py-8 text-gray-500">Loading services...</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- CV Section -->
+			<div id="cvSection" class="tab-content hidden">
+				<div class="space-y-8">
+					<!-- Header Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">CV Header Information</h2>
+						<form id="cvHeaderForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+								<input type="text" id="cvName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">Professional Title</label>
+								<input type="text" id="cvTitle" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div class="md:col-span-2">
+								<label class="block text-gray-700 font-semibold mb-2">Address</label>
+								<input type="text" id="cvAddress" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">Phone</label>
+								<input type="text" id="cvPhone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">Email</label>
+								<input type="email" id="cvEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">LinkedIn URL</label>
+								<input type="text" id="cvLinkedin" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">GitHub URL</label>
+								<input type="text" id="cvGithub" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div class="md:col-span-2">
+								<label class="block text-gray-700 font-semibold mb-2">Portfolio URL</label>
+								<input type="text" id="cvPortfolio" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+							</div>
+							<div class="md:col-span-2">
+								<button type="button" onclick="updateCVHeader()" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Update Header</button>
+							</div>
+						</form>
+					</div>
+
+					<!-- Summary Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Professional Summary</h2>
+						<form id="cvSummaryForm">
+							<div>
+								<label class="block text-gray-700 font-semibold mb-2">Summary</label>
+								<textarea id="cvSummary" rows="4" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+							</div>
+							<button type="button" onclick="updateCVSummary()" class="mt-4 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 font-semibold">Update Summary</button>
+						</form>
+					</div>
+
+					<!-- Competencies Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Key Competencies</h2>
+						<div id="competenciesList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showCompetencyForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Competency Category</button>
+						<div id="competencyForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingCompetencyIndex" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Category</label>
+									<input type="text" id="competencyCategory" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Programming Languages" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Skills (comma separated)</label>
+									<input type="text" id="competencySkills" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., JavaScript, Python, Java" />
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveCompetency()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelCompetencyEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Experience Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Professional Experience</h2>
+						<div id="experienceList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showExperienceForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Experience</button>
+						<div id="experienceForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingExperienceId" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Job Title</label>
+									<input type="text" id="expTitle" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Company</label>
+									<input type="text" id="expCompany" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Location</label>
+									<input type="text" id="expLocation" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Date</label>
+									<input type="text" id="expDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., January 2020 - Present" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Responsibilities (one per line)</label>
+									<textarea id="expResponsibilities" rows="5" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter each responsibility on a new line"></textarea>
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveExperience()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelExperienceEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Education Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Education</h2>
+						<div id="educationList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showEducationForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Education</button>
+						<div id="educationForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingEducationId" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Degree/Certificate</label>
+									<input type="text" id="eduDegree" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Institution</label>
+									<input type="text" id="eduInstitution" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Date/Year</label>
+									<input type="text" id="eduDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., 2015-2019" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Details (optional)</label>
+									<input type="text" id="eduDetails" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., GPA, honors" />
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveEducation()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelEducationEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Certifications Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Certifications</h2>
+						<div id="certificationsList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showCertificationForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Certification</button>
+						<div id="certificationForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingCertificationId" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Certification Title</label>
+									<input type="text" id="certTitle" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Issuer</label>
+									<input type="text" id="certIssuer" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Date/Serial Number</label>
+									<input type="text" id="certDate" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveCertification()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelCertificationEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Languages Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">Languages</h2>
+						<div id="languagesList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showLanguageForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Language</button>
+						<div id="languageForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingLanguageId" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Language</label>
+									<input type="text" id="langName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Proficiency Level</label>
+									<input type="text" id="langLevel" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Native, Fluent, Intermediate" />
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveLanguage()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelLanguageEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- References Section -->
+					<div class="bg-white rounded-lg shadow-md p-6">
+						<h2 class="text-2xl font-bold mb-4">References</h2>
+						<div id="referencesList" class="space-y-4 mb-4"></div>
+						<button type="button" onclick="showReferenceForm()" class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 transition duration-300 font-semibold">+ Add Reference</button>
+						<div id="referenceForm" class="hidden mt-4 p-4 border-2 border-green-500 rounded-lg">
+							<input type="hidden" id="editingReferenceId" value="" />
+							<div class="space-y-3">
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Full Name</label>
+									<input type="text" id="refName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Position/Title</label>
+									<input type="text" id="refPosition" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Company</label>
+									<input type="text" id="refCompany" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Location</label>
+									<input type="text" id="refLocation" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Phone</label>
+									<input type="text" id="refPhone" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div>
+									<label class="block text-gray-700 font-semibold mb-2">Email</label>
+									<input type="email" id="refEmail" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+								</div>
+								<div class="flex gap-2">
+									<button type="button" onclick="saveReference()" class="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700">Save</button>
+									<button type="button" onclick="cancelReferenceEdit()" class="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600">Cancel</button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Success/Error Message -->
+		<div id="message" class="fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg hidden z-50"></div>
+
+		<script>
+			const BLOG_API_URL = "http://localhost:3000/api/blogs";
+			const PROJECT_API_URL = "http://localhost:3000/api/projects";
+			const SERVICE_API_URL = "http://localhost:3000/api/services";
+			const CV_API_URL = "http://localhost:3000/api/cv";
+
+			let currentTab = "blogs";
+
+			// Tab switching
+			function switchTab(tab) {
+				currentTab = tab;
+				const blogsSection = document.getElementById("blogsSection");
+				const projectsSection = document.getElementById("projectsSection");
+				const servicesSection = document.getElementById("servicesSection");
+				const cvSection = document.getElementById("cvSection");
+				const blogsTab = document.getElementById("blogsTab");
+				const projectsTab = document.getElementById("projectsTab");
+				const servicesTab = document.getElementById("servicesTab");
+				const cvTab = document.getElementById("cvTab");
+
+				// Hide all sections
+				blogsSection.classList.add("hidden");
+				projectsSection.classList.add("hidden");
+				servicesSection.classList.add("hidden");
+				cvSection.classList.add("hidden");
+
+				// Remove active from all tabs
+				blogsTab.classList.remove("active");
+				projectsTab.classList.remove("active");
+				servicesTab.classList.remove("active");
+				cvTab.classList.remove("active");
+
+				if (tab === "blogs") {
+					blogsSection.classList.remove("hidden");
+					blogsTab.classList.add("active");
+					loadBlogs();
+				} else if (tab === "projects") {
+					projectsSection.classList.remove("hidden");
+					projectsTab.classList.add("active");
+					loadProjects();
+				} else if (tab === "services") {
+					servicesSection.classList.remove("hidden");
+					servicesTab.classList.add("active");
+					loadServices();
+				} else if (tab === "cv") {
+					cvSection.classList.remove("hidden");
+					cvTab.classList.add("active");
+					loadCV();
+				}
+			}
+
+			// Initialize Quill editor
+			let quill = new Quill("#blogEditor", {
+				theme: "snow",
+				modules: {
+					toolbar: [[{ header: [1, 2, 3, false] }], ["bold", "italic", "underline", "strike"], ["blockquote", "code-block"], [{ list: "ordered" }, { list: "bullet" }], [{ color: [] }, { background: [] }], ["link", "image"], ["clean"]],
+				},
+			});
+
+			// Show message
+			function showMessage(text, isSuccess = true) {
+				const messageEl = document.getElementById("message");
+				messageEl.textContent = text;
+				messageEl.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 ${isSuccess ? "bg-green-500" : "bg-red-500"} text-white`;
+				messageEl.classList.remove("hidden");
+
+				setTimeout(() => {
+					messageEl.classList.add("hidden");
+				}, 3000);
+			}
+
+			// ============ BLOGS FUNCTIONALITY ============
+
+			// Fetch and display blogs
+			async function loadBlogs() {
+				try {
+					const response = await fetch(BLOG_API_URL);
+					const blogs = await response.json();
+
+					const blogsListEl = document.getElementById("blogsList");
+
+					if (blogs.length === 0) {
+						blogsListEl.innerHTML = '<div class="text-center py-8 text-gray-500">No blogs found</div>';
+						return;
+					}
+
+					blogsListEl.innerHTML = blogs
+						.map(
+							(blog) => `
+									<div class="border rounded-lg p-4 hover:shadow-md transition duration-300">
+										<div class="flex items-start gap-4">
+											<img src="${blog.image}" alt="${blog.title}"
+												class="w-24 h-24 object-cover rounded-lg"
+												onerror="this.src='https://via.placeholder.com/96'">
+											<div class="flex-1">
+												<h3 class="text-xl font-semibold mb-2">${blog.title}</h3>
+												<p class="text-gray-600 text-sm mb-2">${blog.excerpt}</p>
+												<div class="flex items-center gap-2 text-xs text-gray-500">
+													<span>${blog.date || "No date"}</span>
+													<span>•</span>
+													<span>${blog.author || "Unknown"}</span>
+												</div>
+												${
+													blog.tags
+														? `
+													<div class="flex flex-wrap gap-2 mt-2">
+														${blog.tags.map((tag) => `<span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">${tag}</span>`).join("")}
+													</div>
+												`
+														: ""
+												}
+											</div>
+											<div class="flex flex-col gap-2">
+												<button onclick="editBlog(${blog.id})"
+													class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
+													Edit
+												</button>
+												<button onclick="deleteBlog(${blog.id})"
+													class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
+													Delete
+												</button>
+											</div>
+										</div>
+									</div>
+								`,
+						)
+						.join("");
+				} catch (error) {
+					document.getElementById("blogsList").innerHTML = '<div class="text-center py-8 text-red-500">Error loading blogs. Make sure the backend is running!</div>';
+				}
+			}
+
+			// Add new blog or update existing
+			document.getElementById("blogForm").addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				const editingId = document.getElementById("editingBlogId").value;
+				const isEditMode = editingId !== "";
+
+				const content = blogQuill.root.innerHTML;
+
+				const blogData = {
+					title: document.getElementById("blogTitle").value,
+					excerpt: document.getElementById("blogExcerpt").value,
+					content: content,
+					image: document.getElementById("blogImage").value,
+					link: document.getElementById("blogLink").value || "#",
+					date: document.getElementById("blogDate").value,
+					author: document.getElementById("blogAuthor").value,
+					tags: document
+						.getElementById("blogTags")
+						.value.split(",")
+						.map((tag) => tag.trim())
+						.filter((tag) => tag.length > 0),
+				};
+
+				try {
+					const url = isEditMode ? `${BLOG_API_URL}/${editingId}` : BLOG_API_URL;
+					const method = isEditMode ? "PUT" : "POST";
+
+					const response = await fetch(url, {
+						method: method,
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(blogData),
+					});
+
+					if (response.ok) {
+						showMessage(isEditMode ? "Blog updated successfully!" : "Blog post added successfully!");
+						cancelBlogEdit();
+						loadBlogs();
+					} else {
+						showMessage(isEditMode ? "Failed to update blog" : "Failed to add blog post", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			});
+
+			// Delete blog
+			async function deleteBlog(id) {
+				if (!confirm("Are you sure you want to delete this blog?")) return;
+
+				try {
+					const response = await fetch(`${BLOG_API_URL}/${id}`, {
+						method: "DELETE",
+					});
+
+					if (response.ok) {
+						showMessage("Blog deleted successfully!");
+						loadBlogs();
+					} else {
+						showMessage("Failed to delete blog", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			}
+
+			// Edit blog - Load blog data into form
+			async function editBlog(id) {
+				try {
+					const response = await fetch(`${BLOG_API_URL}/${id}`);
+					if (!response.ok) throw new Error("Failed to fetch blog");
+
+					const blog = await response.json();
+
+					document.getElementById("blogTitle").value = blog.title;
+					document.getElementById("blogExcerpt").value = blog.excerpt;
+					blogQuill.root.innerHTML = blog.content || "";
+					document.getElementById("blogImage").value = blog.image;
+					document.getElementById("blogLink").value = blog.link || "#";
+					document.getElementById("blogDate").value = blog.date || new Date().toISOString().split("T")[0];
+					document.getElementById("blogAuthor").value = blog.author;
+					document.getElementById("blogTags").value = blog.tags ? blog.tags.join(", ") : "";
+
+					document.getElementById("editingBlogId").value = id;
+					document.getElementById("blogFormTitle").textContent = "Edit Blog Post";
+					document.getElementById("blogSubmitBtn").textContent = "Update Blog Post";
+					document.getElementById("blogCancelBtn").classList.remove("hidden");
+
+					document.getElementById("blogForm").scrollIntoView({ behavior: "smooth" });
+					showMessage("Editing blog post...", true);
+				} catch (error) {
+					showMessage("Error loading blog for editing: " + error.message, false);
+				}
+			}
+
+			// Cancel edit mode and reset form
+			function cancelBlogEdit() {
+				document.getElementById("blogForm").reset();
+				blogQuill.root.innerHTML = "";
+				document.getElementById("editingBlogId").value = "";
+				document.getElementById("blogFormTitle").textContent = "Add New Blog Post";
+				document.getElementById("blogSubmitBtn").textContent = "Add Blog Post";
+				document.getElementById("blogCancelBtn").classList.add("hidden");
+			}
+
+			// ============ PROJECTS FUNCTIONALITY ============
+
+			// Fetch and display projects
+			async function loadProjects() {
+				try {
+					const response = await fetch(PROJECT_API_URL);
+					const projects = await response.json();
+
+					const projectsListEl = document.getElementById("projectsList");
+
+					if (projects.length === 0) {
+						projectsListEl.innerHTML = '<div class="text-center py-8 text-gray-500">No projects found</div>';
+						return;
+					}
+
+					projectsListEl.innerHTML = projects
+						.map(
+							(project) => `
+									<div class="border rounded-lg p-4 hover:shadow-md transition duration-300">
+										<div class="flex items-start gap-4">
+											<img src="${project.image}" alt="${project.title}"
+												class="w-32 h-24 object-cover rounded-lg"
+												onerror="this.src='https://via.placeholder.com/128x96'">
+											<div class="flex-1">
+												<h3 class="text-xl font-semibold mb-2">${project.title}</h3>
+												<p class="text-gray-600 text-sm mb-2">${project.description}</p>
+												<div class="flex flex-wrap gap-2 mb-2">
+													${project.technologies.map((tech) => `<span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">${tech}</span>`).join("")}
+												</div>
+												<div class="flex gap-3 text-xs">
+													<a href="${project.liveUrl}" target="_blank" class="text-blue-600 hover:underline">🔗 Live</a>
+													${project.codeUrl && project.codeUrl !== "#" ? `<a href="${project.codeUrl}" target="_blank" class="text-blue-600 hover:underline">💻 Code</a>` : ""}
+												</div>
+											</div>
+											<div class="flex flex-col gap-2">
+												<button onclick="editProject(${project.id})"
+													class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
+													Edit
+												</button>
+												<button onclick="deleteProject(${project.id})"
+													class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
+													Delete
+												</button>
+											</div>
+										</div>
+									</div>
+								`,
+						)
+						.join("");
+				} catch (error) {
+					document.getElementById("projectsList").innerHTML = '<div class="text-center py-8 text-red-500">Error loading projects. Make sure the backend is running!</div>';
+				}
+			}
+
+			// Add new project or update existing
+			document.getElementById("projectForm").addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				const editingId = document.getElementById("editingProjectId").value;
+				const isEditMode = editingId !== "";
+
+				const projectData = {
+					title: document.getElementById("projectTitle").value,
+					description: document.getElementById("projectDescription").value,
+					image: document.getElementById("projectImage").value,
+					liveUrl: document.getElementById("projectLiveUrl").value,
+					codeUrl: document.getElementById("projectCodeUrl").value || "#",
+					technologies: document
+						.getElementById("projectTechnologies")
+						.value.split(",")
+						.map((tech) => tech.trim())
+						.filter((tech) => tech.length > 0),
+				};
+
+				try {
+					const url = isEditMode ? `${PROJECT_API_URL}/${editingId}` : PROJECT_API_URL;
+					const method = isEditMode ? "PUT" : "POST";
+
+					const response = await fetch(url, {
+						method: method,
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(projectData),
+					});
+
+					if (response.ok) {
+						showMessage(isEditMode ? "Project updated successfully!" : "Project added successfully!");
+						cancelProjectEdit();
+						loadProjects();
+					} else {
+						showMessage(isEditMode ? "Failed to update project" : "Failed to add project", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			});
+
+			// Delete project
+			async function deleteProject(id) {
+				if (!confirm("Are you sure you want to delete this project?")) return;
+
+				try {
+					const response = await fetch(`${PROJECT_API_URL}/${id}`, {
+						method: "DELETE",
+					});
+
+					if (response.ok) {
+						showMessage("Project deleted successfully!");
+						loadProjects();
+					} else {
+						showMessage("Failed to delete project", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			}
+
+			// Edit project - Load project data into form
+			async function editProject(id) {
+				try {
+					const response = await fetch(`${PROJECT_API_URL}/${id}`);
+					if (!response.ok) throw new Error("Failed to fetch project");
+
+					const project = await response.json();
+
+					document.getElementById("projectTitle").value = project.title;
+					document.getElementById("projectDescription").value = project.description;
+					document.getElementById("projectImage").value = project.image;
+					document.getElementById("projectLiveUrl").value = project.liveUrl;
+					document.getElementById("projectCodeUrl").value = project.codeUrl || "";
+					document.getElementById("projectTechnologies").value = project.technologies ? project.technologies.join(", ") : "";
+
+					document.getElementById("editingProjectId").value = id;
+					document.getElementById("projectFormTitle").textContent = "Edit Project";
+					document.getElementById("projectSubmitBtn").textContent = "Update Project";
+					document.getElementById("projectCancelBtn").classList.remove("hidden");
+
+					document.getElementById("projectForm").scrollIntoView({ behavior: "smooth" });
+					showMessage("Editing project...", true);
+				} catch (error) {
+					showMessage("Error loading project for editing: " + error.message, false);
+				}
+			}
+
+			// Cancel edit mode and reset form
+			function cancelProjectEdit() {
+				document.getElementById("projectForm").reset();
+				document.getElementById("editingProjectId").value = "";
+				document.getElementById("projectFormTitle").textContent = "Add New Project";
+				document.getElementById("projectSubmitBtn").textContent = "Add Project";
+				document.getElementById("projectCancelBtn").classList.add("hidden");
+			}
+
+			// ============ SERVICES FUNCTIONALITY ============
+
+			// Fetch and display services
+			async function loadServices() {
+				try {
+					const response = await fetch(SERVICE_API_URL);
+					const services = await response.json();
+
+					const servicesListEl = document.getElementById("servicesList");
+
+					if (services.length === 0) {
+						servicesListEl.innerHTML = '<div class="text-center py-8 text-gray-500">No services found</div>';
+						return;
+					}
+
+					servicesListEl.innerHTML = services
+						.map(
+							(service) => `
+								<div class="border rounded-lg p-4 hover:shadow-md transition duration-300">
+									<div class="flex items-start gap-4">
+										<img src="${service.icon}" alt="${service.title}"
+											class="w-16 h-16 object-contain rounded-lg"
+											onerror="this.src='https://via.placeholder.com/64'">
+										<div class="flex-1">
+											<h3 class="text-xl font-semibold mb-2">${service.title}</h3>
+											<p class="text-gray-600 text-sm">${service.description}</p>
+										</div>
+										<div class="flex flex-col gap-2">
+											<button onclick="editService(${service.id})"
+												class="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
+												Edit
+											</button>
+											<button onclick="deleteService(${service.id})"
+												class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
+												Delete
+											</button>
+										</div>
+									</div>
+								</div>
+							`,
+						)
+						.join("");
+				} catch (error) {
+					document.getElementById("servicesList").innerHTML = '<div class="text-center py-8 text-red-500">Error loading services. Make sure the backend is running!</div>';
+				}
+			}
+
+			// Add new service or update existing
+			document.getElementById("serviceForm").addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				const editingId = document.getElementById("editingServiceId").value;
+				const isEditMode = editingId !== "";
+
+				const serviceData = {
+					title: document.getElementById("serviceTitle").value,
+					description: document.getElementById("serviceDescription").value,
+					icon: document.getElementById("serviceIcon").value,
+				};
+
+				try {
+					const url = isEditMode ? `${SERVICE_API_URL}/${editingId}` : SERVICE_API_URL;
+					const method = isEditMode ? "PUT" : "POST";
+
+					const response = await fetch(url, {
+						method: method,
+						headers: {
+							"Content-Type": "application/json",
+						},
+						body: JSON.stringify(serviceData),
+					});
+
+					if (response.ok) {
+						showMessage(isEditMode ? "Service updated successfully!" : "Service added successfully!");
+						cancelServiceEdit();
+						loadServices();
+					} else {
+						showMessage(isEditMode ? "Failed to update service" : "Failed to add service", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			});
+
+			// Delete service
+			async function deleteService(id) {
+				if (!confirm("Are you sure you want to delete this service?")) return;
+
+				try {
+					const response = await fetch(`${SERVICE_API_URL}/${id}`, {
+						method: "DELETE",
+					});
+
+					if (response.ok) {
+						showMessage("Service deleted successfully!");
+						loadServices();
+					} else {
+						showMessage("Failed to delete service", false);
+					}
+				} catch (error) {
+					showMessage("Error: " + error.message, false);
+				}
+			}
+
+			// Edit service - Load service data into form
+			async function editService(id) {
+				try {
+					const response = await fetch(`${SERVICE_API_URL}/${id}`);
+					if (!response.ok) throw new Error("Failed to fetch service");
+
+					const service = await response.json();
+
+					document.getElementById("serviceTitle").value = service.title;
+					document.getElementById("serviceDescription").value = service.description;
+					document.getElementById("serviceIcon").value = service.icon;
+
+					document.getElementById("editingServiceId").value = id;
+					document.getElementById("serviceFormTitle").textContent = "Edit Service";
+					document.getElementById("serviceSubmitBtn").textContent = "Update Service";
+					document.getElementById("serviceCancelBtn").classList.remove("hidden");
+
+					document.getElementById("serviceForm").scrollIntoView({ behavior: "smooth" });
+					showMessage("Editing service...", true);
+				} catch (error) {
+					showMessage("Error loading service for editing: " + error.message, false);
+				}
+			}
+
+			// Cancel edit mode and reset form
+			function cancelServiceEdit() {
+				document.getElementById("serviceForm").reset();
+				document.getElementById("editingServiceId").value = "";
+				document.getElementById("serviceFormTitle").textContent = "Add New Service";
+				document.getElementById("serviceSubmitBtn").textContent = "Add Service";
+				document.getElementById("serviceCancelBtn").classList.add("hidden");
+			}
+
+			// ============ CV FUNCTIONALITY ============
+
+			let cvData = null;
+
+			// Load CV data
+			async function loadCV() {
+				try {
+					const response = await fetch(CV_API_URL);
+					cvData = await response.json();
+
+					// Load Header
+					document.getElementById("cvName").value = cvData.header?.name || "";
+					document.getElementById("cvTitle").value = cvData.header?.title || "";
+					document.getElementById("cvAddress").value = cvData.header?.address || "";
+					document.getElementById("cvPhone").value = cvData.header?.phone || "";
+					document.getElementById("cvEmail").value = cvData.header?.email || "";
+					document.getElementById("cvLinkedin").value = cvData.header?.linkedin || "";
+					document.getElementById("cvGithub").value = cvData.header?.github || "";
+					document.getElementById("cvPortfolio").value = cvData.header?.portfolio || "";
+
+					// Load Summary
+					document.getElementById("cvSummary").value = cvData.summary || "";
+
+					// Load all sections
+					displayCompetencies();
+					displayExperience();
+					displayEducation();
+					displayCertifications();
+					displayLanguages();
+					displayReferences();
+
+					showMessage("CV data loaded successfully", true);
+				} catch (error) {
+					showMessage("Error loading CV: " + error.message, false);
+				}
+			}
+
+			// Update CV Header
+			async function updateCVHeader() {
+				try {
+					const headerData = {
+						name: document.getElementById("cvName").value,
+						title: document.getElementById("cvTitle").value,
+						address: document.getElementById("cvAddress").value,
+						phone: document.getElementById("cvPhone").value,
+						email: document.getElementById("cvEmail").value,
+						linkedin: document.getElementById("cvLinkedin").value,
+						github: document.getElementById("cvGithub").value,
+						portfolio: document.getElementById("cvPortfolio").value,
+					};
+
+					const response = await fetch(`${CV_API_URL}/header`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify(headerData),
+					});
+
+					if (!response.ok) throw new Error("Failed to update header");
+					showMessage("Header updated successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error updating header: " + error.message, false);
+				}
+			}
+
+			// Update CV Summary
+			async function updateCVSummary() {
+				try {
+					const response = await fetch(`${CV_API_URL}/summary`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ summary: document.getElementById("cvSummary").value }),
+					});
+
+					if (!response.ok) throw new Error("Failed to update summary");
+					showMessage("Summary updated successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error updating summary: " + error.message, false);
+				}
+			}
+
+			// ===== COMPETENCIES =====
+			function displayCompetencies() {
+				const list = document.getElementById("competenciesList");
+				if (!cvData.competencies || cvData.competencies.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No competencies added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.competencies
+					.map(
+						(comp, index) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${comp.category}</h3>
+								<p class="text-gray-700 mt-1">${comp.skills}</p>
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editCompetency(${index})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteCompetency(${index})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showCompetencyForm() {
+				document.getElementById("competencyForm").classList.remove("hidden");
+			}
+
+			function cancelCompetencyEdit() {
+				document.getElementById("competencyForm").classList.add("hidden");
+				document.getElementById("editingCompetencyIndex").value = "";
+				document.getElementById("competencyCategory").value = "";
+				document.getElementById("competencySkills").value = "";
+			}
+
+			function editCompetency(index) {
+				const comp = cvData.competencies[index];
+				document.getElementById("editingCompetencyIndex").value = index;
+				document.getElementById("competencyCategory").value = comp.category;
+				document.getElementById("competencySkills").value = comp.skills;
+				showCompetencyForm();
+			}
+
+			async function saveCompetency() {
+				const index = document.getElementById("editingCompetencyIndex").value;
+				const newComp = {
+					category: document.getElementById("competencyCategory").value,
+					skills: document.getElementById("competencySkills").value,
+				};
+
+				if (index === "") {
+					cvData.competencies.push(newComp);
+				} else {
+					cvData.competencies[parseInt(index)] = newComp;
+				}
+
+				try {
+					const response = await fetch(`${CV_API_URL}/competencies`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ competencies: cvData.competencies }),
+					});
+
+					if (!response.ok) throw new Error("Failed to save competency");
+					showMessage("Competency saved successfully!", true);
+					cancelCompetencyEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving competency: " + error.message, false);
+				}
+			}
+
+			async function deleteCompetency(index) {
+				if (!confirm("Are you sure you want to delete this competency?")) return;
+
+				cvData.competencies.splice(index, 1);
+
+				try {
+					const response = await fetch(`${CV_API_URL}/competencies`, {
+						method: "PUT",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ competencies: cvData.competencies }),
+					});
+
+					if (!response.ok) throw new Error("Failed to delete competency");
+					showMessage("Competency deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting competency: " + error.message, false);
+				}
+			}
+
+			// ===== EXPERIENCE =====
+			function displayExperience() {
+				const list = document.getElementById("experienceList");
+				if (!cvData.experience || cvData.experience.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No experience added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.experience
+					.map(
+						(exp) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${exp.title}</h3>
+								<p class="text-gray-700">${exp.company} | ${exp.location}</p>
+								<p class="text-gray-600 text-sm">${exp.date}</p>
+								<ul class="mt-2 list-disc list-inside text-gray-700">
+									${exp.responsibilities.map((r) => `<li>${r}</li>`).join("")}
+								</ul>
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editExperience(${exp.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteExperience(${exp.id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showExperienceForm() {
+				document.getElementById("experienceForm").classList.remove("hidden");
+			}
+
+			function cancelExperienceEdit() {
+				document.getElementById("experienceForm").classList.add("hidden");
+				document.getElementById("editingExperienceId").value = "";
+				document.getElementById("expTitle").value = "";
+				document.getElementById("expCompany").value = "";
+				document.getElementById("expLocation").value = "";
+				document.getElementById("expDate").value = "";
+				document.getElementById("expResponsibilities").value = "";
+			}
+
+			function editExperience(id) {
+				const exp = cvData.experience.find((e) => e.id === id);
+				if (!exp) return;
+
+				document.getElementById("editingExperienceId").value = id;
+				document.getElementById("expTitle").value = exp.title;
+				document.getElementById("expCompany").value = exp.company;
+				document.getElementById("expLocation").value = exp.location;
+				document.getElementById("expDate").value = exp.date;
+				document.getElementById("expResponsibilities").value = exp.responsibilities.join("\n");
+				showExperienceForm();
+			}
+
+			async function saveExperience() {
+				const id = document.getElementById("editingExperienceId").value;
+				const expData = {
+					title: document.getElementById("expTitle").value,
+					company: document.getElementById("expCompany").value,
+					location: document.getElementById("expLocation").value,
+					date: document.getElementById("expDate").value,
+					responsibilities: document
+						.getElementById("expResponsibilities")
+						.value.split("\n")
+						.filter((r) => r.trim()),
+				};
+
+				try {
+					let response;
+					if (id) {
+						response = await fetch(`${CV_API_URL}/experience/${id}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(expData),
+						});
+					} else {
+						response = await fetch(`${CV_API_URL}/experience`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(expData),
+						});
+					}
+
+					if (!response.ok) throw new Error("Failed to save experience");
+					showMessage("Experience saved successfully!", true);
+					cancelExperienceEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving experience: " + error.message, false);
+				}
+			}
+
+			async function deleteExperience(id) {
+				if (!confirm("Are you sure you want to delete this experience?")) return;
+
+				try {
+					const response = await fetch(`${CV_API_URL}/experience/${id}`, {
+						method: "DELETE",
+					});
+
+					if (!response.ok) throw new Error("Failed to delete experience");
+					showMessage("Experience deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting experience: " + error.message, false);
+				}
+			}
+
+			// ===== EDUCATION =====
+			function displayEducation() {
+				const list = document.getElementById("educationList");
+				if (!cvData.education || cvData.education.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No education added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.education
+					.map(
+						(edu) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${edu.degree}</h3>
+								<p class="text-gray-700">${edu.institution}</p>
+								<p class="text-gray-600 text-sm">${edu.date}</p>
+								${edu.details ? `<p class="text-gray-600 text-sm mt-1">${edu.details}</p>` : ""}
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editEducation(${edu.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteEducation(${edu.id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showEducationForm() {
+				document.getElementById("educationForm").classList.remove("hidden");
+			}
+
+			function cancelEducationEdit() {
+				document.getElementById("educationForm").classList.add("hidden");
+				document.getElementById("editingEducationId").value = "";
+				document.getElementById("eduDegree").value = "";
+				document.getElementById("eduInstitution").value = "";
+				document.getElementById("eduDate").value = "";
+				document.getElementById("eduDetails").value = "";
+			}
+
+			function editEducation(id) {
+				const edu = cvData.education.find((e) => e.id === id);
+				if (!edu) return;
+
+				document.getElementById("editingEducationId").value = id;
+				document.getElementById("eduDegree").value = edu.degree;
+				document.getElementById("eduInstitution").value = edu.institution;
+				document.getElementById("eduDate").value = edu.date;
+				document.getElementById("eduDetails").value = edu.details || "";
+				showEducationForm();
+			}
+
+			async function saveEducation() {
+				const id = document.getElementById("editingEducationId").value;
+				const eduData = {
+					degree: document.getElementById("eduDegree").value,
+					institution: document.getElementById("eduInstitution").value,
+					date: document.getElementById("eduDate").value,
+					details: document.getElementById("eduDetails").value,
+				};
+
+				try {
+					let response;
+					if (id) {
+						response = await fetch(`${CV_API_URL}/education/${id}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(eduData),
+						});
+					} else {
+						response = await fetch(`${CV_API_URL}/education`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(eduData),
+						});
+					}
+
+					if (!response.ok) throw new Error("Failed to save education");
+					showMessage("Education saved successfully!", true);
+					cancelEducationEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving education: " + error.message, false);
+				}
+			}
+
+			async function deleteEducation(id) {
+				if (!confirm("Are you sure you want to delete this education entry?")) return;
+
+				try {
+					const response = await fetch(`${CV_API_URL}/education/${id}`, {
+						method: "DELETE",
+					});
+
+					if (!response.ok) throw new Error("Failed to delete education");
+					showMessage("Education deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting education: " + error.message, false);
+				}
+			}
+
+			// ===== CERTIFICATIONS =====
+			function displayCertifications() {
+				const list = document.getElementById("certificationsList");
+				if (!cvData.certifications || cvData.certifications.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No certifications added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.certifications
+					.map(
+						(cert) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${cert.title}</h3>
+								<p class="text-gray-700">${cert.issuer}</p>
+								<p class="text-gray-600 text-sm">${cert.date}</p>
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editCertification(${cert.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteCertification(${cert.id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showCertificationForm() {
+				document.getElementById("certificationForm").classList.remove("hidden");
+			}
+
+			function cancelCertificationEdit() {
+				document.getElementById("certificationForm").classList.add("hidden");
+				document.getElementById("editingCertificationId").value = "";
+				document.getElementById("certTitle").value = "";
+				document.getElementById("certIssuer").value = "";
+				document.getElementById("certDate").value = "";
+			}
+
+			function editCertification(id) {
+				const cert = cvData.certifications.find((c) => c.id === id);
+				if (!cert) return;
+
+				document.getElementById("editingCertificationId").value = id;
+				document.getElementById("certTitle").value = cert.title;
+				document.getElementById("certIssuer").value = cert.issuer;
+				document.getElementById("certDate").value = cert.date;
+				showCertificationForm();
+			}
+
+			async function saveCertification() {
+				const id = document.getElementById("editingCertificationId").value;
+				const certData = {
+					title: document.getElementById("certTitle").value,
+					issuer: document.getElementById("certIssuer").value,
+					date: document.getElementById("certDate").value,
+				};
+
+				try {
+					let response;
+					if (id) {
+						response = await fetch(`${CV_API_URL}/certifications/${id}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(certData),
+						});
+					} else {
+						response = await fetch(`${CV_API_URL}/certifications`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(certData),
+						});
+					}
+
+					if (!response.ok) throw new Error("Failed to save certification");
+					showMessage("Certification saved successfully!", true);
+					cancelCertificationEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving certification: " + error.message, false);
+				}
+			}
+
+			async function deleteCertification(id) {
+				if (!confirm("Are you sure you want to delete this certification?")) return;
+
+				try {
+					const response = await fetch(`${CV_API_URL}/certifications/${id}`, {
+						method: "DELETE",
+					});
+
+					if (!response.ok) throw new Error("Failed to delete certification");
+					showMessage("Certification deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting certification: " + error.message, false);
+				}
+			}
+
+			// ===== LANGUAGES =====
+			function displayLanguages() {
+				const list = document.getElementById("languagesList");
+				if (!cvData.languages || cvData.languages.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No languages added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.languages
+					.map(
+						(lang) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${lang.language}</h3>
+								<p class="text-gray-700">${lang.level}</p>
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editLanguage(${lang.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteLanguage(${lang.id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showLanguageForm() {
+				document.getElementById("languageForm").classList.remove("hidden");
+			}
+
+			function cancelLanguageEdit() {
+				document.getElementById("languageForm").classList.add("hidden");
+				document.getElementById("editingLanguageId").value = "";
+				document.getElementById("langName").value = "";
+				document.getElementById("langLevel").value = "";
+			}
+
+			function editLanguage(id) {
+				const lang = cvData.languages.find((l) => l.id === id);
+				if (!lang) return;
+
+				document.getElementById("editingLanguageId").value = id;
+				document.getElementById("langName").value = lang.language;
+				document.getElementById("langLevel").value = lang.level;
+				showLanguageForm();
+			}
+
+			async function saveLanguage() {
+				const id = document.getElementById("editingLanguageId").value;
+				const langData = {
+					language: document.getElementById("langName").value,
+					level: document.getElementById("langLevel").value,
+				};
+
+				try {
+					let response;
+					if (id) {
+						response = await fetch(`${CV_API_URL}/languages/${id}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(langData),
+						});
+					} else {
+						response = await fetch(`${CV_API_URL}/languages`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(langData),
+						});
+					}
+
+					if (!response.ok) throw new Error("Failed to save language");
+					showMessage("Language saved successfully!", true);
+					cancelLanguageEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving language: " + error.message, false);
+				}
+			}
+
+			async function deleteLanguage(id) {
+				if (!confirm("Are you sure you want to delete this language?")) return;
+
+				try {
+					const response = await fetch(`${CV_API_URL}/languages/${id}`, {
+						method: "DELETE",
+					});
+
+					if (!response.ok) throw new Error("Failed to delete language");
+					showMessage("Language deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting language: " + error.message, false);
+				}
+			}
+
+			// ===== REFERENCES =====
+			function displayReferences() {
+				const list = document.getElementById("referencesList");
+				if (!cvData.references || cvData.references.length === 0) {
+					list.innerHTML = '<div class="text-gray-500 text-center py-4">No references added yet</div>';
+					return;
+				}
+
+				list.innerHTML = cvData.references
+					.map(
+						(ref) => `
+					<div class="border rounded-lg p-4 bg-gray-50">
+						<div class="flex justify-between items-start">
+							<div class="flex-1">
+								<h3 class="font-bold text-lg">${ref.name}</h3>
+								<p class="text-gray-700">${ref.position} at ${ref.company}</p>
+								<p class="text-gray-600 text-sm">${ref.location}</p>
+								<p class="text-gray-600 text-sm">📞 ${ref.phone} | ✉️ ${ref.email}</p>
+							</div>
+							<div class="flex gap-2 ml-4">
+								<button onclick="editReference(${ref.id})" class="text-blue-600 hover:text-blue-800 px-3 py-1 rounded border border-blue-600">Edit</button>
+								<button onclick="deleteReference(${ref.id})" class="text-red-600 hover:text-red-800 px-3 py-1 rounded border border-red-600">Delete</button>
+							</div>
+						</div>
+					</div>
+				`,
+					)
+					.join("");
+			}
+
+			function showReferenceForm() {
+				document.getElementById("referenceForm").classList.remove("hidden");
+			}
+
+			function cancelReferenceEdit() {
+				document.getElementById("referenceForm").classList.add("hidden");
+				document.getElementById("editingReferenceId").value = "";
+				document.getElementById("refName").value = "";
+				document.getElementById("refPosition").value = "";
+				document.getElementById("refCompany").value = "";
+				document.getElementById("refLocation").value = "";
+				document.getElementById("refPhone").value = "";
+				document.getElementById("refEmail").value = "";
+			}
+
+			function editReference(id) {
+				const ref = cvData.references.find((r) => r.id === id);
+				if (!ref) return;
+
+				document.getElementById("editingReferenceId").value = id;
+				document.getElementById("refName").value = ref.name;
+				document.getElementById("refPosition").value = ref.position;
+				document.getElementById("refCompany").value = ref.company;
+				document.getElementById("refLocation").value = ref.location;
+				document.getElementById("refPhone").value = ref.phone;
+				document.getElementById("refEmail").value = ref.email;
+				showReferenceForm();
+			}
+
+			async function saveReference() {
+				const id = document.getElementById("editingReferenceId").value;
+				const refData = {
+					name: document.getElementById("refName").value,
+					position: document.getElementById("refPosition").value,
+					company: document.getElementById("refCompany").value,
+					location: document.getElementById("refLocation").value,
+					phone: document.getElementById("refPhone").value,
+					email: document.getElementById("refEmail").value,
+				};
+
+				try {
+					let response;
+					if (id) {
+						response = await fetch(`${CV_API_URL}/references/${id}`, {
+							method: "PUT",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(refData),
+						});
+					} else {
+						response = await fetch(`${CV_API_URL}/references`, {
+							method: "POST",
+							headers: { "Content-Type": "application/json" },
+							body: JSON.stringify(refData),
+						});
+					}
+
+					if (!response.ok) throw new Error("Failed to save reference");
+					showMessage("Reference saved successfully!", true);
+					cancelReferenceEdit();
+					loadCV();
+				} catch (error) {
+					showMessage("Error saving reference: " + error.message, false);
+				}
+			}
+
+			async function deleteReference(id) {
+				if (!confirm("Are you sure you want to delete this reference?")) return;
+
+				try {
+					const response = await fetch(`${CV_API_URL}/references/${id}`, {
+						method: "DELETE",
+					});
+
+					if (!response.ok) throw new Error("Failed to delete reference");
+					showMessage("Reference deleted successfully!", true);
+					loadCV();
+				} catch (error) {
+					showMessage("Error deleting reference: " + error.message, false);
+				}
+			}
+
+			// Initialize on page load
+			document.getElementById("blogDate").value = new Date().toISOString().split("T")[0];
+			loadBlogs(); // Load blogs on page load
+		</script>
+	</body>
+</html>

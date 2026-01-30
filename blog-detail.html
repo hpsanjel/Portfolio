@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title id="pageTitle">Blog Post - Portfolio</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="./tailwind.config.js"></script>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="icon" href="./images/favicon.ico" type="images/x-icon" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+		<style>
+			.blog-content img {
+				max-width: 100%;
+				height: auto;
+				border-radius: 0.5rem;
+				margin: 1.5rem 0;
+			}
+			.blog-content h1,
+			.blog-content h2,
+			.blog-content h3 {
+				margin-top: 1.5rem;
+				margin-bottom: 1rem;
+				font-weight: 600;
+			}
+			.blog-content p {
+				margin-bottom: 1rem;
+				line-height: 1.8;
+			}
+			.blog-content ul,
+			.blog-content ol {
+				margin-left: 2rem;
+				margin-bottom: 1rem;
+			}
+			.blog-content blockquote {
+				border-left: 4px solid #3b82f6;
+				padding-left: 1rem;
+				margin: 1.5rem 0;
+				font-style: italic;
+				color: #6b7280;
+			}
+			.blog-content code {
+				background: #f3f4f6;
+				padding: 0.2rem 0.4rem;
+				border-radius: 0.25rem;
+				font-size: 0.9em;
+			}
+			.blog-content pre {
+				background: #1f2937;
+				color: #f9fafb;
+				padding: 1rem;
+				border-radius: 0.5rem;
+				overflow-x: auto;
+				margin: 1.5rem 0;
+			}
+		</style>
+	</head>
+	<body class="dark:bg-darkTheme">
+		<!-- Navigation -->
+		<nav class="w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50">
+			<a href="index.html">
+				<img src="./images/logo-black.png" alt="logo" class="w-28 cursor-pointer mr-14 dark:hidden" />
+				<img src="./images/logo-white.png" alt="logo" class="w-28 cursor-pointer mr-14 hidden dark:block" />
+			</a>
+
+			<ul class="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm bg-opacity-50 font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
+				<li><a href="index.html">Home</a></li>
+				<li><a href="index.html#about">About</a></li>
+				<li><a href="index.html#services">Services</a></li>
+				<li><a href="index.html#work">Portfolio</a></li>
+				<li><a href="index.html#blog">Blogs</a></li>
+				<li><a href="index.html#contact">Contact</a></li>
+			</ul>
+
+			<div class="flex items-center gap-4">
+				<button onclick="toggleTheme()">
+					<img src="./images/moon.png" alt="moon" class="w-6 dark:hidden" />
+					<img src="./images/sun.png" alt="sun" class="w-6 hidden dark:block" />
+				</button>
+				<a href="index.html#contact" class="hidden lg:flex items-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Outfit dark:border-white/50">
+					Contact
+					<img src="./images/arrow-right-white.svg" alt="" class="w-3 hidden dark:block" />
+					<img src="./images/arrow-right.svg" alt="" class="w-3 dark:hidden" />
+				</a>
+			</div>
+		</nav>
+
+		<!-- Blog Content -->
+		<div class="w-full px-[8%] py-32 min-h-screen">
+			<div class="max-w-4xl mx-auto">
+				<!-- Loading State -->
+				<div id="loading" class="text-center py-20">
+					<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white mx-auto"></div>
+					<p class="mt-4 text-gray-600 dark:text-gray-400">Loading blog post...</p>
+				</div>
+
+				<!-- Blog Post -->
+				<article id="blogPost" class="hidden">
+					<!-- Back Button -->
+					<a href="index.html#blog" class="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6">
+						<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+						</svg>
+						Back to Blogs
+					</a>
+
+					<!-- Blog Header -->
+					<h1 id="blogTitle" class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-4"></h1>
+
+					<div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
+						<span id="blogAuthor" class="flex items-center gap-2">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+							</svg>
+						</span>
+						<span id="blogDate" class="flex items-center gap-2">
+							<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+								<path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+							</svg>
+						</span>
+					</div>
+
+					<div id="blogTags" class="flex flex-wrap gap-2 mb-8"></div>
+
+					<!-- Featured Image -->
+					<img id="blogImage" class="w-full h-96 object-cover rounded-lg mb-8" alt="" />
+
+					<!-- Blog Content -->
+					<div id="blogContent" class="blog-content text-gray-700 dark:text-gray-300 text-lg leading-relaxed"></div>
+
+					<!-- Share Section -->
+					<div class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
+						<h3 class="text-xl font-semibold mb-4 dark:text-white">Share this article</h3>
+						<div class="flex gap-4">
+							<button onclick="shareOnTwitter()" class="px-4 py-2 bg-blue-400 text-white rounded-lg hover:bg-blue-500 transition">Twitter</button>
+							<button onclick="shareOnFacebook()" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Facebook</button>
+							<button onclick="shareOnLinkedIn()" class="px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-800 transition">LinkedIn</button>
+						</div>
+					</div>
+				</article>
+
+				<!-- Error State -->
+				<div id="error" class="hidden text-center py-20">
+					<svg class="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+					</svg>
+					<h2 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Blog post not found</h2>
+					<p class="text-gray-600 dark:text-gray-400 mb-6">The blog post you're looking for doesn't exist.</p>
+					<a href="index.html#blog" class="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"> View All Blogs </a>
+				</div>
+			</div>
+
+			<!-- Related Blogs Sidebar -->
+			<div class="max-w-7xl mx-auto mt-16">
+				<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+					<!-- Main space (empty for now) -->
+					<div class="lg:col-span-2"></div>
+
+					<!-- Sidebar with related blogs -->
+					<aside class="lg:col-span-1">
+						<div class="sticky top-24 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+							<h3 class="text-xl font-bold mb-4 dark:text-white">Recent Posts</h3>
+							<div id="recentBlogs" class="space-y-4">
+								<div class="text-center py-4 text-gray-500 dark:text-gray-400">Loading...</div>
+							</div>
+						</div>
+					</aside>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer -->
+		<div class="mt-20">
+			<div class="text-center flex items-center border-t border-gray-400 mx-[10%] py-6">
+				<p class="mx-auto dark:text-white">© 2024 Hari Prasad Sanjel. All rights reserved.</p>
+			</div>
+		</div>
+
+		<script src="./script.js"></script>
+		<script>
+			const API_URL = "http://localhost:3000/api/blogs";
+
+			// Get slug from URL
+			const urlParams = new URLSearchParams(window.location.search);
+			const slug = urlParams.get("slug");
+
+			// Format date
+			function formatDate(dateString) {
+				const options = { year: "numeric", month: "long", day: "numeric" };
+				return new Date(dateString).toLocaleDateString("en-US", options);
+			}
+
+			// Load blog post
+			async function loadBlogPost() {
+				if (!slug) {
+					showError();
+					return;
+				}
+
+				try {
+					const response = await fetch(`${API_URL}/${slug}`);
+					if (!response.ok) throw new Error("Blog not found");
+
+					const blog = await response.json();
+
+					// Update page title
+					document.getElementById("pageTitle").textContent = blog.title + " - Portfolio";
+
+					// Populate blog content
+					document.getElementById("blogTitle").textContent = blog.title;
+					document.getElementById("blogAuthor").innerHTML += blog.author;
+					document.getElementById("blogDate").innerHTML += formatDate(blog.date);
+					document.getElementById("blogImage").src = blog.image;
+					document.getElementById("blogImage").alt = blog.title;
+					document.getElementById("blogContent").innerHTML = blog.content || blog.excerpt;
+
+					// Add tags
+					if (blog.tags && blog.tags.length > 0) {
+						document.getElementById("blogTags").innerHTML = blog.tags.map((tag) => `<span class="bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-3 py-1 rounded-full text-sm">${tag}</span>`).join("");
+					}
+
+					// Show blog post
+					document.getElementById("loading").classList.add("hidden");
+					document.getElementById("blogPost").classList.remove("hidden");
+
+					// Load recent blogs
+					loadRecentBlogs(blog.id);
+				} catch (error) {
+					console.error("Error loading blog:", error);
+					showError();
+				}
+			}
+
+			// Load recent blogs for sidebar
+			async function loadRecentBlogs(currentBlogId) {
+				try {
+					const response = await fetch(API_URL);
+					const blogs = await response.json();
+
+					const recentBlogs = blogs.filter((blog) => blog.id !== currentBlogId).slice(0, 5);
+
+					if (recentBlogs.length > 0) {
+						document.getElementById("recentBlogs").innerHTML = recentBlogs
+							.map(
+								(blog) => `
+                            <a href="blog-detail.html?slug=${blog.slug}" class="flex gap-3 group">
+                                <img src="${blog.image}" alt="${blog.title}" class="w-20 h-20 object-cover rounded-lg" onerror="this.src='./images/placeholder.jpg'" />
+                                <div class="flex-1">
+                                    <h4 class="font-semibold text-sm group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400 transition line-clamp-2">${blog.title}</h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">${formatDate(blog.date)}</p>
+                                </div>
+                            </a>
+                        `,
+							)
+							.join("");
+					}
+				} catch (error) {
+					console.error("Error loading recent blogs:", error);
+				}
+			}
+
+			// Show error state
+			function showError() {
+				document.getElementById("loading").classList.add("hidden");
+				document.getElementById("error").classList.remove("hidden");
+			}
+
+			// Share functions
+			function shareOnTwitter() {
+				const url = window.location.href;
+				const text = document.getElementById("blogTitle").textContent;
+				window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, "_blank");
+			}
+
+			function shareOnFacebook() {
+				const url = window.location.href;
+				window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, "_blank");
+			}
+
+			function shareOnLinkedIn() {
+				const url = window.location.href;
+				window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`, "_blank");
+			}
+
+			// Load blog on page load
+			loadBlogPost();
+		</script>
+	</body>
+</html>

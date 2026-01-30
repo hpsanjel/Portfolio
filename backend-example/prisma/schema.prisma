@@ -1,0 +1,142 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Blog {
+  id        Int      @id @default(autoincrement())
+  title     String
+  slug      String   @unique
+  excerpt   String
+  content   String
+  image     String
+  link      String   @default("#")
+  date      String
+  author    String
+  tags      String[]
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("blogs")
+  @@index([slug])
+  @@index([date])
+}
+
+model Project {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String
+  image        String
+  liveUrl      String   @map("live_url")
+  codeUrl      String   @map("code_url")
+  technologies String[]
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("projects")
+  @@index([title])
+}
+
+model Service {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String
+  icon        String
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("services")
+  @@index([title])
+}
+
+model CvHeader {
+  id        Int    @id @default(1)
+  name      String
+  title     String
+  address   String
+  phone     String
+  email     String
+  linkedin  String
+  github    String
+  portfolio String
+
+  @@map("cv_header")
+}
+
+model CvSummary {
+  id      Int    @id @default(1)
+  summary String
+
+  @@map("cv_summary")
+}
+
+model CvCompetency {
+  id           Int    @id @default(autoincrement())
+  category     String
+  skills       String
+  displayOrder Int    @map("display_order")
+
+  @@map("cv_competencies")
+}
+
+model CvExperience {
+  id               Int      @id @default(autoincrement())
+  title            String
+  company          String
+  location         String
+  date             String
+  responsibilities String[]
+  displayOrder     Int      @map("display_order")
+
+  @@map("cv_experience")
+}
+
+model CvEducation {
+  id           Int    @id @default(autoincrement())
+  degree       String
+  institution  String
+  date         String
+  details      String
+  displayOrder Int    @map("display_order")
+
+  @@map("cv_education")
+}
+
+model CvCertification {
+  id           Int    @id @default(autoincrement())
+  title        String
+  issuer       String
+  date         String
+  displayOrder Int    @map("display_order")
+
+  @@map("cv_certifications")
+}
+
+model CvLanguage {
+  id           Int    @id @default(autoincrement())
+  language     String
+  level        String
+  displayOrder Int    @map("display_order")
+
+  @@map("cv_languages")
+}
+
+model CvReference {
+  id           Int    @id @default(autoincrement())
+  name         String
+  position     String
+  company      String
+  location     String
+  phone        String
+  email        String
+  displayOrder Int    @map("display_order")
+
+  @@map("cv_references")
+}
