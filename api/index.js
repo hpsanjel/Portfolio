@@ -17,7 +17,7 @@ function generateSlug(title) {
 }
 
 // ============ BLOGS ENDPOINTS ============
-app.get("/api/blogs", async (req, res) => {
+app.get("/blogs", async (req, res) => {
 	try {
 		const result = await pool.query("SELECT * FROM blogs ORDER BY date DESC");
 		res.json(result.rows);
@@ -27,7 +27,7 @@ app.get("/api/blogs", async (req, res) => {
 	}
 });
 
-app.get("/api/blogs/:identifier", async (req, res) => {
+app.get("/blogs/:identifier", async (req, res) => {
 	try {
 		const identifier = req.params.identifier;
 		const isNumeric = /^\d+$/.test(identifier);
@@ -50,7 +50,7 @@ app.get("/api/blogs/:identifier", async (req, res) => {
 	}
 });
 
-app.post("/api/blogs", async (req, res) => {
+app.post("/blogs", async (req, res) => {
 	try {
 		const { title, excerpt, content, image, link, date, author, tags } = req.body;
 		const slug = generateSlug(title);
@@ -64,7 +64,7 @@ app.post("/api/blogs", async (req, res) => {
 	}
 });
 
-app.put("/api/blogs/:id", async (req, res) => {
+app.put("/blogs/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { title, excerpt, content, image, link, date, author, tags } = req.body;
@@ -83,7 +83,7 @@ app.put("/api/blogs/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/blogs/:id", async (req, res) => {
+app.delete("/blogs/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM blogs WHERE id = $1 RETURNING id", [id]);
@@ -100,7 +100,7 @@ app.delete("/api/blogs/:id", async (req, res) => {
 });
 
 // ============ PROJECTS ENDPOINTS ============
-app.get("/api/projects", async (req, res) => {
+app.get("/projects", async (req, res) => {
 	try {
 		const result = await pool.query("SELECT * FROM projects ORDER BY id");
 		const projects = result.rows.map((p) => ({
@@ -119,7 +119,7 @@ app.get("/api/projects", async (req, res) => {
 	}
 });
 
-app.get("/api/projects/:id", async (req, res) => {
+app.get("/projects/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("SELECT * FROM projects WHERE id = $1", [id]);
@@ -145,7 +145,7 @@ app.get("/api/projects/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/projects", async (req, res) => {
+app.post("/projects", async (req, res) => {
 	try {
 		const { title, description, image, liveUrl, codeUrl, technologies } = req.body;
 
@@ -168,7 +168,7 @@ app.post("/api/projects", async (req, res) => {
 	}
 });
 
-app.put("/api/projects/:id", async (req, res) => {
+app.put("/projects/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { title, description, image, liveUrl, codeUrl, technologies } = req.body;
@@ -196,7 +196,7 @@ app.put("/api/projects/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/projects/:id", async (req, res) => {
+app.delete("/projects/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM projects WHERE id = $1 RETURNING id", [id]);
@@ -213,7 +213,7 @@ app.delete("/api/projects/:id", async (req, res) => {
 });
 
 // ============ SERVICES ENDPOINTS ============
-app.get("/api/services", async (req, res) => {
+app.get("/services", async (req, res) => {
 	try {
 		const result = await pool.query("SELECT * FROM services ORDER BY id");
 		res.json(result.rows);
@@ -223,7 +223,7 @@ app.get("/api/services", async (req, res) => {
 	}
 });
 
-app.get("/api/services/:id", async (req, res) => {
+app.get("/services/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("SELECT * FROM services WHERE id = $1", [id]);
@@ -239,7 +239,7 @@ app.get("/api/services/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/services", async (req, res) => {
+app.post("/services", async (req, res) => {
 	try {
 		const { title, description, icon } = req.body;
 
@@ -252,7 +252,7 @@ app.post("/api/services", async (req, res) => {
 	}
 });
 
-app.put("/api/services/:id", async (req, res) => {
+app.put("/services/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { title, description, icon } = req.body;
@@ -270,7 +270,7 @@ app.put("/api/services/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/services/:id", async (req, res) => {
+app.delete("/services/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM services WHERE id = $1 RETURNING id", [id]);
@@ -287,7 +287,7 @@ app.delete("/api/services/:id", async (req, res) => {
 });
 
 // ============ CV ENDPOINTS ============
-app.get("/api/cv", async (req, res) => {
+app.get("/cv", async (req, res) => {
 	try {
 		const header = await pool.query("SELECT * FROM cv_header WHERE id = 1");
 		const summary = await pool.query("SELECT * FROM cv_summary WHERE id = 1");
@@ -326,7 +326,7 @@ app.get("/api/cv", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/header", async (req, res) => {
+app.put("/cv/header", async (req, res) => {
 	try {
 		const { name, title, address, phone, email, linkedin, github, portfolio } = req.body;
 
@@ -346,7 +346,7 @@ app.put("/api/cv/header", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/summary", async (req, res) => {
+app.put("/cv/summary", async (req, res) => {
 	try {
 		const { summary } = req.body;
 
@@ -364,7 +364,7 @@ app.put("/api/cv/summary", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/competencies", async (req, res) => {
+app.put("/cv/competencies", async (req, res) => {
 	try {
 		const { competencies } = req.body;
 
@@ -383,7 +383,7 @@ app.put("/api/cv/competencies", async (req, res) => {
 	}
 });
 
-app.post("/api/cv/experience", async (req, res) => {
+app.post("/cv/experience", async (req, res) => {
 	try {
 		const { title, company, location, date, responsibilities } = req.body;
 
@@ -396,7 +396,7 @@ app.post("/api/cv/experience", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/experience/:id", async (req, res) => {
+app.put("/cv/experience/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { title, company, location, date, responsibilities } = req.body;
@@ -414,7 +414,7 @@ app.put("/api/cv/experience/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/cv/experience/:id", async (req, res) => {
+app.delete("/cv/experience/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM cv_experience WHERE id = $1 RETURNING id", [id]);
@@ -430,7 +430,7 @@ app.delete("/api/cv/experience/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/cv/education", async (req, res) => {
+app.post("/cv/education", async (req, res) => {
 	try {
 		const { degree, institution, date, details } = req.body;
 
@@ -443,7 +443,7 @@ app.post("/api/cv/education", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/education/:id", async (req, res) => {
+app.put("/cv/education/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { degree, institution, date, details } = req.body;
@@ -461,7 +461,7 @@ app.put("/api/cv/education/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/cv/education/:id", async (req, res) => {
+app.delete("/cv/education/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM cv_education WHERE id = $1 RETURNING id", [id]);
@@ -477,7 +477,7 @@ app.delete("/api/cv/education/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/cv/certifications", async (req, res) => {
+app.post("/cv/certifications", async (req, res) => {
 	try {
 		const { title, issuer, date } = req.body;
 
@@ -490,7 +490,7 @@ app.post("/api/cv/certifications", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/certifications/:id", async (req, res) => {
+app.put("/cv/certifications/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { title, issuer, date } = req.body;
@@ -508,7 +508,7 @@ app.put("/api/cv/certifications/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/cv/certifications/:id", async (req, res) => {
+app.delete("/cv/certifications/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM cv_certifications WHERE id = $1 RETURNING id", [id]);
@@ -524,7 +524,7 @@ app.delete("/api/cv/certifications/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/cv/languages", async (req, res) => {
+app.post("/cv/languages", async (req, res) => {
 	try {
 		const { language, level } = req.body;
 
@@ -537,7 +537,7 @@ app.post("/api/cv/languages", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/languages/:id", async (req, res) => {
+app.put("/cv/languages/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { language, level } = req.body;
@@ -555,7 +555,7 @@ app.put("/api/cv/languages/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/cv/languages/:id", async (req, res) => {
+app.delete("/cv/languages/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM cv_languages WHERE id = $1 RETURNING id", [id]);
@@ -571,7 +571,7 @@ app.delete("/api/cv/languages/:id", async (req, res) => {
 	}
 });
 
-app.post("/api/cv/references", async (req, res) => {
+app.post("/cv/references", async (req, res) => {
 	try {
 		const { name, position, company, location, phone, email } = req.body;
 
@@ -584,7 +584,7 @@ app.post("/api/cv/references", async (req, res) => {
 	}
 });
 
-app.put("/api/cv/references/:id", async (req, res) => {
+app.put("/cv/references/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const { name, position, company, location, phone, email } = req.body;
@@ -602,7 +602,7 @@ app.put("/api/cv/references/:id", async (req, res) => {
 	}
 });
 
-app.delete("/api/cv/references/:id", async (req, res) => {
+app.delete("/cv/references/:id", async (req, res) => {
 	try {
 		const id = parseInt(req.params.id);
 		const result = await pool.query("DELETE FROM cv_references WHERE id = $1 RETURNING id", [id]);
