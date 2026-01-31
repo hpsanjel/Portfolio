@@ -578,7 +578,7 @@
 				const editingId = document.getElementById("editingBlogId").value;
 				const isEditMode = editingId !== "";
 
-				const content = blogQuill.root.innerHTML;
+				const content = quill.root.innerHTML;
 
 				const blogData = {
 					title: document.getElementById("blogTitle").value,
@@ -649,7 +649,7 @@
 
 					document.getElementById("blogTitle").value = blog.title;
 					document.getElementById("blogExcerpt").value = blog.excerpt;
-					blogQuill.root.innerHTML = blog.content || "";
+					quill.root.innerHTML = blog.content || "";
 					document.getElementById("blogImage").value = blog.image;
 					document.getElementById("blogLink").value = blog.link || "#";
 					document.getElementById("blogDate").value = blog.date || new Date().toISOString().split("T")[0];
@@ -671,7 +671,7 @@
 			// Cancel edit mode and reset form
 			function cancelBlogEdit() {
 				document.getElementById("blogForm").reset();
-				blogQuill.root.innerHTML = "";
+				quill.root.innerHTML = "";
 				document.getElementById("editingBlogId").value = "";
 				document.getElementById("blogFormTitle").textContent = "Add New Blog Post";
 				document.getElementById("blogSubmitBtn").textContent = "Add Blog Post";
