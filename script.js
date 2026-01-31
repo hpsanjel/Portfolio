@@ -360,7 +360,7 @@ async function fetchServices() {
 function createServiceCard(service) {
 	return `
 		<div class="service-card border border-gray-400 rounded-xl px-8 py-12 hover:shadow-xl hover:-translate-y-1 duration-500 dark:border-white dark:hover:shadow-white dark:hover:bg-darkHover cursor-pointer">
-			<img src="${service.icon}" alt="${service.title}" class="w-16 mb-4" onerror="this.src='./images/icon-code.png'" />
+			<img src="${service.icon} || './images/react.png'" alt="${service.title}" class="w-16 mb-4" onerror="this.src='./images/icon-code.png'" />
 			<h3 class="text-lg my-4 text-gray-700 dark:text-white">${service.title}</h3>
 			<p class="text-sm text-gray-600 leading-5 dark:text-white/80">${service.description}</p>
 		</div>
