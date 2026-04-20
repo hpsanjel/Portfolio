@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import SectionHeader from "../components/SectionHeader";
+import GradientButton from "../components/GradientButton";
 
 export default function Contact() {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -56,10 +58,12 @@ export default function Contact() {
     };
 
     return (
-        <section id="contact" className="w-full px-[12%] py-10 scroll-mt-20">
-            <h4 className="text-center mb-2 text-lg font-Outfit">Let's Get Connected</h4>
-            <h2 className="text-center text-5xl font-Outfit">Get in Touch</h2>
-            <p className="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Whether you have a project in mind, a question, or just want to say hello, I'd love to hear from you. Reach out through the contact form or connect with me on social media. Let's start a conversation!</p>
+        <section id="contact" className="w-full px-[12%] pt-24">
+            <SectionHeader 
+                intro="Let's Get Connected"
+                title="Get in Touch"
+                description="Whether you have a project in mind, a question, or just want to say hello, I'd love to hear from you. Reach out through the contact form or connect with me on social media. Let's start a conversation!"
+            />
             
            
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
@@ -91,14 +95,12 @@ export default function Contact() {
                     onChange={handleTextareaChange}
                     className="w-full p-4 outline-none border-[0.5px] border-gray-400 rounded-md bg-white mb-6 dark:bg-darkHover/30 dark:border-white/90"
                 ></textarea>
-                <button 
-                    type="submit" 
+                <GradientButton 
+                    text={isSubmitting ? 'Sending...' : 'Submit Now'} 
+                    type="submit"
                     disabled={isSubmitting}
-                    className="py-3 px-8 w-max flex items-center justify-between gap-2 bg-black/80 text-white rounded-full mx-auto hover:bg-black duration-500 dark:bg-transparent dark:border-[0.5px] dark:hover:bg-darkHover disabled:opacity-50"
-                >
-                    {isSubmitting ? 'Sending...' : 'Submit Now'} 
-                    <Image src="/images/arrow-right-white.svg" alt="" width={16} height={16} className="w-4" />
-                </button>
+                    className="w-max mx-auto"
+                />
                  {submitMessage && (
                 <div className={`max-w-md mx-auto text-center my-4 p-3 rounded-md ${
                     submitMessage.includes('successfully') 

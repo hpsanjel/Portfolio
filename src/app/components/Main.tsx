@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
+import GradientButton from "./GradientButton";
 
 export default function Main() {
     return (
-            <section id="main" className="max-w-3xl text-center mx-auto flex flex-col items-center justify-center gap-4 py-16 relative overflow-hidden">
+            <section id="main" className="max-w-3xl text-center px-4 sm:px-6 md:px-8 lg:px-[12%] xl:px-[15%] mx-auto flex flex-col items-center justify-center gap-4 py-16 relative overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 -z-10 overflow-hidden">
                     <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 rounded-full blur-3xl animate-pulse"></div>
@@ -50,11 +51,7 @@ export default function Main() {
                 </div>
                 {/* Enhanced CTA Buttons */}
                 <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 animate-fade-in-up">
-                    <Link href="/projects" className="group px-10 py-3 border rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-white font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden">
-                        <span className="relative z-10">Explore My Projects</span>
-                        <Image src="/images/arrow-right-white.svg" alt="arrow icon" width={20} height={20} className="w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" />
-                        <div className="absolute inset-0 bg-linear-to-r from-[#c17e0a] to-[#eda40d] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    </Link>
+                    <GradientButton text="Explore My Projects" href="/projects" />
                     <a href="/cv" target="_blank" className="group px-10 py-3 border-2 rounded-full border-gray-300 dark:border-gray-600 flex items-center gap-2 bg-white dark:bg-gray-900 dark:text-white font-semibold hover:border-[#eda40d] hover:bg-linear-to-r hover:from-[#eda40d]/5 hover:to-[#c17e0a]/5 transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105">
                         <span>View Resume</span>
                         <Image src="/images/download.svg" alt="download icon" width={20} height={20} className="w-5 group-hover:animate-bounce" />

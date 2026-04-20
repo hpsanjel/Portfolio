@@ -1,6 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import SectionHeader from "../components/SectionHeader";
+import GradientButton from "../components/GradientButton";
 
 export default function Projects() {
     const [projects, setProjects] = useState<Array<{ id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[] }>>([]);
@@ -26,9 +28,11 @@ export default function Projects() {
     return (
      
 			<section id="work" className="w-full px-[12%] py-10 scroll-mt-20">
-				<h4 className="text-center mb-2 text-lg font-Outfit">Portfolio</h4>
-				<h2 className="text-center text-5xl font-Outfit">My Recent Works</h2>
-				<p className="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">Take a look at some of the projects I've had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail.</p>
+				<SectionHeader 
+					intro="Portfolio"
+					title="My Recent Works"
+					description="Take a look at some of the projects I've had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail."
+				/>
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
 					{projectsLoading ? (
 						<div className="col-span-full flex justify-center items-center py-20">
@@ -65,11 +69,12 @@ export default function Projects() {
 						))
 					)}
 				</div>
-				<a href="https://github.com/hpsanjel" target="_blank" className="w-max flex items-center justify-center gap-2 text-gray-700 border-[0.5px] border-gray-700 rounded-full py-3 px-10 mx-auto my-20 hover:bg-black/10 duration-500 dark:text-white dark:border-white dark:hover:bg-darkHover">
-					View More Projects
-					<Image src="/images/arrow-right-white.svg" alt="" width={16} height={16} className="w-4 hidden dark:block" />
-					<Image src="/images/arrow-right.svg" alt="" width={16} height={16} className="w-4 dark:hidden" />
-				</a>
+				<GradientButton 
+					text="View More Projects" 
+					href="https://github.com/hpsanjel" 
+					target="_blank"
+					className="w-max mx-auto my-20"
+				/>
 			</section>
     );
 }

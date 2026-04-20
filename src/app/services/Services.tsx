@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import SectionHeader from "../components/SectionHeader";
 
 
 export default function Services() {
@@ -26,10 +27,12 @@ export default function Services() {
         }, []);
     return (
         <section id="services" className="w-full px-[12%] py-10 scroll-mt-20">
-            <h4 className="text-center mb-2 text-lg font-Outfit">What I Offer</h4>
-            <h2 className="text-center text-5xl font-Outfit">My Services</h2>
-            <p className="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally.</p>
-            <div id="services-grid" className="grid grid-cols-1 sm:grid-cols-auto gap-6 my-10">
+            <SectionHeader 
+                intro="What I Offer"
+                title="My Services"
+                description="From responsive web design to interactive UI/UX development, I provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally."
+            />
+            <div id="services-grid" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 my-10">
                 {servicesLoading ? (
                     <div className="col-span-full flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import useThemeToggle from "../hooks/useThemeToggle";
 import Link from "next/link";
+import GradientButton from "./GradientButton";
 
 export default function HomeNavHeader() {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -10,12 +11,12 @@ export default function HomeNavHeader() {
 
 	return (
 		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-4 flex items-center justify-between z-50 bg-transparent dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md">
-			<div className="flex items-center">
+			<div className="flex items-center bg-white dark:bg-transparent rounded-full px-4 py-3 shadow-sm">
 				<Link href="/">
-					<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer mr-14 dark:hidden" />
+					<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer mr-14 md:mr-0 dark:hidden" />
 				</Link>
 				<Link href="/">
-					<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer mr-14 hidden dark:block" />
+					<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer mr-14 md:mr-0 hidden dark:block" />
 				</Link>
 			</div>
 			<ul className="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm bg-opacity-50 font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
@@ -35,19 +36,19 @@ export default function HomeNavHeader() {
 					<Link href="/blog">Blogs</Link>
 				</li>
 			</ul>
-			<div className="flex items-center gap-4">
-				<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2">
+			<div className="flex items-center gap-4 ">
+				<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2 bg-white dark:bg-transparent rounded-full px-4 py-3 shadow-sm">
 					{isDark ? (
 						<Image src="/images/sun.svg" alt="Sun Icon" width={24} height={24} className="w-6" />
 					) : (
 						<Image src="/images/moon.svg" alt="Moon Icon" width={20} height={20} className="w-5" />
 					)}
 				</button>
-				<Link href="/contact" className="hidden lg:flex items-center gap-3 px-10 py-2.5 border border-gray-500 rounded-full ml-4 font-Outfit dark:border-white/50 hover:bg-black/10 dark:hover:bg-purple-400/15 duration-500">
-					Contact
-					<Image src="/images/arrow-right.svg" alt="Phone Icon" width={16} height={16} className="w-4 dark:hidden" />
-					<Image src="/images/arrow-right-white.svg" alt="Phone Icon" width={16} height={16} className="w-4 hidden dark:block" />
-				</Link>
+				<GradientButton 
+					text="Contact" 
+					href="/contact" 
+					className="hidden lg:flex ml-4"
+				/>
 				<button className="block md:hidden ml-3" onClick={() => setSideMenuOpen(true)}>
 					<Image src="/images/menu.svg" alt="Mobile Menu" width={24} height={24} className="w-6 dark:hidden" />
 					<Image src="/images/menu-white.svg" alt="Mobile Menu" width={24} height={24} className="w-6 hidden dark:block" />
