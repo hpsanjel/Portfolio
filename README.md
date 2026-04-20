@@ -1,8 +1,57 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Features
+
+- Portfolio website with blog, projects, and services sections
+- Cloudinary integration for media management
+- Contact form with email functionality
+- MongoDB database integration
+- Responsive design with Tailwind CSS
+
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+1. Install dependencies:
+```bash
+npm install
+```
+
+2. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
+
+Update `.env.local` with your actual values:
+
+```env
+# MongoDB Configuration
+MONGODB_URI=mongodb://localhost:27017/myportfolio
+
+# Email Configuration (for contact form)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+
+# Cloudinary Configuration
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+### Cloudinary Setup
+
+1. Create a [Cloudinary account](https://cloudinary.com/)
+2. Get your Cloud Name, API Key, and API Secret from the dashboard
+3. Add them to your `.env.local` file
+
+The application uses Cloudinary for:
+- Blog images
+- Project screenshots  
+- Service icons
+- Automatic image optimization (WebP format)
+- Automatic cleanup when images are replaced or deleted
+
+### Running the Development Server
 
 ```bash
 npm run dev
