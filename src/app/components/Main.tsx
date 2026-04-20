@@ -4,7 +4,7 @@ import GradientButton from "./GradientButton";
 
 export default function Main() {
     return (
-            <section id="main" className="max-w-3xl text-center px-4 sm:px-6 md:px-8 lg:px-[12%] xl:px-[15%] mx-auto flex flex-col items-center justify-center gap-4 py-16 relative overflow-hidden">
+            <section id="main" className="max-w-5xl text-center px-4 sm:px-6 md:px-8 lg:px-[12%]  mx-auto flex flex-col items-center justify-center gap-4 py-16 relative overflow-hidden">
                 {/* Animated Background Elements */}
                 <div className="absolute inset-0 -z-10 overflow-hidden">
                     <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 rounded-full blur-3xl animate-pulse"></div>

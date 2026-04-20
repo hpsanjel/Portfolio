@@ -3,13 +3,13 @@ import SectionHeader from "../components/SectionHeader";
 
 export default function About() {
     return (
-        <section id="about" className="w-full px-6 sm:px-8 md:px-12 lg:px-[15%] py-10 scroll-mt-20">
+        <section id="about" className="w-full px-6 sm:px-8 md:px-12 lg:px-[15%] py-10">
             <SectionHeader 
                 intro="Introduction"
                 title="About Me"
                 description=""
             />
-            <div className="flex w-full max-w-6xl mx-4 sm:mx-6 md:mx-8 lg:mx-[12%] xl:mx-[15%] mx-auto flex-col lg:flex-row items-center gap-10 sm:gap-16 lg:gap-20 my-10 sm:my-16 lg:my-20">
+            <div className="flex w-full max-w-6xl mx-auto flex-col lg:flex-row items-center gap-10 sm:gap-16 lg:gap-20 my-10 sm:my-16 lg:my-20">
                 <div className="shrink-0">
                     <Image src="/images/profile.jpeg" alt="My Profile Image" width={320} height={320} className="w-48 sm:w-64 md:w-80 rounded-3xl max-w-none" />
                 </div>
