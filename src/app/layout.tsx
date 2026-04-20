@@ -28,7 +28,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('/images/page-bg.png')] bg-cover`}>
 				<HomeNavHeader />
-				<main className="pt-24">{children}</main>
+				<main className="pt-32">{children}</main>
 				<Footer />
 			</body>
 		</html>

@@ -10,8 +10,8 @@ export default function SectionHeader({ intro, title, description }: SectionHead
   return (
     <>
       <p className="text-center mb-2 text-lg font-Outfit">{intro}</p>
-      <h2 className="text-center text-5xl font-Outfit bg-linear-to-r from-[#eda40d] via-[#c17e0a] to-[#eda40d] bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">{title}</h2>
-      <p className="text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">{description}</p>
+      <h2 className="text-center text-3xl md:text-4xl lg:text-5xl font-semibold bg-linear-to-r from-[#eda40d] via-[#c17e0a] to-[#eda40d] bg-clip-text text-transparent animate-gradient bg-size-[200%_auto]">{title}</h2>
+      <p className="hidden md:block text-center max-w-2xl mx-auto mt-5 mb-12 font-Outfit">{description}</p>
     </>
   );
 }

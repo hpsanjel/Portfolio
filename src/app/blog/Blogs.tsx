@@ -27,13 +27,13 @@ export default function Blogs() {
             };
         }, []);
     return (
-        <section id="blog" className="w-full px-[12%]">
+        <section id="blog" className="w-full px-[12%] py-10 scroll-mt-32">
             <SectionHeader 
                 intro="Blogs"
                 title="Thoughts and Insights"
                 description="Dive into my blog where I share my thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology."
             />
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mt-6 sm:mt-0 gap-6">
                 {blogsLoading ? (
                     <div className="col-span-full flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>

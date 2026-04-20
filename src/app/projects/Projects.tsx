@@ -27,13 +27,13 @@ export default function Projects() {
         }, []);
     return (
      
-			<section id="work" className="w-full px-[12%] py-10 scroll-mt-20">
+			<section id="work" className="w-full px-[12%] py-10">
 				<SectionHeader 
 					intro="Portfolio"
 					title="My Recent Works"
 					description="Take a look at some of the projects I've had the pleasure of working on. My portfolio showcases a diverse range of web applications and designs that highlight my skills, creativity, and attention to detail."
 				/>
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6 md:mt-0 max-w-7xl mx-auto">
 					{projectsLoading ? (
 						<div className="col-span-full flex justify-center items-center py-20">
 							<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
