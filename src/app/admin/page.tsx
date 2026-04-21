@@ -169,9 +169,15 @@ export default function AdminPage() {
 							</div>
 							<div className="flex-1">
 								<p className="text-sm font-medium text-gray-900">Admin User</p>
-								<p className="text-xs text-gray-500">admin@portfolio.com</p>
+								<p className="text-xs text-gray-500">admin@harisanjel.com.np</p>
 							</div>
 							<button 
+								onClick={() => {
+									// Clear authentication cookie
+									document.cookie = 'admin-access=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
+									// Redirect to login page
+									window.location.href = '/admin-login'
+								}}
 								className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
 								aria-label="Logout"
 							>
