@@ -39,7 +39,7 @@ export default function Footer() {
                     {/* Quick Links */}
                     <div className="text-center md:text-left">
                         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
-                        <ul className="max-w-sm text-sm grid grid-cols-2 gap-2">
+                        <ul className="max-w-sm text-sm space-y-2">
                             <li>
                                 <a href="/" className="text-gray-600 dark:text-gray-400 hover:text-yellow-600 dark:hover:text-yellow-400 transition-colors duration-300">
                                     Home

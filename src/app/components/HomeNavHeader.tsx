@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import useThemeToggle from "../hooks/useThemeToggle";
 import Link from "next/link";
 import GradientButton from "./GradientButton";
+import { Home, User, Briefcase, FolderOpen, FileText, Mail, X } from "lucide-react";
 
 export default function HomeNavHeader() {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -12,11 +13,11 @@ export default function HomeNavHeader() {
 	const pathname = usePathname();
 
 	const navItems = [
-		{ href: "/", label: "Home" },
-		{ href: "/about", label: "About Me" },
-		{ href: "/services", label: "Services" },
-		{ href: "/projects", label: "Projects" },
-		{ href: "/blog", label: "Blogs" },
+		{ href: "/", label: "Home", icon: Home },
+		{ href: "/about", label: "About Me", icon: User },
+		{ href: "/services", label: "Services", icon: Briefcase },
+		{ href: "/projects", label: "Projects", icon: FolderOpen },
+		{ href: "/blog", label: "Blogs", icon: FileText },
 	];
 
 	return (
@@ -70,7 +71,8 @@ export default function HomeNavHeader() {
 					href="/contact" 
 					className="hidden lg:flex"
 				/>
-				<button className="block md:hidden ml-3" onClick={() => setSideMenuOpen(true)}>
+				<button className="block md:hidden ml-1 flex items-center gap-2" onClick={() => setSideMenuOpen(true)}>
+					<span className="text-gray-700 dark:text-gray-300 font-bold text-lg">Menu</span>
 					<Image src="/images/menu.svg" alt="Mobile Menu" width={24} height={24} className="w-8 dark:hidden" />
 					<Image src="/images/menu-white.svg" alt="Mobile Menu" width={24} height={24} className="w-8 hidden dark:block" />
 				</button>
@@ -78,44 +80,101 @@ export default function HomeNavHeader() {
 			{/* Side Menu */}
 			{sideMenuOpen && (
 				<>
-				<ul id="sideMenu" className="flex md:hidden flex-col items-center justify-center gap-4 px-10 py-20 fixed right-0 top-0 bottom-0 w-64 z-50 h-screen bg-rose-50 transition duration-500 font-Outfit dark:bg-darkHover dark:text-white">
-					<div className="absolute right-6 top-5" onClick={() => setSideMenuOpen(false)}>
-						<Image src="/images/close.svg" alt="close side menu" width={24} height={24} className="w-6 cursor-pointer dark:hidden" />
-						<Image src="/images/close-dark.svg" alt="close side menu" width={24} height={24} className="w-6 cursor-pointer hidden dark:block" />
-					</div>
-					{navItems.map((item) => {
-						const isActive = pathname === item.href;
-						return (
-							<li key={item.href}>
+					{/* Overlay */}
+					<div 
+						className="fixed inset-0 bg-black/50 z-40 md:hidden" 
+						onClick={() => setSideMenuOpen(false)}
+					/>
+					
+					{/* Menu Panel */}
+					<ul className="flex md:hidden flex-col items-start justify-start gap-2 px-8 py-20 fixed right-0 top-0 bottom-0 w-80 z-50 h-screen bg-white dark:bg-gray-900 shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out">
+						{/* Header */}
+						<div className="absolute left-6 top-10">
+							<div className="flex items-center gap-3">
+								<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-20 dark:hidden" />
+								<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-20 hidden dark:block" />
+							</div>
+						</div>
+						<div className="absolute right-6 top-6">
+							<button 
+								onClick={() => setSideMenuOpen(false)}
+								className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+								aria-label="Close menu"
+							>
+								<X className="w-6 h-6 cursor-pointer text-gray-700 dark:text-gray-300" />
+							</button>
+						</div>
+						
+						{/* Navigation Items */}
+						<div className="w-full mt-16 space-y-1">
+							{navItems.map((item) => {
+								const isActive = pathname === item.href;
+								const Icon = item.icon;
+								return (
+									<li key={item.href} className="w-full">
+										<Link 
+											href={item.href} 
+											onClick={() => setSideMenuOpen(false)}
+											className={`
+												flex items-center w-full px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 ease-in-out
+												${isActive 
+													? 'text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border-l-2 border-blue-500 shadow-sm' 
+													: 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+												}
+											`}
+										>
+											<Icon className={`w-5 h-5 mr-4 ${isActive ? 'text-blue-500' : ''}`} />
+											<span>{item.label}</span>
+											{isActive && (
+												<div className="ml-auto">
+													<div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
+												</div>
+											)}
+										</Link>
+									</li>
+								);
+							})}
+							
+							{/* Contact Button */}
+							<li className="w-full pt-4">
 								<Link 
-									href={item.href} 
+									href="/contact" 
 									onClick={() => setSideMenuOpen(false)}
-									className={`
-										relative px-4 py-2 rounded-lg transition-all duration-300 ease-in-out
-										${isActive 
-											? 'text-yellow-600 dark:text-yellow-400 font-semibold bg-yellow-100 dark:bg-yellow-900/30' 
-											: 'text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
-										}
-									`}
+									className="flex items-center w-full px-6 py-4 text-base font-medium rounded-xl bg-gradient-to-r from-[#eda40d] to-[#c17e0a] text-white hover:shadow-lg transform hover:scale-105 transition-all duration-200 ease-in-out"
 								>
-									{item.label}
-									{isActive && (
-										<span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-1 h-4 bg-yellow-600 dark:bg-yellow-400 rounded-full"></span>
-									)}
+									<Mail className="w-5 h-5 mr-4" />
+									Contact Me
 								</Link>
 							</li>
-						);
-					})}
-					<li>
-						<Link 
-							href="/contact" 
-							onClick={() => setSideMenuOpen(false)}
-							className="text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out"
-						>
-							Contact Me
-						</Link>
-					</li>
-				</ul>
+						</div>
+						
+						{/* Footer */}
+						<div className="absolute bottom-8 left-8 right-8">
+							<div className="flex items-center justify-center gap-4 pb-4 border-t border-gray-200 dark:border-gray-700 pt-4">
+								<a 
+									href="https://www.linkedin.com/in/hpsanjel/" 
+									className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+									aria-label="LinkedIn"
+								>
+									<Image src="/images/linkedin.png" alt="LinkedIn" width={20} height={20} className="w-5 h-5" />
+								</a>
+								<a 
+									href="https://github.com/hpsanjel" 
+									className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+									aria-label="GitHub"
+								>
+									<Image src="/images/github.png" alt="GitHub" width={20} height={20} className="w-5 h-5" />
+								</a>
+								<a 
+									href="https://www.facebook.com/hpsanjel/" 
+									className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200"
+									aria-label="Facebook"
+								>
+									<Image src="/images/facebook.png" alt="Facebook" width={20} height={20} className="w-5 h-5" />
+								</a>
+							</div>
+						</div>
+					</ul>
 				</>
 			)}
 		</nav>

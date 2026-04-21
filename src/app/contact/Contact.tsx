@@ -66,9 +66,9 @@ export default function Contact() {
                 description="Whether you have a project in mind, a question, or just want to say hello, I'd love to hear from you. Reach out through the contact form or connect with me on social media. Let's start a conversation!"
             />
             
-            <div className="flex items-center justify-center mt-10">
-                <div className="flex items-center gap-2 text-lg font-semibold mr-4"><Phone className="w-5 h-5 text-yellow-600" /> +47 46344530</div>
-                <div className="flex items-center gap-2 text-lg font-semibold"><Mail className="w-5 h-5 text-yellow-600" /> harisanjel@gmail.com</div>
+            <div className="flex flex-col space-y-1 md:space-y-0 md:flex-row items-center justify-center mt-10">
+                <div className="flex items-center gap-2 text-md mr-4"><Phone className="w-5 h-5 text-yellow-600" /> +47 46344530</div>
+                <div className="flex items-center gap-2 text-md"><Mail className="w-5 h-5 text-yellow-600" /> harisanjel@gmail.com</div>
             </div>
             
            
