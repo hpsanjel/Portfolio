@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import BlogDetailClient from "./BlogDetailClient";
+import BlogDetailClient from "@/app/blog/[slug]/BlogDetailClient"
 
 interface Blog {
   id: string;

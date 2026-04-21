@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import LayoutWrapper from "./components/LayoutWrapper";
+import { Analytics } from "@vercel/analytics/next"
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -27,6 +28,7 @@ export default function RootLayout({
 		<html lang="en">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('/images/page-bg.png')] bg-cover`}>
 				<LayoutWrapper>{children}</LayoutWrapper>
+				<Analytics />
 			</body>
 		</html>
 	);
