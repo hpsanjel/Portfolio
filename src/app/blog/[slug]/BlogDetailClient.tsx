@@ -117,8 +117,11 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                         onClick={() => {
                           const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
                           
-                          // Simple and reliable Facebook sharer
-                          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+                          // Create custom share text
+                          const shareText = `Check out this blog post: "${blog.title}" by ${blog.author}\n\n${blog.excerpt || blog.content?.substring(0, 150) + '...' || ''}\n\nRead more: ${shareUrl}`;
+                          
+                          // Use Facebook sharer with custom text
+                          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
                           
                           window.open(
                             fbShareUrl,
