@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Link from "next/link";
 import BlogDetailClient from "./BlogDetailClient";
 
 interface Blog {
@@ -21,17 +20,24 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   
+  console.log('Generating metadata for slug:', slug);
+  
   try {
     // Try to fetch blog data for rich metadata
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    console.log('Fetching from URL:', `${baseUrl}/api/blogs/by-slug/${slug}`);
+    
     const response = await fetch(`${baseUrl}/api/blogs/by-slug/${slug}`, {
       cache: 'no-store',
       // Add timeout to prevent hanging
       signal: AbortSignal.timeout(5000)
     });
     
+    console.log('Metadata fetch response status:', response.status);
+    
     if (response.ok) {
       const blog = await response.json();
+      console.log('Blog data for metadata:', blog.title);
       
       return {
         title: blog.title,
@@ -47,7 +53,8 @@ export async function generateMetadata(
               width: 1200,
               height: 630,
               alt: blog.title,
-              type: 'image/jpeg' // or image/png depending on your images
+              type: 'image/jpeg',
+              secureUrl: blog.image,
             },
           ],
           type: 'article',
@@ -60,15 +67,26 @@ export async function generateMetadata(
           title: blog.title,
           description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
           images: [blog.image],
-          creator: '@hpsanjel', // Add your Twitter handle
+          creator: '@hpsanjel',
+        },
+        // Explicitly provide og:image to fix Facebook warning
+        other: {
+          'og:image': blog.image,
+          'og:image:width': '1200',
+          'og:image:height': '630',
+          'og:image:alt': blog.title,
+          'og:image:type': 'image/jpeg',
         },
       };
+    } else {
+      console.log('Metadata fetch failed with status:', response.status);
     }
   } catch (error) {
     // Fallback to generic metadata if fetch fails
-    console.log('Metadata fetch failed, using generic metadata:', error);
+    console.error('Metadata fetch error:', error);
   }
   
+  console.log('Using generic fallback metadata');
   // Generic fallback metadata
   return {
     title: 'Blog Post',
