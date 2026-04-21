@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import SectionHeader from "../components/SectionHeader";
 import GradientButton from "../components/GradientButton";
 
 export default function Projects() {
-    const [projects, setProjects] = useState<Array<{ id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[] }>>([]);
+    const [projects, setProjects] = useState<Array<{ id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[]; slug: string }>>([]);
     const [projectsLoading, setProjectsLoading] = useState(true);
         useEffect(() => {
             let cancelled = false;
@@ -47,7 +48,11 @@ export default function Projects() {
 									<img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
 								</div>
 								<div className="p-6">
-									<h3 className="text-xl font-semibold mb-2">{project.title}</h3>
+									<Link href={`/projects/${project.slug}`}>
+										<h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-600 transition-colors duration-300 cursor-pointer">
+											{project.title}
+										</h3>
+									</Link>
 									<p className="text-sm text-gray-700 dark:text-gray-300 mb-4">{project.description}</p>
 									<div className="flex flex-wrap gap-2 mb-4">
 										{project.technologies.map((tech, t) => (

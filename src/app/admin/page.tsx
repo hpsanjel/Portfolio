@@ -1010,6 +1010,10 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 		setMounted(true);
 	}, []);
 
+	useEffect(() => {
+		fetchProjects();
+	}, [searchQuery]);
+
 	async function fetchProjects() {
 		setLoading(true);
 		try {
@@ -1453,6 +1457,10 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 	useEffect(() => {
 		setMounted(true);
 	}, []);
+
+	useEffect(() => {
+		fetchServices();
+	}, [searchQuery]);
 
 	async function fetchServices() {
 		setLoading(true);

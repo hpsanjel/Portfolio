@@ -10,7 +10,7 @@ export default function HomeNavHeader() {
 	const { isDark, toggleTheme } = useThemeToggle();
 
 	return (
-		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-transparent dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md">
+		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-white dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md shadow-sm">
 			<div className="flex items-center bg-white dark:bg-transparent rounded-full px-4 py-3 shadow-sm">
 				<Link href="/">
 					<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer dark:hidden" />
@@ -19,7 +19,7 @@ export default function HomeNavHeader() {
 					<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer hidden dark:block" />
 				</Link>
 			</div>
-			<ul className="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm bg-opacity-50 font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
+			<ul className="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
 				<li>
 					<Link href="/">Home</Link>
 				</li>

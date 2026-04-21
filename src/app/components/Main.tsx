@@ -22,7 +22,7 @@ export default function Main() {
                 {/* Animated Greeting */}
                 <div className="flex items-center gap-2 animate-fade-in-down" data-control>
                     <span className="text-2xl animate-wave">👋</span>
-                    <h3 className="text-lg md:text-xl font-Outfit text-gray-600 dark:text-gray-300">Hello, I'm a</h3>
+                    <h3 className="text-lg md:text-xl font-Outfit text-gray-600 dark:text-gray-300">Hello, I'm Hari</h3>
                 </div>
                 {/* Main Title with Gradient */}
                 <h1 className="text-3xl sm:text-5xl font-bold font-Outfit bg-linear-to-r from-[#eda40d] via-[#c17e0a] to-[#eda40d] bg-clip-text text-transparent animate-gradient bg-size-[200%_auto] hover:scale-105 transition-transform duration-300" data-control data-scroll-speed="5">
@@ -30,14 +30,14 @@ export default function Main() {
                 </h1>
                 {/* Enhanced Description */}
                 <p className="max-w-2xl mx-auto font-Outfit text-base text-gray-700 dark:text-gray-300 leading-relaxed animate-fade-in" data-scroll-controller>
-                    With over <span className="font-bold text-[#eda40d]">2+ years</span> of experience crafting
+                    Based in Oslo, Norway with over <span className="font-bold text-[#eda40d]">2+ years</span> of experience crafting
                     <span className="relative inline-block">
-                        <span className="relative z-10">responsive</span>
+                        <span className="relative z-10 mx-1">responsive</span>
                         <span className="absolute bottom-0 left-0 w-full h-2 bg-[#eda40d]/30 -rotate-1"></span>
                     </span>
                     and
                     <span className="relative inline-block">
-                        <span className="relative z-10">user-friendly</span>
+                        <span className="relative z-10 mx-1">user-friendly</span>
                         <span className="absolute bottom-0 left-0 w-full h-2 bg-[#c17e0a]/30 rotate-1"></span>
                     </span>
                     web applications. Committed to continuous learning and passionate about solving complex problems.
@@ -65,7 +65,7 @@ export default function Main() {
                             <div className="w-6 h-6 rounded-full bg-linear-to-r from-purple-400 to-purple-600 border-2 border-white dark:border-gray-900"></div>
                             <div className="w-6 h-6 rounded-full bg-linear-to-r from-pink-400 to-pink-600 border-2 border-white dark:border-gray-900"></div>
                         </div>
-                        <span className="font-medium">10+ Projects</span>
+                        <span className="font-medium">6+ Projects</span>
                     </div>
                     <span className="text-gray-400 hidden sm:inline">•</span>
                     <span className="font-medium">Available for Hire 🟢</span>

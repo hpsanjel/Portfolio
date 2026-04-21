@@ -42,7 +42,7 @@ export async function GET() {
 
 		return NextResponse.json({
 			header,
-			summary: summary?.summary || "",
+			summary: summary?.content || "",
 			competencies,
 			experience,
 			education,
@@ -71,7 +71,7 @@ export async function PUT(request: Request) {
 
 		// Update summary
 		if (typeof summary === "string") {
-			await CvSummary.findOneAndUpdate({}, { summary }, { upsert: true });
+			await CvSummary.findOneAndUpdate({}, { content: summary }, { upsert: true });
 		}
 
 		// Update competencies

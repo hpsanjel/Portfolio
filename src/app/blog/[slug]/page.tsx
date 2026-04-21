@@ -76,28 +76,16 @@ export default function BlogDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pt-12">
+    <div className="min-h-screen dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <article className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
-              {/* Blog Header Image */}
-              <div className="relative h-64 md:h-96">
-                <Image
-                  src={blog.image}
-                  alt={blog.title}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              
-              {/* Blog Content */}
+            <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
               <div className="p-8">
-                <div className="mb-6">
                   <Link 
                     href="/blog" 
-                    className="text-blue-600 hover:text-blue-800 text-sm font-medium mb-4 inline-block"
+                    className="text-yellow-600 hover:text-blue-400 text-sm font-medium mb-4 inline-block"
                   >
                     ← Back to all blogs
                   </Link>
@@ -111,6 +99,21 @@ export default function BlogDetail() {
                     <span className="mx-2">•</span>
                     <span>{new Date(blog.date).toLocaleDateString()}</span>
                   </div>
+              </div>
+              {/* Blog Header Image */}
+              <div className="relative h-64 md:h-96">
+                <Image
+                  src={blog.image}
+                  alt={blog.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              
+              {/* Blog Content */}
+              <div className="p-8">
+                <div className="mb-6">
+                
                   
                   {blog.tags && blog.tags.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-6">
@@ -128,8 +131,8 @@ export default function BlogDetail() {
                 
                 <div className="prose prose-lg dark:prose-invert max-w-none">
                   <div 
-                    className="text-gray-700 dark:text-gray-300 leading-relaxed"
-                    dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br />') }}
+                    className="text-gray-700 dark:text-gray-200 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br />').replace(/style="[^"]*color\s*:\s*rgb\([^)]*\)[^"]*"/gi, '').replace(/style="[^"]*color\s*:\s*#[^"^;]*[^"]*"/gi, '') }}
                   />
                 </div>
                 
@@ -158,7 +161,7 @@ export default function BlogDetail() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-8">
+            <div className="sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
                 Related Posts
               </h3>

@@ -7,6 +7,10 @@ export interface IProject extends Document {
   liveUrl: string;
   codeUrl: string;
   technologies: string[];
+  slug: string;
+  story?: string;
+  challenges?: string;
+  learnings?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -36,7 +40,25 @@ const ProjectSchema: Schema = new Schema({
   technologies: [{
     type: String,
     trim: true
-  }]
+  }],
+  slug: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true
+  },
+  story: {
+    type: String,
+    default: ''
+  },
+  challenges: {
+    type: String,
+    default: ''
+  },
+  learnings: {
+    type: String,
+    default: ''
+  }
 }, {
   timestamps: true
 });
