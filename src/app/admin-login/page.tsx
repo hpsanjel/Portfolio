@@ -1,9 +1,9 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Lock, Eye, EyeOff } from "lucide-react"
 
-export default function AdminLogin() {
+function AdminLoginContent() {
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
@@ -28,7 +28,7 @@ export default function AdminLogin() {
     try {
       // For demo purposes, using a simple password
       // In production, you should verify against a secure backend
-      const correctPassword = "P@ssw0rd_N0rw@y"
+      const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "P@ssw0rd_N0rw@y"
       
       if (password === correctPassword) {
         // Set cookie that expires in 24 hours
@@ -104,5 +104,13 @@ export default function AdminLogin() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function AdminLogin() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AdminLoginContent />
+    </Suspense>
   )
 }

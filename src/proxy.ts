@@ -10,7 +10,7 @@ export function proxy(request: NextRequest) {
     }
     
     // Check for the admin password cookie
-    const adminPassword = "P@ssw0rd_N0rw@y" // TODO: Fix environment variable loading in proxy
+    const adminPassword = "P@ssw0rd_N0rw@y" // TODO: Use NEXT_PUBLIC_ADMIN_PASSWORD in production
     const cookieValue = request.cookies.get('admin-access')?.value
     const hasAccess = adminPassword && cookieValue === adminPassword
 
