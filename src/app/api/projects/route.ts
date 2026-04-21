@@ -19,7 +19,7 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 		const body = await request.json();
-		const { title, description, image, liveUrl, codeUrl, technologies } = body ?? {};
+		const { title, description, image, liveUrl, codeUrl, technologies, projectstory } = body ?? {};
 		if (!title || !description || !image || !liveUrl || !Array.isArray(technologies)) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
@@ -31,6 +31,7 @@ export async function POST(request: Request) {
 			liveUrl,
 			codeUrl: codeUrl || "#",
 			technologies,
+			projectstory: projectstory || "",
 		});
 		
 		await project.save();

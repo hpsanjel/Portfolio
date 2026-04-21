@@ -13,9 +13,7 @@ interface Project {
   codeUrl: string;
   technologies: string[];
   slug: string;
-  story?: string;
-  challenges?: string;
-  learnings?: string;
+  projectstory?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -45,7 +43,7 @@ export default function ProjectDetail() {
         if (allProjectsRes.ok) {
           const allProjects = await allProjectsRes.json();
           const filtered = allProjects.filter((p: Project) => p.slug !== slug);
-          setRelatedProjects(filtered.slice(0, 5)); // Show max 5 related projects
+          setRelatedProjects(filtered); // Show all related projects
         }
       } catch (error) {
         console.error("Error fetching project data:", error);
@@ -120,83 +118,55 @@ export default function ProjectDetail() {
                   src={project.image}
                   alt={project.title}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               </div>
               
-              {/* Project Content */}
-              <div className="p-8">
-                {/* Project Story */}
-                {project.story && (
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                      Project Story
-                    </h2>
-                    <div className="prose prose-lg dark:prose-invert max-w-none">
-                      <div 
-                        className="text-gray-700 dark:text-gray-200 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: project.story.replace(/\n/g, '<br />') }}
-                      />
-                    </div>
+              {/* Project Story */}
+              {project.projectstory && (
+                <div className="p-8">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    Project Story
+                  </h2>
+                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                    <div 
+                      className="text-gray-700 dark:text-gray-100 leading-relaxed"
+                      dangerouslySetInnerHTML={{ 
+                        __html: project.projectstory
+                          .replace(/\n/g, '<br />')
+                          .replace(/style="[^"]*color\s*:\s*rgb\([^)]*\)[^"]*"/gi, '')
+                          .replace(/style="[^"]*color\s*:\s*#[^"^;]*[^\"]*"/gi, '') 
+                      }}
+                    />
                   </div>
-                )}
-
-                {/* Challenges */}
-                {project.challenges && (
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                      Challenges & Solutions
-                    </h2>
-                    <div className="prose prose-lg dark:prose-invert max-w-none">
-                      <div 
-                        className="text-gray-700 dark:text-gray-200 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: project.challenges.replace(/\n/g, '<br />') }}
-                      />
-                    </div>
-                  </div>
-                )}
-
-                {/* Learnings */}
-                {project.learnings && (
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                      What I Learned
-                    </h2>
-                    <div className="prose prose-lg dark:prose-invert max-w-none">
-                      <div 
-                        className="text-gray-700 dark:text-gray-200 leading-relaxed"
-                        dangerouslySetInnerHTML={{ __html: project.learnings.replace(/\n/g, '<br />') }}
-                      />
-                    </div>
-                  </div>
-                )}
-                
-                {/* Project Links */}
-                <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
-                  <div className="flex flex-wrap gap-4">
-                    <a
-                      href={project.liveUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
-                    >
-                      Live Demo
-                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                      </svg>
-                    </a>
-                    <a
-                      href={project.codeUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
-                    >
-                      Source Code
-                      <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-                      </svg>
-                    </a>
-                  </div>
+                </div>
+              )}
+              
+              {/* Project Links */}
+              <div className={`p-8 ${!project.projectstory ? 'pt-8' : 'pt-0'}`}>
+                <div className="flex flex-wrap gap-4">
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+                  >
+                    Live Demo
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                  <a
+                    href={project.codeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+                  >
+                    Source Code
+                    <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                    </svg>
+                  </a>
                 </div>
               </div>
             </article>

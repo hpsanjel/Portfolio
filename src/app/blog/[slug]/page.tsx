@@ -42,7 +42,7 @@ export default function BlogDetail() {
         if (allBlogsRes.ok) {
           const allBlogs = await allBlogsRes.json();
           const filtered = allBlogs.filter((b: Blog) => b.slug !== slug);
-          setRelatedBlogs(filtered.slice(0, 5)); // Show max 5 related blogs
+          setRelatedBlogs(filtered); // Show all related blogs
         }
       } catch (error) {
         console.error("Error fetching blog data:", error);
@@ -76,7 +76,7 @@ export default function BlogDetail() {
   }
 
   return (
-    <div className="min-h-screen dark:bg-gray-900">
+    <div className="min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -106,7 +106,7 @@ export default function BlogDetail() {
                   src={blog.image}
                   alt={blog.title}
                   fill
-                  className="object-cover"
+                  className="object-cover object-top"
                 />
               </div>
               
@@ -161,15 +161,15 @@ export default function BlogDetail() {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
+            <div className="sticky top-36">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Related Posts
+                More Blog Posts
               </h3>
               
               <div className="space-y-4">
                 {relatedBlogs.length === 0 ? (
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    No related posts found.
+                    No more blog posts found.
                   </p>
                 ) : (
                   relatedBlogs.map((relatedBlog) => (

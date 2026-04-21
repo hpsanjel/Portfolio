@@ -2,11 +2,20 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import SectionHeader from "../components/SectionHeader";
+import GradientButton from "../components/GradientButton";
+
+// Function to strip HTML tags
+const stripHtml = (html: string): string => {
+    return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+};
 
 export default function Blogs() {
-        const [blogs, setBlogs] = useState<Array<{ id: number; title: string; excerpt?: string; content?: string; image: string; link?: string; slug?: string }>>([]);
-        const [blogsLoading, setBlogsLoading] = useState(true);
+    const pathname = usePathname();
+    const isListingPage = pathname === "/blog";
+    const [blogs, setBlogs] = useState<Array<{ id: number; title: string; excerpt?: string; content?: string; image: string; link?: string; slug?: string }>>([]);
+    const [blogsLoading, setBlogsLoading] = useState(true);
     
         useEffect(() => {
             let cancelled = false;
@@ -41,16 +50,16 @@ export default function Blogs() {
                 ) : blogs.length === 0 ? (
                     <div className="col-span-full text-center text-gray-600 dark:text-gray-300">No blogs published yet.</div>
                 ) : (
-                    blogs.map((blog, index) => (
+                    blogs.slice(0, isListingPage ? blogs.length : 3).map((blog, index) => (
                         <div key={`blog-${blog.id || index}-${blog.title}`} className="blog-container max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 group hover:shadow-lg hover:scale-105 transition-all duration-300">
                             <Link href={blog.slug ? `/blog/${blog.slug}` : (blog.link || "#")} target={blog.link && !blog.slug ? "_blank" : undefined}>
-                                <Image className="rounded-t-lg w-full h-56 object-cover group-hover:brightness-110 transition-all duration-300" src={blog.image} alt={blog.title} width={500} height={500} />
+                                <Image className="rounded-t-lg w-full h-56 object-cover object-top group-hover:brightness-110 transition-all duration-300" src={blog.image} alt={blog.title} width={500} height={500} />
                             </Link>
                             <div className="p-5">
                                 <Link href={blog.slug ? `/blog/${blog.slug}` : (blog.link || "#")} target={blog.link && !blog.slug ? "_blank" : undefined}>
                                     <h5 className="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title group-hover:text-yellow-600 dark:group-hover:text-yellow-600 transition-colors duration-300">{blog.title}</h5>
                                 </Link>
-                                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{blog.excerpt || (blog.content ? blog.content.substring(0, 150) + '...' : "")}</p>
+                                <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{blog.excerpt || (blog.content ? stripHtml(blog.content).substring(0, 150) + '...' : "")}</p>
                                 <Link href={blog.slug ? `/blog/${blog.slug}` : (blog.link || "#")} target={blog.link && !blog.slug ? "_blank" : undefined} className="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-600 transition-colors duration-300">
                                     Read more
                                     <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
@@ -62,6 +71,13 @@ export default function Blogs() {
                     ))
                 )}
             </div>
+			{!isListingPage && blogs.length > 3 && (
+				<GradientButton 
+					text="View All Blogs" 
+					href="/blog" 
+					className="w-max mx-auto mt-8"
+				/>
+			)}
         </section>
     );
 }

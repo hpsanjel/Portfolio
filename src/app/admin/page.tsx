@@ -10,6 +10,7 @@ interface Project {
 	liveUrl: string;
 	codeUrl: string;
 	technologies: string[];
+	projectstory?: string;
 }
 
 const MENU_ITEMS = [
@@ -999,6 +1000,7 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 		liveUrl: "",
 		codeUrl: "",
 		technologies: "",
+		projectstory: "",
 	});
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
@@ -1060,13 +1062,23 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 			liveUrl: project.liveUrl,
 			codeUrl: project.codeUrl,
 			technologies: project.technologies.join(", "),
+			projectstory: project.projectstory || "",
 		});
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", description: "", image: "", liveUrl: "", codeUrl: "", technologies: "" });
+		setForm({ 
+			_id: "", 
+			title: "", 
+			description: "", 
+			image: "", 
+			liveUrl: "", 
+			codeUrl: "", 
+			technologies: "",
+			projectstory: "",
+		});
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -1083,6 +1095,7 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 				.split(",")
 				.map((t) => t.trim())
 				.filter(Boolean),
+			projectstory: form.projectstory,
 		};
 		const url = editMode ? `/api/projects/${form._id}` : "/api/projects";
 		const method = editMode ? "PUT" : "POST";
@@ -1241,6 +1254,14 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 								required
 								placeholder="React, Node.js, MongoDB"
 								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Project Story</label>
+							<WYSIWYGEditor
+								value={form.projectstory}
+								onChange={(value) => setForm({ ...form, projectstory: value })}
+								placeholder="Describe your project story, challenges, and learnings..."
 							/>
 						</div>
 						<div className="flex gap-3 pt-4">

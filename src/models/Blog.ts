@@ -54,6 +54,11 @@ const BlogSchema: Schema = new Schema({
   timestamps: true
 });
 
+// Function to strip HTML tags
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
+}
+
 // Generate slug and excerpt before validation
 BlogSchema.pre('validate', function() {
   const blog = this as any;
@@ -64,7 +69,8 @@ BlogSchema.pre('validate', function() {
       .replace(/(^-|-$)/g, '');
   }
   if (blog.isModified('content') && !blog.excerpt) {
-    blog.excerpt = blog.content.substring(0, 150) + '...';
+    const plainText = stripHtml(blog.content);
+    blog.excerpt = plainText.substring(0, 150) + '...';
   }
 });
 

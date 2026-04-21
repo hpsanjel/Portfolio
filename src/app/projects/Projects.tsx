@@ -2,10 +2,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import SectionHeader from "../components/SectionHeader";
 import GradientButton from "../components/GradientButton";
 
 export default function Projects() {
+    const pathname = usePathname();
+    const isListingPage = pathname === "/projects";
     const [projects, setProjects] = useState<Array<{ id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[]; slug: string }>>([]);
     const [projectsLoading, setProjectsLoading] = useState(true);
         useEffect(() => {
@@ -42,10 +45,10 @@ export default function Projects() {
 					) : projects.length === 0 ? (
 						<div className="col-span-full text-center text-gray-600 dark:text-gray-300">No projects added yet.</div>
 					) : (
-						projects.map((project, index) => (
+						projects.slice(0, isListingPage ? projects.length : 3).map((project, index) => (
 							<div key={`project-${project.id || index}-${project.title}`} className="group bg-white/80 dark:bg-darkHover/40 border border-gray-200/70 dark:border-white/10 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
 								<div className="relative w-full h-52 overflow-hidden">
-									<img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+									<Image src={project.image} alt={project.title} width={200} height={200} className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-500" />
 								</div>
 								<div className="p-6">
 									<Link href={`/projects/${project.slug}`}>
@@ -74,12 +77,16 @@ export default function Projects() {
 						))
 					)}
 				</div>
-				<GradientButton 
-					text="View More Projects" 
-					href="https://github.com/hpsanjel" 
-					target="_blank"
-					className="w-max mx-auto my-20"
-				/>
+				{!isListingPage && projects.length > 3 && (
+					<div className="text-center mt-8">
+						<GradientButton 
+							text="View All Projects"
+							href="/projects" 
+							className="w-max mx-auto mt-8"
+						/>
+					</div>
+				)}
+		
 			</section>
     );
 }

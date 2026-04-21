@@ -11,7 +11,7 @@ export default function HomeNavHeader() {
 
 	return (
 		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-white dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md shadow-sm">
-			<div className="flex items-center bg-white dark:bg-transparent rounded-full px-4 py-3 shadow-sm">
+			<div className="flex items-center">
 				<Link href="/">
 					<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer dark:hidden" />
 				</Link>
@@ -37,7 +37,7 @@ export default function HomeNavHeader() {
 				</li>
 			</ul>
 			<div className="flex items-center gap-4 ">
-				<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2 bg-white dark:bg-transparent rounded-full px-4 py-3 shadow-sm">
+				<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2">
 					{isDark ? (
 						<Image src="/images/sun.svg" alt="Sun Icon" width={24} height={24} className="w-6" />
 					) : (

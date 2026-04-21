@@ -8,9 +8,7 @@ export interface IProject extends Document {
   codeUrl: string;
   technologies: string[];
   slug: string;
-  story?: string;
-  challenges?: string;
-  learnings?: string;
+  projectstory?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -47,20 +45,23 @@ const ProjectSchema: Schema = new Schema({
     unique: true,
     trim: true
   },
-  story: {
-    type: String,
-    default: ''
-  },
-  challenges: {
-    type: String,
-    default: ''
-  },
-  learnings: {
+  projectstory: {
     type: String,
     default: ''
   }
 }, {
   timestamps: true
+});
+
+// Generate slug before validation
+ProjectSchema.pre('validate', function() {
+  const project = this as any;
+  if (project.isModified('title') && !project.slug) {
+    project.slug = project.title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
+  }
 });
 
 export default mongoose.models.Project || mongoose.model<IProject>('Project', ProjectSchema);
