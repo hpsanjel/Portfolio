@@ -41,7 +41,7 @@ const BlogSchema: Schema = new Schema({
   },
   author: {
     type: String,
-    default: 'Admin'
+    default: 'Hari Prasad Sanjel'
   },
   link: {
     type: String,
