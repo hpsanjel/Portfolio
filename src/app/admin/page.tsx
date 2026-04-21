@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar } from "lucide-react";
+import Image from "next/image";
 
 interface Project {
 	_id: string;
@@ -569,7 +570,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 				
 				// Insert the Cloudinary image URL at cursor position
 				if (editorRef.current) {
-					const imgHtml = `<img src="${result.url}" alt="Uploaded image" style="max-width: 100%; height: auto; display: block; margin: 10px 0;" />`;
+					const imgHtml = `<Image src="${result.url}" alt="Uploaded image" width={800} height={600} style="max-width: 100%; height: auto; display: block; margin: 10px 0;" />`;
 					
 					// Focus the editor first
 					editorRef.current.focus();
@@ -969,9 +970,11 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 								{imageUploadError && <div className="text-sm text-red-600">{imageUploadError}</div>}
 								{form.image && (
 									<div className="flex items-center gap-4">
-										<img
+										<Image
 											src={form.image}
 											alt="Blog preview"
+											width={96}
+											height={96}
 											className="h-24 w-24 object-cover rounded-lg border border-gray-200"
 											onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/96")}
 										/>
@@ -1058,9 +1061,11 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 									<tr key={blog._id} className="hover:bg-gray-50 transition-colors">
 										<td className="px-6 py-4">
 											<div className="flex items-center space-x-4">
-												<img
+												<Image
 													src={blog.image}
 													alt={blog.title}
+													width={64}
+													height={64}
 													className="w-16 h-16 object-cover rounded-lg"
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/64")}
 												/>
@@ -1364,9 +1369,11 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 								{imageUploadError && <div className="text-sm text-red-600">{imageUploadError}</div>}
 								{form.image && (
 									<div className="flex items-center gap-4">
-										<img
+										<Image
 											src={form.image}
 											alt="Project preview"
+											width={128}
+											height={96}
 											className="h-24 w-32 object-cover rounded-lg border border-gray-200"
 											onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/128x96")}
 										/>
@@ -1497,9 +1504,11 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 									<tr key={project._id} className="hover:bg-gray-50 transition-colors">
 										<td className="px-6 py-4">
 											<div className="flex items-center space-x-4">
-												<img
+												<Image
 													src={project.image}
 													alt={project.title}
+													width={80}
+													height={64}
 													className="w-20 h-16 object-cover rounded-lg"
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/80x64")}
 												/>
@@ -1810,9 +1819,11 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 								{iconUploadError && <div className="text-sm text-red-600">{iconUploadError}</div>}
 								{form.icon && (
 									<div className="flex items-center gap-4">
-										<img
+										<Image
 											src={form.icon}
 											alt="Service icon preview"
+											width={64}
+											height={64}
 											className="h-16 w-16 object-contain rounded-lg border border-gray-200"
 											onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/64")}
 										/>
@@ -1898,9 +1909,11 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 									<tr key={service._id} className="hover:bg-gray-50 transition-colors">
 										<td className="px-6 py-4">
 											<div className="flex items-center space-x-4">
-												<img
+												<Image
 													src={service.icon}
 													alt={service.title}
+													width={48}
+													height={48}
 													className="w-12 h-12 object-contain rounded-lg"
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/48")}
 												/>

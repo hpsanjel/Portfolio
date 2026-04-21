@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import SectionHeader from "../components/SectionHeader";
+import Image from "next/image";
 
 
 export default function Services() {
@@ -43,7 +44,7 @@ export default function Services() {
                     services.map((service, index) => (
                         <div key={`service-${service.id || index}-${service.title}`} className="group bg-white/80 dark:bg-darkHover/40 border border-gray-200/70 dark:border-white/10 rounded-2xl p-6 shadow-sm hover:shadow-lg transition-all duration-300">
                             <div className="w-14 h-14 rounded-xl bg-linear-to-r from-[#eda40d]/15 to-[#c17e0a]/15 flex items-center justify-center mb-4">
-                                <img src={service.icon} alt={service.title} className="w-8 h-8 object-contain" />
+                                <Image src={service.icon} alt={service.title} width={32} height={32} className="w-8 h-8 object-contain" />
                             </div>
                             <h3 className="text-xl font-semibold mb-2 group-hover:text-[#c17e0a] transition-colors duration-300">{service.title}</h3>
                             <p className="text-sm text-gray-700 dark:text-gray-300">{service.description}</p>
