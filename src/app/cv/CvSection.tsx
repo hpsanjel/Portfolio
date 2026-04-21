@@ -29,7 +29,7 @@ export default function CvSection() {
 	return (
 		<>
 	
-			<main className="min-h-screen pt-28 pb-16 px-4 sm:px-6">
+			<main className="min-h-screen pt-10 pb-16 px-4 sm:px-6">
 				<div className="max-w-5xl mx-auto">
 					<div className="rounded-3xl shadow-2xl ring-1 ring-black/5 bg-white print:shadow-none print:ring-0">
 						{/* Header */}

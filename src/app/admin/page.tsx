@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar } from "lucide-react";
 
 interface Project {
@@ -480,33 +480,155 @@ function stripHtml(html: string): string {
 // WYSIWYG Editor Component
 function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) {
 	const [editorContent, setEditorContent] = useState(value);
+	const editorRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		setEditorContent(value);
 	}, [value]);
 
 	const execCommand = (command: string, value?: string) => {
-		document.execCommand(command, false, value);
-		const content = document.getElementById('editor')?.innerHTML || '';
-		setEditorContent(content);
-		onChange(content);
+		if (editorRef.current) {
+			// Save current selection before losing focus
+			const selection = window.getSelection();
+			const range = selection && selection.rangeCount > 0 ? selection.getRangeAt(0) : null;
+			
+			// Focus the editor
+			editorRef.current.focus();
+			
+			// Restore selection if it was lost
+			if (range && selection) {
+				try {
+					selection.removeAllRanges();
+					selection.addRange(range);
+				} catch (e) {
+					// If restoring selection fails, place cursor at end
+					const newRange = document.createRange();
+					newRange.selectNodeContents(editorRef.current);
+					newRange.collapse(false);
+					selection.removeAllRanges();
+					selection.addRange(newRange);
+				}
+			}
+			
+			// Execute the command
+			try {
+				document.execCommand(command, false, value);
+			} catch (error) {
+				console.error('Command failed:', command, error);
+			}
+			
+			// Update content state
+			const content = editorRef.current.innerHTML || '';
+			setEditorContent(content);
+			onChange(content);
+		}
 	};
 
 	const handleInput = () => {
-		const content = document.getElementById('editor')?.innerHTML || '';
-		setEditorContent(content);
-		onChange(content);
+		if (editorRef.current) {
+			const content = editorRef.current.innerHTML || '';
+			setEditorContent(content);
+			onChange(content);
+		}
 	};
 
-	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+	// Prevent cursor jumping when clicking away and back to editor
+	const handleFocus = () => {
+		if (editorRef.current) {
+			const selection = window.getSelection();
+			if (selection && selection.rangeCount === 0) {
+				// If no range, place cursor at the end
+				const range = document.createRange();
+				range.selectNodeContents(editorRef.current);
+				range.collapse(false);
+				selection.addRange(range);
+			}
+		}
+	};
+
+	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (file) {
-			const reader = new FileReader();
-			reader.onload = (event) => {
-				const imageUrl = event.target?.result as string;
-				execCommand('insertImage', imageUrl);
-			};
-			reader.readAsDataURL(file);
+			try {
+				// Create FormData for Cloudinary upload
+				const formData = new FormData();
+				formData.append('file', file);
+				formData.append('folder', 'content'); // Upload to content folder for blog/project images
+
+				// Upload to Cloudinary
+				const response = await fetch('/api/upload', {
+					method: 'POST',
+					body: formData,
+				});
+
+				if (!response.ok) {
+					throw new Error('Upload failed');
+				}
+
+				const result = await response.json();
+				
+				// Insert the Cloudinary image URL at cursor position
+				if (editorRef.current) {
+					const imgHtml = `<img src="${result.url}" alt="Uploaded image" style="max-width: 100%; height: auto; display: block; margin: 10px 0;" />`;
+					
+					// Focus the editor first
+					editorRef.current.focus();
+					
+					// Get current selection
+					const selection = window.getSelection();
+					let range: Range | null = null;
+					
+					if (selection && selection.rangeCount > 0) {
+						range = selection.getRangeAt(0);
+					} else {
+						// If no selection, create a new range at the end
+						range = document.createRange();
+						range.selectNodeContents(editorRef.current);
+						range.collapse(false); // Collapse to end
+					}
+					
+					// Insert the image
+					if (range) {
+						// Create a temporary element to hold the image HTML
+						const tempDiv = document.createElement('div');
+						tempDiv.innerHTML = imgHtml;
+						const imgNode = tempDiv.firstChild;
+						
+						if (imgNode) {
+							// Insert the image at the cursor position
+							range.insertNode(imgNode);
+							
+							// Create a new range after the image for cursor positioning
+							const newRange = document.createRange();
+							newRange.setStartAfter(imgNode);
+							newRange.collapse(true);
+							
+							// Update selection to new position
+							if (selection) {
+								selection.removeAllRanges();
+								selection.addRange(newRange);
+							}
+						}
+					}
+					
+					// Update content state
+					const content = editorRef.current.innerHTML || '';
+					setEditorContent(content);
+					onChange(content);
+				}
+			} catch (error) {
+				console.error('Image upload error:', error);
+				alert('Failed to upload image. Please try again.');
+			}
+		}
+		// Reset the file input
+		e.target.value = '';
+	};
+
+	const handleLinkInsert = () => {
+		const url = prompt('Enter URL:');
+		if (url) {
+			execCommand('createLink', url);
 		}
 	};
 
@@ -563,7 +685,48 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 					className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
 					title="Line Break"
 				>
-					↵
+					<span className="inline-block w-4 h-0.5 bg-gray-600"></span>
+				</button>
+				<button
+					type="button"
+					onClick={handleLinkInsert}
+					className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
+					title="Insert Link"
+				>
+					<span className="text-blue-600">Link</span>
+				</button>
+				<select
+					onChange={(e) => {
+						const command = e.target.value;
+						if (command) {
+							execCommand(command);
+							e.target.value = ''; // Reset to default
+						}
+					}}
+					className="px-2 py-1 text-sm border border-gray-300 rounded"
+					title="Text Alignment"
+				>
+					<option value="">Align</option>
+					<option value="justifyLeft">Left</option>
+					<option value="justifyCenter">Center</option>
+					<option value="justifyRight">Right</option>
+					<option value="justifyFull">Justify</option>
+				</select>
+				<button
+					type="button"
+					onClick={() => execCommand('formatBlock', 'blockquote')}
+					className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
+					title="Blockquote"
+				>
+					"
+				</button>
+				<button
+					type="button"
+					onClick={() => execCommand('formatBlock', 'pre')}
+					className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
+					title="Code Block"
+				>
+					&lt;/&gt;
 				</button>
 				<label className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" title="Insert Image">
 					📷
@@ -578,9 +741,10 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 			
 			{/* Editor */}
 			<div
-				id="editor"
+				ref={editorRef}
 				contentEditable
 				onInput={handleInput}
+				onFocus={handleFocus}
 				className="min-h-[200px] p-4 focus:outline-none bg-white"
 				style={{ minHeight: '200px' }}
 				dangerouslySetInnerHTML={{ __html: editorContent }}

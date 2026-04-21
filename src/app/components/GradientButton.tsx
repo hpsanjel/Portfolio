@@ -27,7 +27,7 @@ export default function GradientButton({
   showArrow = true,
   children
 }: GradientButtonProps) {
-  const baseClasses = "group px-10 py-3 border rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-white font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden";
+  const baseClasses = "group px-6 md:px-8 py-2 md:py-3 border rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-white font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden";
   const disabledClasses = disabled ? "disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg" : "";
   const combinedClasses = `${baseClasses} ${disabledClasses} ${className}`;
 

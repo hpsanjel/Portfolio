@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import SectionHeader from "../components/SectionHeader";
 import GradientButton from "../components/GradientButton";
+import { Mail, Phone } from "lucide-react";
 
 export default function Contact() {
     const [formData, setFormData] = useState({ name: '', email: '', message: '' });
@@ -58,12 +59,17 @@ export default function Contact() {
     };
 
     return (
-        <section id="contact" className="w-full px-[12%] pt-24">
+        <section id="contact" className="w-full px-[12%] py-10">
             <SectionHeader 
                 intro="Let's Get Connected"
                 title="Get in Touch"
                 description="Whether you have a project in mind, a question, or just want to say hello, I'd love to hear from you. Reach out through the contact form or connect with me on social media. Let's start a conversation!"
             />
+            
+            <div className="flex items-center justify-center mt-10">
+                <div className="flex items-center gap-2 text-lg font-semibold mr-4"><Phone className="w-5 h-5 text-yellow-600" /> +47 46344530</div>
+                <div className="flex items-center gap-2 text-lg font-semibold"><Mail className="w-5 h-5 text-yellow-600" /> harisanjel@gmail.com</div>
+            </div>
             
            
             <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">

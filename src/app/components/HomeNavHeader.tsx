@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import useThemeToggle from "../hooks/useThemeToggle";
 import Link from "next/link";
 import GradientButton from "./GradientButton";
@@ -8,6 +9,15 @@ import GradientButton from "./GradientButton";
 export default function HomeNavHeader() {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
 	const { isDark, toggleTheme } = useThemeToggle();
+	const pathname = usePathname();
+
+	const navItems = [
+		{ href: "/", label: "Home" },
+		{ href: "/about", label: "About Me" },
+		{ href: "/services", label: "Services" },
+		{ href: "/projects", label: "Projects" },
+		{ href: "/blog", label: "Blogs" },
+	];
 
 	return (
 		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-white dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md shadow-sm">
@@ -19,22 +29,33 @@ export default function HomeNavHeader() {
 					<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer hidden dark:block" />
 				</Link>
 			</div>
-			<ul className="hidden md:flex items-center gap-6 lg:gap-8 rounded-full px-12 py-3 bg-white shadow-sm font-Outfit dark:border dark:border-white/50 dark:bg-transparent">
-				<li>
-					<Link href="/">Home</Link>
-				</li>
-				<li>
-					<Link href="/about">About Me</Link>
-				</li>
-				<li>
-					<Link href="/services">Services</Link>
-				</li>
-				<li>
-					<Link href="/projects">Projects</Link>
-				</li>
-				<li>
-					<Link href="/blog">Blogs</Link>
-				</li>
+			<ul className="hidden md:flex items-center gap-6 lg:gap-8 font-Outfit dark:bg-transparent">
+				{navItems.map((item) => {
+					const isActive = pathname === item.href;
+					return (
+						<li key={item.href}>
+							<Link 
+								href={item.href}
+								className={`
+									relative px-3 py-2 rounded-lg transition-all duration-300 ease-in-out
+									${isActive 
+										? 'text-yellow-600 dark:text-yellow-400 font-semibold' 
+										: 'text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400'
+									}
+									hover:bg-yellow-50 dark:hover:bg-yellow-900/20
+									before:absolute before:bottom-0 before:left-1/2 before:-translate-x-1/2 before:w-0 before:h-0.5 
+									before:bg-yellow-600 dark:before:bg-yellow-400 before:transition-all before:duration-300
+									${isActive ? 'before:w-full' : 'hover:before:w-full'}
+								`}
+							>
+								{item.label}
+								{isActive && (
+									<span className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1 h-1 bg-yellow-600 dark:bg-yellow-400 rounded-full"></span>
+								)}
+							</Link>
+						</li>
+					);
+				})}
 			</ul>
 			<div className="flex items-center gap-4 ">
 				<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2">
@@ -45,9 +66,9 @@ export default function HomeNavHeader() {
 					)}
 				</button>
 				<GradientButton 
-					text="Contact" 
+					text="Contact Me" 
 					href="/contact" 
-					className="hidden lg:flex ml-4"
+					className="hidden lg:flex"
 				/>
 				<button className="block md:hidden ml-3" onClick={() => setSideMenuOpen(true)}>
 					<Image src="/images/menu.svg" alt="Mobile Menu" width={24} height={24} className="w-8 dark:hidden" />
@@ -62,33 +83,35 @@ export default function HomeNavHeader() {
 						<Image src="/images/close.svg" alt="close side menu" width={24} height={24} className="w-6 cursor-pointer dark:hidden" />
 						<Image src="/images/close-dark.svg" alt="close side menu" width={24} height={24} className="w-6 cursor-pointer hidden dark:block" />
 					</div>
+					{navItems.map((item) => {
+						const isActive = pathname === item.href;
+						return (
+							<li key={item.href}>
+								<Link 
+									href={item.href} 
+									onClick={() => setSideMenuOpen(false)}
+									className={`
+										relative px-4 py-2 rounded-lg transition-all duration-300 ease-in-out
+										${isActive 
+											? 'text-yellow-600 dark:text-yellow-400 font-semibold bg-yellow-100 dark:bg-yellow-900/30' 
+											: 'text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20'
+										}
+									`}
+								>
+									{item.label}
+									{isActive && (
+										<span className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 w-1 h-4 bg-yellow-600 dark:bg-yellow-400 rounded-full"></span>
+									)}
+								</Link>
+							</li>
+						);
+					})}
 					<li>
-						<Link href="/" onClick={() => setSideMenuOpen(false)}>
-							Home
-						</Link>
-					</li>
-					<li>
-						<Link href="/about" onClick={() => setSideMenuOpen(false)}>
-							About Me
-						</Link>
-					</li>
-					<li>
-						<Link href="/services" onClick={() => setSideMenuOpen(false)}>
-							Services
-						</Link>
-					</li>
-					<li>
-						<Link href="/projects" onClick={() => setSideMenuOpen(false)}>
-							Projects
-						</Link>
-					</li>
-					<li>
-						<Link href="/blog" onClick={() => setSideMenuOpen(false)}>
-							Blogs
-						</Link>
-					</li>
-					<li>
-						<Link href="/contact" onClick={() => setSideMenuOpen(false)}>
+						<Link 
+							href="/contact" 
+							onClick={() => setSideMenuOpen(false)}
+							className="text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-yellow-50 dark:hover:bg-yellow-900/20 px-4 py-2 rounded-lg transition-all duration-300 ease-in-out"
+						>
 							Contact Me
 						</Link>
 					</li>
