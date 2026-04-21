@@ -65,7 +65,9 @@ BlogSchema.pre('validate', function() {
   if (blog.isModified('title') && !blog.slug) {
     blog.slug = blog.title
       .toLowerCase()
-      .replace(/[^a-z0-9]+/g, '-')
+      .trim()
+      .replace(/[^\p{L}\p{N}\p{Zs}0-9\s-]+/gu, '-') // Unicode-aware regex
+      .replace(/-+/g, '-')
       .replace(/(^-|-$)/g, '');
   }
   if (blog.isModified('content') && !blog.excerpt) {
