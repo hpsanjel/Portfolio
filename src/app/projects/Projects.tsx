@@ -65,10 +65,10 @@ export default function Projects() {
 										))}
 									</div>
 									<div className="flex items-center gap-4 text-sm">
-										<a href={project.liveUrl} target="_blank" className="text-[#c17e0a] hover:underline">
+										<a href={project.liveUrl} target="_blank" className="text-[#c17e0a] hover:underline" aria-label={`Live Demo of ${project.title}`}>
 											Live Demo
 										</a>
-										<a href={project.codeUrl} target="_blank" className="text-gray-700 dark:text-gray-300 hover:underline">
+										<a href={project.codeUrl} target="_blank" className="text-gray-700 dark:text-gray-300 hover:underline" aria-label={`Source Code for ${project.title}`}>
 											Source Code
 										</a>
 									</div>

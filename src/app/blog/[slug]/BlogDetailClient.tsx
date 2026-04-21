@@ -74,7 +74,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
 
   return (
     <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:py-6">
         {loading ? (
           <div className="flex items-center justify-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
@@ -89,7 +89,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main Content */}
             <div className="lg:col-span-2">
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
@@ -101,18 +101,18 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                       &larr; Back to all blogs
                     </Link>
                     
-                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+                    <h1 className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                       {blog.title}
                     </h1>
                     
                     <div className="flex items-center text-sm text-gray-600 dark:text-gray-400 mb-6">
-                      <span>By {blog.author}</span>
+                      <span className="font-semibold">By <a href="https://www.facebook.com/hpsanjel" className="text-gray-700 hover:text-gray-600 dark:text-gray-300 dark:hover:text-gray-400">{blog.author}</a></span>
                       <span className="mx-2">&middot;</span>
                       <span>{formatDate(blog.date)}</span>
                     </div>
 
                     {/* Facebook Share Button */}
-                    <div className="mb-6">
+                    <div className="mb-2">
                       <button
                         onClick={() => {
                           const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
@@ -139,7 +139,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                     </div>
                 </div>
                 {/* Blog Header Image */}
-                <div className="relative h-64 md:h-96">
+                <div className="relative h-64 md:h-96 md:mx-8">
                   <Image
                     src={blog.image}
                     alt={blog.title}
@@ -149,10 +149,10 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                 </div>
                 
                 {/* Blog Content */}
-                <div className="p-8">
-                  <div className="mb-6">
+                <div className="p-6 md:p-8">
+                  <div className="mb-4">
                     {blog.tags && blog.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 mb-6">
+                      <div className="flex flex-wrap gap-2 mb-4">
                         {blog.tags.map((tag, index) => (
                           <span
                             key={index}
@@ -167,7 +167,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                   
                   <div className="prose prose-lg dark:prose-invert max-w-none">
                     <div 
-                      className="text-gray-700 dark:text-gray-200 leading-relaxed"
+                      className="text-gray-700 text-md dark:text-gray-200 leading-relaxed"
                       dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br />').replace(/style="[^"]*color\s*:\s*rgb\([^)]*\)[^"]*"/gi, '').replace(/style="[^"]*color\s*:\s*#[^"^;]*[^"]*"/gi, '') }}
                     />
                   </div>
