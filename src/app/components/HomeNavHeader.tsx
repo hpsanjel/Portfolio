@@ -21,15 +21,16 @@ export default function HomeNavHeader() {
 	];
 
 	return (
-		<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-white dark:bg-[#0f0b1a]/90 dark:backdrop-blur-md shadow-sm">
-			<div className="flex items-center">
-				<Link href="/">
-					<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer dark:hidden" />
-				</Link>
-				<Link href="/">
-					<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer hidden dark:block" />
-				</Link>
-			</div>
+		<>
+			<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-purple-950 dark:via-blue-950 dark:to-gray-950 shadow-sm border-t border-gray-200 dark:border-purple-900/50">
+				<div className="flex items-center">
+					<Link href="/">
+						<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer dark:hidden" />
+					</Link>
+					<Link href="/">
+						<Image src="/images/logo-white.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer hidden dark:block" />
+					</Link>
+				</div>
 			<ul className="hidden md:flex items-center gap-6 lg:gap-8 font-Outfit dark:bg-transparent">
 				{navItems.map((item) => {
 					const isActive = pathname === item.href;
@@ -178,5 +179,10 @@ export default function HomeNavHeader() {
 				</>
 			)}
 		</nav>
+		{/* Gradient fade effect at bottom */}
+		<div className="fixed top-24 left-0 right-0 h-10 pointer-events-none">
+			<div className="w-full h-full bg-gradient-to-b from-gray-50 to-transparent dark:from-purple-950/80 dark:via-blue-950/40 dark:to-transparent"></div>
+		</div>
+		</>
 	);
 }
