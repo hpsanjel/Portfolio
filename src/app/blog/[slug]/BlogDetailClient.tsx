@@ -46,11 +46,16 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
         const blogRes = await fetch(`/api/blogs/by-slug/${slug}`);
         if (blogRes.ok) {
           const blogData = await blogRes.json();
-          setBlog(blogData);
+          // Check if blog is published
+          if (blogData.status === 'draft') {
+            setBlog(null); // Don't show draft blogs
+          } else {
+            setBlog(blogData);
+          }
         }
 
-        // Fetch all blogs for sidebar
-        const allBlogsRes = await fetch("/api/blogs");
+        // Fetch all published blogs for sidebar
+        const allBlogsRes = await fetch("/api/blogs?status=published");
         if (allBlogsRes.ok) {
           const allBlogs = await allBlogsRes.json();
           const filtered = allBlogs.filter((b: Blog) => b.slug !== slug);

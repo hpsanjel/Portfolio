@@ -39,6 +39,27 @@ export async function generateMetadata(
       const blog = await response.json();
       console.log('Blog data for metadata:', blog.title);
       
+      // Check if blog is published
+      if (blog.status === 'draft') {
+        console.log('Draft blog accessed, returning generic metadata');
+        return {
+          title: 'Blog Post Not Found',
+          description: 'This blog post is not available.',
+          openGraph: {
+            title: 'Blog Post Not Found',
+            description: 'This blog post is not available.',
+            url: `${baseUrl}/blog/${slug}`,
+            siteName: 'Hari Prasad Sanjel',
+            type: 'article',
+          },
+          twitter: {
+            card: 'summary_large_image',
+            title: 'Blog Post Not Found',
+            description: 'This blog post is not available.',
+          },
+        };
+      }
+      
       return {
         title: blog.title,
         description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',

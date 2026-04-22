@@ -21,7 +21,7 @@ export default function Blogs() {
             let cancelled = false;
             async function loadBlogs() {
                 try {
-                    const res = await fetch("/api/blogs");
+                    const res = await fetch("/api/blogs?status=published");
                     const data = await res.json();
                     if (!cancelled) setBlogs(Array.isArray(data) ? data : []);
                 } catch {
