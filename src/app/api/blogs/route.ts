@@ -3,10 +3,15 @@ import connectDB from "../../../lib/mongoose";
 import { Blog, IBlog } from "../../../models";
 
 // GET /api/blogs
-export async function GET() {
+export async function GET(request: Request) {
 	try {
 		await connectDB();
-		const blogs = await Blog.find({}).sort({ createdAt: -1 });
+		const { searchParams } = new URL(request.url);
+		const status = searchParams.get('status');
+		
+		// Filter by status if provided
+		const filter = status ? { status } : {};
+		const blogs = await Blog.find(filter).sort({ createdAt: -1 });
 		return NextResponse.json(blogs);
 	} catch (error) {
 		console.error('Error fetching blogs:', error);
@@ -19,7 +24,7 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 		const body = await request.json();
-		const { title, content, image, date } = body ?? {};
+		const { title, content, image, date, status } = body ?? {};
 		if (!title || !content || !image || !date) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
@@ -29,6 +34,7 @@ export async function POST(request: Request) {
 			content,
 			image,
 			date,
+			status: status || 'published',
 		});
 		
 		await blog.save();

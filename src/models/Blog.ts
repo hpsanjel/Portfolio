@@ -10,6 +10,7 @@ export interface IBlog extends Document {
   author: string;
   link: string;
   tags: string[];
+  status: 'draft' | 'published';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -49,7 +50,12 @@ const BlogSchema: Schema = new Schema({
   },
   tags: [{
     type: String
-  }]
+  }],
+  status: {
+    type: String,
+    enum: ['draft', 'published'],
+    default: 'published'
+  }
 }, {
   timestamps: true
 });

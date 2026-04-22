@@ -27,6 +27,7 @@ export default function AdminPage() {
 	const [activeTab, setActiveTab] = useState("dashboard");
 	const [sidebarOpen, setSidebarOpen] = useState(true);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [statusFilter, setStatusFilter] = useState<"all" | "draft" | "published">("all");
 	const [notificationsOpen, setNotificationsOpen] = useState(false);
 	const [currentDate, setCurrentDate] = useState<string>("");
 	const [mounted, setMounted] = useState(false);
@@ -241,7 +242,7 @@ export default function AdminPage() {
 						{activeTab && `Currently viewing: ${MENU_ITEMS.find(item => item.key === activeTab)?.label}`}
 					</div>
 					{activeTab === "dashboard" && <DashboardSection setActiveTab={setActiveTab} />}
-					{activeTab === "blogs" && <BlogsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+					{activeTab === "blogs" && <BlogsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />}
 					{activeTab === "projects" && <ProjectsSection setActiveTab={setActiveTab} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "services" && <ServicesSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "cv" && <CVSection />}
@@ -475,6 +476,7 @@ interface Blog {
 	content: string;
 	image: string;
 	date: string;
+	status: 'draft' | 'published';
 }
 
 // Utility function to strip HTML tags
@@ -761,7 +763,17 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 	);
 }
 
-function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
+function BlogsSection({ 
+	searchQuery, 
+	setSearchQuery, 
+	statusFilter, 
+	setStatusFilter 
+}: { 
+	searchQuery: string; 
+	setSearchQuery: (query: string) => void; 
+	statusFilter: "all" | "draft" | "published"; 
+	setStatusFilter: (filter: "all" | "draft" | "published") => void; 
+}) {
 	const [blogs, setBlogs] = useState<Blog[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [imageUploading, setImageUploading] = useState(false);
@@ -773,6 +785,7 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 		content: "",
 		image: "",
 		date: "",
+		status: "published" as 'draft' | 'published',
 	});
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
@@ -786,12 +799,13 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 
 	useEffect(() => {
 		fetchBlogs();
-	}, [searchQuery]);
+	}, [searchQuery, statusFilter]);
 
 	async function fetchBlogs() {
 		setLoading(true);
 		try {
-			const res = await fetch("/api/blogs");
+			const url = statusFilter === "all" ? "/api/blogs" : `/api/blogs?status=${statusFilter}`;
+			const res = await fetch(url);
 			const data = await res.json();
 			setBlogs(Array.isArray(data) ? data : []);
 		} catch (error) {
@@ -834,13 +848,14 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 			content: blog.content,
 			image: blog.image,
 			date: blog.date,
+			status: blog.status || "published",
 		});
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "" });
+		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", status: "published" });
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -852,6 +867,7 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 			content: form.content,
 			image: form.image,
 			date: form.date,
+			status: form.status,
 		};
 		const url = editMode ? `/api/blogs/${form._id}` : "/api/blogs";
 		const method = editMode ? "PUT" : "POST";
@@ -863,6 +879,28 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 		if (res.ok) {
 			fetchBlogs();
 			handleCancel();
+		}
+	}
+
+	async function handleToggleStatus(blog: Blog) {
+		const newStatus = blog.status === 'published' ? 'draft' : 'published';
+		const action = newStatus === 'published' ? 'publish' : 'set to draft';
+		if (!confirm(`Are you sure you want to ${action} this blog post?`)) return;
+		
+		try {
+			const res = await fetch(`/api/blogs/${blog._id}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ ...blog, status: newStatus }),
+			});
+			if (res.ok) {
+				fetchBlogs();
+			} else {
+				alert('Failed to update blog status. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error updating blog status:', error);
+			alert('Failed to update blog status. Please try again.');
 		}
 	}
 
@@ -954,6 +992,18 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 							/>
 						</div>
 						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+							<select
+								name="status"
+								value={form.status}
+								onChange={(e) => setForm({ ...form, status: e.target.value as 'draft' | 'published' })}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							>
+								<option value="draft">Draft</option>
+								<option value="published">Published</option>
+							</select>
+						</div>
+						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
 							<WYSIWYGEditor
 								value={form.content}
@@ -1029,10 +1079,15 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 						/>
 					</div>
-					<button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-						<Filter size={20} />
-						<span>Filter</span>
-					</button>
+					<select
+						value={statusFilter}
+						onChange={(e) => setStatusFilter(e.target.value as "all" | "draft" | "published")}
+						className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+					>
+						<option value="all">All Status</option>
+						<option value="published">Published</option>
+						<option value="draft">Draft</option>
+					</select>
 				</div>
 			</div>
 
@@ -1090,8 +1145,12 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 											{mounted ? new Date(blog.date).toLocaleDateString() : ''}
 										</td>
 										<td className="px-6 py-4">
-											<span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-												Published
+											<span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+												blog.status === 'published' 
+													? 'bg-green-100 text-green-800' 
+													: 'bg-yellow-100 text-yellow-800'
+											}`}>
+												{blog.status === 'published' ? 'Published' : 'Draft'}
 											</span>
 										</td>
 										<td className="px-6 py-4 text-right text-sm font-medium">
@@ -1102,6 +1161,17 @@ function BlogsSection({ searchQuery, setSearchQuery }: { searchQuery: string; se
 													title="Edit"
 												>
 													<Edit2 size={18} />
+												</button>
+												<button
+													onClick={() => handleToggleStatus(blog)}
+													className={`transition-colors ${
+														blog.status === 'published' 
+															? 'text-yellow-600 hover:text-yellow-900' 
+															: 'text-green-600 hover:text-green-900'
+													}`}
+													title={blog.status === 'published' ? 'Set to Draft' : 'Publish'}
+												>
+													{blog.status === 'published' ? 'Draft' : 'Publish'}
 												</button>
 												<button
 													onClick={() => handleDelete(blog._id)}
