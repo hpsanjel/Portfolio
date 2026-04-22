@@ -22,7 +22,7 @@ export default function HomeNavHeader() {
 
 	return (
 		<>
-			<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-purple-950 dark:via-blue-950 dark:to-gray-950 shadow-sm border-t border-gray-200 dark:border-purple-900/50">
+			<nav className="w-full fixed px-5 lg:px-8 xl:px-[8%] py-8 flex items-center justify-between z-50 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-black dark:via-blue-950/90 dark:to-gray-950 shadow-sm border-t border-gray-200 dark:border-purple-900/50">
 				<div className="flex items-center">
 					<Link href="/">
 						<Image src="/images/logo-black.png" alt="logo" width={96} height={40} className="w-24 cursor-pointer dark:hidden" />
@@ -180,9 +180,9 @@ export default function HomeNavHeader() {
 			)}
 		</nav>
 		{/* Gradient fade effect at bottom */}
-		<div className="fixed top-24 left-0 right-0 h-10 pointer-events-none">
+		{/* <div className="fixed top-24 left-0 right-0 h-10 pointer-events-none">
 			<div className="w-full h-full bg-gradient-to-b from-gray-50 to-transparent dark:from-purple-950/80 dark:via-blue-950/40 dark:to-transparent"></div>
-		</div>
+		</div> */}
 		</>
 	);
 }
