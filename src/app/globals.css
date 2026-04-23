@@ -39,6 +39,156 @@ body {
 	background-attachment: fixed;
 }
 
+/* Blog content text color fix - highest specificity */
+.blog-content-wrapper,
+.blog-content-wrapper *,
+.blog-content-wrapper p,
+.blog-content-wrapper span,
+.blog-content-wrapper div,
+.blog-content-wrapper h1,
+.blog-content-wrapper h2,
+.blog-content-wrapper h3,
+.blog-content-wrapper h4,
+.blog-content-wrapper h5,
+.blog-content-wrapper h6,
+.blog-content-wrapper li,
+.blog-content-wrapper ul,
+.blog-content-wrapper ol,
+.blog-content-wrapper blockquote,
+.blog-content-wrapper code,
+.blog-content-wrapper pre,
+.blog-content-wrapper strong,
+.blog-content-wrapper em,
+.blog-content-wrapper a,
+.blog-content-wrapper text {
+	color: #1f2937 !important;
+}
+
+/* Dark mode blog content */
+.dark .blog-content-wrapper,
+.dark .blog-content-wrapper *,
+.dark .blog-content-wrapper p,
+.dark .blog-content-wrapper span,
+.dark .blog-content-wrapper div,
+.dark .blog-content-wrapper h1,
+.dark .blog-content-wrapper h2,
+.dark .blog-content-wrapper h3,
+.dark .blog-content-wrapper h4,
+.dark .blog-content-wrapper h5,
+.dark .blog-content-wrapper h6,
+.dark .blog-content-wrapper li,
+.dark .blog-content-wrapper ul,
+.dark .blog-content-wrapper ol,
+.dark .blog-content-wrapper blockquote,
+.dark .blog-content-wrapper code,
+.dark .blog-content-wrapper pre,
+.dark .blog-content-wrapper strong,
+.dark .blog-content-wrapper em,
+.dark .blog-content-wrapper a,
+.dark .blog-content-wrapper text {
+	color: #e5e7eb !important;
+}
+
+/* Admin WYSIWYG editor text color fix */
+[contenteditable="true"],
+[contenteditable="true"] *,
+[contenteditable="true"] p,
+[contenteditable="true"] span,
+[contenteditable="true"] div,
+[contenteditable="true"] h1,
+[contenteditable="true"] h2,
+[contenteditable="true"] h3,
+[contenteditable="true"] h4,
+[contenteditable="true"] h5,
+[contenteditable="true"] h6,
+[contenteditable="true"] li,
+[contenteditable="true"] ul,
+[contenteditable="true"] ol,
+[contenteditable="true"] blockquote,
+[contenteditable="true"] code,
+[contenteditable="true"] pre,
+[contenteditable="true"] strong,
+[contenteditable="true"] em,
+[contenteditable="true"] a,
+[contenteditable="true"] text {
+	color: #1f2937 !important;
+}
+
+/* Dark mode admin WYSIWYG editor */
+.dark [contenteditable="true"],
+.dark [contenteditable="true"] *,
+.dark [contenteditable="true"] p,
+.dark [contenteditable="true"] span,
+.dark [contenteditable="true"] div,
+.dark [contenteditable="true"] h1,
+.dark [contenteditable="true"] h2,
+.dark [contenteditable="true"] h3,
+.dark [contenteditable="true"] h4,
+.dark [contenteditable="true"] h5,
+.dark [contenteditable="true"] h6,
+.dark [contenteditable="true"] li,
+.dark [contenteditable="true"] ul,
+.dark [contenteditable="true"] ol,
+.dark [contenteditable="true"] blockquote,
+.dark [contenteditable="true"] code,
+.dark [contenteditable="true"] pre,
+.dark [contenteditable="true"] strong,
+.dark [contenteditable="true"] em,
+.dark [contenteditable="true"] a,
+.dark [contenteditable="true"] text {
+	color: #e5e7eb !important;
+}
+
+@media (prefers-color-scheme: dark) {
+	.blog-content-wrapper,
+	.blog-content-wrapper *,
+	.blog-content-wrapper p,
+	.blog-content-wrapper span,
+	.blog-content-wrapper div,
+	.blog-content-wrapper h1,
+	.blog-content-wrapper h2,
+	.blog-content-wrapper h3,
+	.blog-content-wrapper h4,
+	.blog-content-wrapper h5,
+	.blog-content-wrapper h6,
+	.blog-content-wrapper li,
+	.blog-content-wrapper ul,
+	.blog-content-wrapper ol,
+	.blog-content-wrapper blockquote,
+	.blog-content-wrapper code,
+	.blog-content-wrapper pre,
+	.blog-content-wrapper strong,
+	.blog-content-wrapper em,
+	.blog-content-wrapper a,
+	.blog-content-wrapper text {
+		color: #e5e7eb !important;
+	}
+	
+	[contenteditable="true"],
+	[contenteditable="true"] *,
+	[contenteditable="true"] p,
+	[contenteditable="true"] span,
+	[contenteditable="true"] div,
+	[contenteditable="true"] h1,
+	[contenteditable="true"] h2,
+	[contenteditable="true"] h3,
+	[contenteditable="true"] h4,
+	[contenteditable="true"] h5,
+	[contenteditable="true"] h6,
+	[contenteditable="true"] li,
+	[contenteditable="true"] ul,
+	[contenteditable="true"] ol,
+	[contenteditable="true"] blockquote,
+	[contenteditable="true"] code,
+	[contenteditable="true"] pre,
+	[contenteditable="true"] strong,
+	[contenteditable="true"] em,
+	[contenteditable="true"] a,
+	[contenteditable="true"] text {
+		color: #e5e7eb !important;
+	}
+}
+
 @media print {
 	body {
 		background: #ffffff;

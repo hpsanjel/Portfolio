@@ -170,10 +170,12 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                     )}
                   </div>
                   
-                  <div className="prose prose-lg dark:prose-invert max-w-none">
+                  <div className="max-w-none">
                     <div 
-                      className="text-gray-700 text-md dark:text-gray-200 leading-relaxed"
-                      dangerouslySetInnerHTML={{ __html: blog.content.replace(/\n/g, '<br />').replace(/style="[^"]*color\s*:\s*rgb\([^)]*\)[^"]*"/gi, '').replace(/style="[^"]*color\s*:\s*#[^"^;]*[^"]*"/gi, '') }}
+                      className="blog-content-wrapper leading-relaxed text-lg"
+                      dangerouslySetInnerHTML={{ 
+                        __html: blog.content.replace(/\n/g, '<br />')
+                      }}
                     />
                   </div>
                   

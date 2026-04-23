@@ -476,6 +476,7 @@ interface Blog {
 	content: string;
 	image: string;
 	date: string;
+	slug: string;
 	status: 'draft' | 'published';
 }
 
@@ -1131,7 +1132,15 @@ function BlogsSection({
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/64")}
 												/>
 												<div>
-													<div className="text-sm font-medium text-gray-900">{blog.title}</div>
+													<a 
+														href={`/blog/${blog.slug}`}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors hover:underline"
+														title="View blog post"
+													>
+														{blog.title}
+													</a>
 													<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">
 														{stripHtml(blog.excerpt || blog.content).substring(0, 100)}...
 													</div>
