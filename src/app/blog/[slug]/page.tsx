@@ -20,12 +20,10 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   
-  console.log('Generating metadata for slug:', slug);
   
   try {
     // Try to fetch blog data for rich metadata
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    console.log('Fetching from URL:', `${baseUrl}/api/blogs/by-slug/${slug}`);
     
     const response = await fetch(`${baseUrl}/api/blogs/by-slug/${slug}`, {
       cache: 'no-store',
@@ -33,15 +31,12 @@ export async function generateMetadata(
       signal: AbortSignal.timeout(5000)
     });
     
-    console.log('Metadata fetch response status:', response.status);
     
     if (response.ok) {
       const blog = await response.json();
-      console.log('Blog data for metadata:', blog.title);
       
       // Check if blog is published
       if (blog.status === 'draft') {
-        console.log('Draft blog accessed, returning generic metadata');
         return {
           title: 'Blog Post Not Found',
           description: 'This blog post is not available.',
@@ -99,15 +94,12 @@ export async function generateMetadata(
           'og:image:type': 'image/jpeg',
         },
       };
-    } else {
-      console.log('Metadata fetch failed with status:', response.status);
     }
   } catch (error) {
     // Fallback to generic metadata if fetch fails
     console.error('Metadata fetch error:', error);
   }
   
-  console.log('Using generic fallback metadata');
   // Generic fallback metadata
   return {
     title: 'Blog Post',

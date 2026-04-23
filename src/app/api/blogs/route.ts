@@ -24,7 +24,7 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 		const body = await request.json();
-		const { title, content, image, date, status } = body ?? {};
+		const { title, content, image, date, categories, tags, status } = body ?? {};
 		if (!title || !content || !image || !date) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
@@ -34,6 +34,8 @@ export async function POST(request: Request) {
 			content,
 			image,
 			date,
+			categories: categories || [],
+			tags: tags || [],
 			status: status || 'published',
 		});
 		

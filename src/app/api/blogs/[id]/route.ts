@@ -8,7 +8,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { title, content, image, date, status } = body ?? {};
+		const { title, content, image, date, categories, tags, status } = body ?? {};
 		
 		if (!title || !content || !image || !date) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -40,6 +40,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			content,
 			image,
 			date,
+			categories: categories || existingBlog.categories,
+			tags: tags || existingBlog.tags,
 			status: status || existingBlog.status,
 		};
 		

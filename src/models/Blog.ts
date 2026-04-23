@@ -9,6 +9,7 @@ export interface IBlog extends Document {
   excerpt: string;
   author: string;
   link: string;
+  categories: string[];
   tags: string[];
   status: 'draft' | 'published';
   createdAt: Date;
@@ -48,6 +49,9 @@ const BlogSchema: Schema = new Schema({
     type: String,
     default: '#'
   },
+  categories: [{
+    type: String
+  }],
   tags: [{
     type: String
   }],

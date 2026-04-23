@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar } from "lucide-react";
+import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar, MessageSquare } from "lucide-react";
 import Image from "next/image";
+import { BLOG_CATEGORIES, PREDEFINED_TAGS } from "../../lib/blogCategories";
 
 interface Project {
 	_id: string;
@@ -17,6 +18,7 @@ interface Project {
 const MENU_ITEMS = [
 	{ key: "dashboard", label: "Dashboard", icon: Home },
 	{ key: "blogs", label: "Blog Posts", icon: FileText },
+	{ key: "comments", label: "Comments", icon: MessageSquare },
 	{ key: "projects", label: "Projects", icon: Briefcase },
 	{ key: "services", label: "Services", icon: Settings },
 	{ key: "cv", label: "CV Management", icon: User },
@@ -243,6 +245,7 @@ export default function AdminPage() {
 					</div>
 					{activeTab === "dashboard" && <DashboardSection setActiveTab={setActiveTab} />}
 					{activeTab === "blogs" && <BlogsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} statusFilter={statusFilter} setStatusFilter={setStatusFilter} />}
+					{activeTab === "comments" && <CommentsSection />}
 					{activeTab === "projects" && <ProjectsSection setActiveTab={setActiveTab} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "services" && <ServicesSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "cv" && <CVSection />}
@@ -477,6 +480,8 @@ interface Blog {
 	image: string;
 	date: string;
 	slug: string;
+	categories: string[];
+	tags: string[];
 	status: 'draft' | 'published';
 }
 
@@ -786,6 +791,8 @@ function BlogsSection({
 		content: "",
 		image: "",
 		date: "",
+		categories: [] as string[],
+		tags: [] as string[],
 		status: "published" as 'draft' | 'published',
 	});
 	const [editMode, setEditMode] = useState(false);
@@ -849,6 +856,8 @@ function BlogsSection({
 			content: blog.content,
 			image: blog.image,
 			date: blog.date,
+			categories: blog.categories || [],
+			tags: blog.tags || [],
 			status: blog.status || "published",
 		});
 		setEditMode(true);
@@ -856,7 +865,7 @@ function BlogsSection({
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", status: "published" });
+		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", categories: [], tags: [], status: "published" });
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -868,6 +877,8 @@ function BlogsSection({
 			content: form.content,
 			image: form.image,
 			date: form.date,
+			categories: form.categories,
+			tags: form.tags,
 			status: form.status,
 		};
 		const url = editMode ? `/api/blogs/${form._id}` : "/api/blogs";
@@ -991,6 +1002,68 @@ function BlogsSection({
 								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								placeholder="Enter a short excerpt or subtitle for this blog post..."
 							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Categories</label>
+							<div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+								{BLOG_CATEGORIES.map((category) => (
+									<label key={category} className="flex items-center space-x-2 cursor-pointer">
+										<input
+											type="checkbox"
+											checked={form.categories.includes(category)}
+											onChange={(e) => {
+												if (e.target.checked) {
+													setForm({ ...form, categories: [...form.categories, category] });
+												} else {
+													setForm({ ...form, categories: form.categories.filter(c => c !== category) });
+												}
+											}}
+											className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+										/>
+										<span className="text-sm text-gray-700">{category}</span>
+									</label>
+								))}
+							</div>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Tags</label>
+							<div className="space-y-2">
+								<div className="flex flex-wrap gap-2">
+									{form.tags.map((tag, index) => (
+										<span key={index} className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
+											{tag}
+											<button
+												type="button"
+												onClick={() => setForm({ ...form, tags: form.tags.filter((_, i) => i !== index) })}
+												className="ml-2 text-blue-600 hover:text-blue-800"
+											>
+												<X size={14} />
+											</button>
+										</span>
+									))}
+								</div>
+								<div className="flex gap-2">
+									<input
+										type="text"
+										placeholder="Add a tag and press Enter"
+										className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										onKeyPress={(e) => {
+											if (e.key === 'Enter') {
+												e.preventDefault();
+												const input = e.target as HTMLInputElement;
+												const tag = input.value.trim();
+												if (tag && !form.tags.includes(tag)) {
+													setForm({ ...form, tags: [...form.tags, tag] });
+													input.value = '';
+												}
+											}
+										}}
+									/>
+								</div>
+								<div className="text-xs text-gray-500">
+									Suggested tags: {PREDEFINED_TAGS.slice(0, 8).join(', ')}...
+								</div>
+							</div>
 						</div>
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -1241,6 +1314,307 @@ function BlogsSection({
 		</div>
 	);
 }
+
+// Comments Section
+function CommentsSection() {
+	const [comments, setComments] = useState<any[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [filter, setFilter] = useState('all'); // 'all', 'pending', 'approved'
+	const [selectedComments, setSelectedComments] = useState<string[]>([]);
+	const [actionLoading, setActionLoading] = useState(false);
+
+	useEffect(() => {
+		async function fetchComments() {
+			try {
+				const res = await fetch(`/api/admin/comments${filter !== 'all' ? `?status=${filter}` : ''}`);
+				if (res.ok) {
+					const data = await res.json();
+					setComments(data);
+				}
+			} catch (error) {
+				console.error('Error fetching comments:', error);
+			} finally {
+				setLoading(false);
+			}
+		}
+
+		fetchComments();
+	}, [filter]);
+
+	const handleSelectComment = (commentId: string) => {
+		setSelectedComments(prev => 
+			prev.includes(commentId) 
+				? prev.filter(id => id !== commentId)
+				: [...prev, commentId]
+		);
+	};
+
+	const handleSelectAll = () => {
+		setSelectedComments(
+			selectedComments.length === comments.length 
+				? [] 
+				: comments.map((c: any) => c._id)
+		);
+	};
+
+	const handleBulkAction = async (action: 'approve' | 'reject') => {
+		if (selectedComments.length === 0) return;
+
+		const confirmed = window.confirm(
+			`Are you sure you want to ${action} ${selectedComments.length} comment(s)?`
+		);
+
+		if (!confirmed) return;
+
+		setActionLoading(true);
+		try {
+			const res = await fetch('/api/admin/comments', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ commentIds: selectedComments, action })
+			});
+
+			if (res.ok) {
+				const result = await res.json();
+				// Refresh comments
+				const response = await fetch(`/api/admin/comments${filter !== 'all' ? `?status=${filter}` : ''}`);
+				const data = await response.json();
+				setComments(data);
+				setSelectedComments([]);
+				const count = result.modifiedCount || result.deletedCount || 0;
+				alert(`Comments ${action}d successfully! ${count > 0 ? `(${count} comments affected)` : ''}`);
+			} else {
+				const errorData = await res.json();
+				alert(`Failed to ${action} comments: ${errorData.error || 'Unknown error'}`);
+			}
+		} catch (error) {
+			console.error('Error updating comments:', error);
+			alert('Failed to update comments');
+		} finally {
+			setActionLoading(false);
+		}
+	};
+
+	const handleIndividualAction = async (commentId: string, action: 'approve' | 'reject' | 'delete') => {
+		const confirmed = window.confirm(`Are you sure you want to ${action} this comment?`);
+		if (!confirmed) return;
+
+		setActionLoading(true);
+		try {
+			// Use bulk API for individual actions to avoid ObjectId issues
+			const res = await fetch('/api/admin/comments', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ commentIds: [commentId], action })
+			});
+
+			if (res.ok) {
+				const result = await res.json();
+				// Refresh comments
+				const response = await fetch(`/api/admin/comments${filter !== 'all' ? `?status=${filter}` : ''}`);
+				const data = await response.json();
+				setComments(data);
+				setSelectedComments([]); // Clear selection
+				const count = result.modifiedCount || result.deletedCount || 0;
+				alert(`Comment ${action}d successfully! ${count > 0 ? `(${count} comments affected)` : ''}`);
+			} else {
+				const errorData = await res.json();
+				alert(`Failed to ${action} comment: ${errorData.error || 'Unknown error'}`);
+			}
+		} catch (error) {
+			console.error('Error updating comment:', error);
+			alert('Failed to update comment');
+		} finally {
+			setActionLoading(false);
+		}
+	};
+
+	const formatDate = (dateString: string) => {
+		return new Date(dateString).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
+	};
+
+	if (loading) {
+		return (
+			<div className="space-y-6">
+				<div className="animate-pulse space-y-4">
+					<div className="h-8 bg-gray-200 rounded w-1/4"></div>
+					<div className="space-y-2">
+						{[...Array(5)].map((_, i) => (
+							<div key={i} className="h-20 bg-gray-200 rounded"></div>
+						))}
+					</div>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="space-y-6">
+			<div className="flex items-center justify-between">
+				<h2 className="text-2xl font-bold text-gray-900">Comments Management</h2>
+				<div className="flex items-center gap-4">
+					<div className="flex items-center gap-2">
+						<label className="text-sm font-medium text-gray-700">Filter:</label>
+						<select
+							value={filter}
+							onChange={(e) => setFilter(e.target.value)}
+							className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+						>
+							<option value="all">All Comments</option>
+							<option value="pending">Pending Approval</option>
+							<option value="approved">Approved</option>
+						</select>
+					</div>
+					<div className="text-sm text-gray-600">
+						Total: {comments.length} comments
+					</div>
+				</div>
+			</div>
+
+			{selectedComments.length > 0 && (
+				<div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+					<div className="flex items-center justify-between">
+						<span className="text-sm text-blue-800">
+							{selectedComments.length} comment(s) selected
+						</span>
+						<div className="flex gap-2">
+							<button
+								onClick={() => handleBulkAction('approve')}
+								disabled={actionLoading}
+								className="px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm disabled:bg-green-400 disabled:cursor-not-allowed transition-colors"
+							>
+								{actionLoading ? 'Processing...' : 'Approve Selected'}
+							</button>
+							<button
+								onClick={() => handleBulkAction('reject')}
+								disabled={actionLoading}
+								className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 text-sm disabled:bg-red-400 disabled:cursor-not-allowed transition-colors"
+							>
+								{actionLoading ? 'Processing...' : 'Reject Selected'}
+							</button>
+						</div>
+					</div>
+				</div>
+			)}
+
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200">
+				{comments.length === 0 ? (
+					<div className="text-center py-12">
+						<MessageSquare size={48} className="mx-auto text-gray-400 mb-4" />
+						<p className="text-gray-600">
+							{filter === 'pending' 
+								? 'No comments pending approval' 
+								: filter === 'approved' 
+								? 'No approved comments' 
+								: 'No comments yet'}
+						</p>
+					</div>
+				) : (
+					<div className="overflow-x-auto">
+						<table className="w-full">
+							<thead>
+								<tr className="border-b border-gray-200">
+									<th className="text-left p-4">
+										<input
+											type="checkbox"
+											checked={selectedComments.length === comments.length}
+											onChange={handleSelectAll}
+											className="rounded border-gray-300"
+										/>
+									</th>
+									<th className="text-left p-4 font-medium text-gray-900">Author</th>
+									<th className="text-left p-4 font-medium text-gray-900">Comment</th>
+									<th className="text-left p-4 font-medium text-gray-900">Blog Post</th>
+									<th className="text-left p-4 font-medium text-gray-900">Date</th>
+									<th className="text-left p-4 font-medium text-gray-900">Status</th>
+									<th className="text-left p-4 font-medium text-gray-900">Actions</th>
+								</tr>
+							</thead>
+							<tbody>
+								{comments.map((comment: any) => (
+									<tr key={comment._id} className="border-b border-gray-100 hover:bg-gray-50">
+										<td className="p-4">
+											<input
+												type="checkbox"
+												checked={selectedComments.includes(comment._id)}
+												onChange={() => handleSelectComment(comment._id)}
+												className="rounded border-gray-300"
+											/>
+										</td>
+										<td className="p-4">
+											<div>
+												<div className="font-medium text-gray-900">{comment.author}</div>
+												<div className="text-sm text-gray-600">{comment.email}</div>
+											</div>
+										</td>
+										<td className="p-4">
+											<div className="max-w-xs">
+												<p className="text-sm text-gray-700 line-clamp-3">
+													{comment.content}
+												</p>
+											</div>
+										</td>
+										<td className="p-4">
+											<div className="text-sm text-blue-600 hover:text-blue-800">
+												{comment.blogSlug}
+											</div>
+										</td>
+										<td className="p-4 text-sm text-gray-600">
+											{formatDate(comment.createdAt)}
+										</td>
+										<td className="p-4">
+											<span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+												comment.isApproved 
+													? 'bg-green-100 text-green-800' 
+													: 'bg-yellow-100 text-yellow-800'
+											}`}>
+												{comment.isApproved ? 'Approved' : 'Pending'}
+											</span>
+										</td>
+										<td className="p-4">
+											<div className="flex gap-2">
+												{!comment.isApproved && (
+													<button
+														onClick={() => handleIndividualAction(comment._id, 'approve')}
+														disabled={actionLoading}
+														className="text-green-600 hover:text-green-800 text-sm disabled:text-green-400 disabled:cursor-not-allowed transition-colors"
+													>
+														{actionLoading ? '...' : 'Approve'}
+													</button>
+												)}
+												<button
+													onClick={() => handleIndividualAction(comment._id, 'reject')}
+													disabled={actionLoading}
+													className="text-red-600 hover:text-red-800 text-sm disabled:text-red-400 disabled:cursor-not-allowed transition-colors"
+												>
+													{actionLoading ? '...' : 'Reject'}
+												</button>
+												<button
+													onClick={() => handleIndividualAction(comment._id, 'delete')}
+													disabled={actionLoading}
+													className="text-gray-600 hover:text-gray-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+												>
+													{actionLoading ? '...' : 'Delete'}
+												</button>
+											</div>
+										</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
+					</div>
+				)}
+			</div>
+		</div>
+	);
+}
+
 function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setActiveTab: (tab: string) => void; searchQuery: string; setSearchQuery: (query: string) => void }) {
 	const [projects, setProjects] = useState<Project[]>([]);
 	const [loading, setLoading] = useState(true);
