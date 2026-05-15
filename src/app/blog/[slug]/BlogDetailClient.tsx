@@ -25,6 +25,7 @@ interface Blog {
   author: string;
   categories: string[];
   tags: string[];
+  status?: 'draft' | 'published';
   link?: string;
 }
 
@@ -48,13 +49,14 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
     async function fetchBlogData() {
       try {
         setLoading(true);
+        let blogData: Blog | null = null;
         
         // Fetch current blog
         const blogRes = await fetch(`/api/blogs/by-slug/${slug}`);
         if (blogRes.ok) {
-          const blogData = await blogRes.json();
+          blogData = await blogRes.json() as Blog;
           // Check if blog is published
-          if (blogData.status === 'draft') {
+          if (blogData?.status === 'draft') {
             setBlog(null); // Don't show draft blogs
           } else {
             setBlog(blogData);
@@ -63,9 +65,9 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
 
         // Fetch all published blogs for sidebar
         const allBlogsRes = await fetch("/api/blogs?status=published");
-        if (allBlogsRes.ok) {
+        if (allBlogsRes.ok && blogData) {
           const allBlogs = await allBlogsRes.json();
-          const currentBlog = await blogRes.json();
+          const currentBlog = blogData;
           
           // Get related posts based on categories and tags
           const relatedPosts = allBlogs
