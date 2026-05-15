@@ -16,6 +16,14 @@ interface Blog {
   link?: string;
 }
 
+function getJpgOpenGraphImageUrl(imageUrl: string): string {
+  if (!imageUrl.includes('res.cloudinary.com')) {
+    return imageUrl;
+  }
+
+  return imageUrl.replace(/\.[a-zA-Z0-9]+(?:\?.*)?$/, '.jpg');
+}
+
 // Generate metadata for the blog page
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
@@ -32,6 +40,8 @@ export async function generateMetadata(
       
     // Check if blog is published
     if (blog && blog.status !== 'draft') {
+      const ogImageUrl = getJpgOpenGraphImageUrl(blog.image);
+
       return {
         title: blog.title,
         description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
@@ -45,12 +55,12 @@ export async function generateMetadata(
           siteName: 'Hari Prasad Sanjel',
           images: [
             {
-              url: blog.image,
+              url: ogImageUrl,
               width: 1200,
               height: 630,
               alt: blog.title,
               type: 'image/jpeg',
-              secureUrl: blog.image,
+              secureUrl: ogImageUrl,
             },
           ],
           type: 'article',
@@ -62,12 +72,12 @@ export async function generateMetadata(
           card: 'summary_large_image',
           title: blog.title,
           description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
-          images: [blog.image],
+          images: [ogImageUrl],
           creator: '@hpsanjel',
         },
         // Explicitly provide og:image to fix Facebook warning
         other: {
-          'og:image': blog.image,
+          'og:image': ogImageUrl,
           'og:image:width': '1200',
           'og:image:height': '630',
           'og:image:alt': blog.title,

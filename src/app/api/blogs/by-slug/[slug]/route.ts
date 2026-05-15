@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../../lib/mongoose";
-import { Blog, IBlog } from "../../../../../models";
+import { Blog } from "../../../../../models";
 
 // GET /api/blogs/by-slug/[slug]
 export async function GET(
@@ -9,8 +9,9 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
+    const decodedSlug = decodeURIComponent(slug);
     await connectDB();
-    const blog = await Blog.findOne({ slug });
+    const blog = await Blog.findOne({ slug: decodedSlug });
     
     if (!blog) {
       return NextResponse.json({ message: "Blog not found" }, { status: 404 });

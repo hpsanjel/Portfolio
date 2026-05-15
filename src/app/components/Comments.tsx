@@ -32,11 +32,12 @@ export default function Comments({ blogSlug }: CommentsProps) {
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
   const [likeLoading, setLikeLoading] = useState<Set<string>>(new Set());
   const [replyingTo, setReplyingTo] = useState<{ id: string; author: string } | null>(null);
+  const encodedBlogSlug = encodeURIComponent(blogSlug);
 
   useEffect(() => {
     async function fetchComments() {
       try {
-        const res = await fetch(`/api/comments?blogSlug=${blogSlug}`);
+        const res = await fetch(`/api/comments?blogSlug=${encodedBlogSlug}`);
         if (res.ok) {
           const data = await res.json();
           setComments(data);
@@ -135,7 +136,7 @@ export default function Comments({ blogSlug }: CommentsProps) {
         setReplyingTo(null);
         
         // Fetch comments to update the list
-        const response = await fetch(`/api/comments?blogSlug=${blogSlug}`);
+        const response = await fetch(`/api/comments?blogSlug=${encodedBlogSlug}`);
         if (response.ok) {
           const data = await response.json();
           setComments(data);

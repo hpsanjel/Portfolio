@@ -52,7 +52,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
         let blogData: Blog | null = null;
         
         // Fetch current blog
-        const blogRes = await fetch(`/api/blogs/by-slug/${slug}`);
+        const blogRes = await fetch(`/api/blogs/by-slug/${encodeURIComponent(slug)}`);
         if (blogRes.ok) {
           blogData = await blogRes.json() as Blog;
           // Check if blog is published
