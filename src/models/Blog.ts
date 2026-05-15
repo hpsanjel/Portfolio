@@ -5,7 +5,6 @@ export interface IBlog extends Document {
   content: string;
   image: string;
   date: string;
-  slug: string;
   excerpt: string;
   author: string;
   link: string;
@@ -34,10 +33,6 @@ const BlogSchema: Schema = new Schema({
   date: {
     type: String,
     required: true
-  },
-  slug: {
-    type: String,
-    unique: true
   },
   excerpt: {
     type: String
@@ -74,17 +69,9 @@ function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
 }
 
-// Generate slug and excerpt before validation
+// Generate excerpt before validation
 BlogSchema.pre('validate', function() {
   const blog = this as any;
-  if (blog.isModified('title') && !blog.slug) {
-    blog.slug = blog.title
-      .toLowerCase()
-      .trim()
-      .replace(/[^\p{L}\p{N}\p{Zs}0-9\s-]+/gu, '-') // Unicode-aware regex
-      .replace(/-+/g, '-')
-      .replace(/(^-|-$)/g, '');
-  }
   if (blog.isModified('content') && !blog.excerpt) {
     const plainText = stripHtml(blog.content);
     blog.excerpt = plainText.substring(0, 150) + '...';

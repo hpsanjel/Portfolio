@@ -32,7 +32,7 @@ export function getRelatedPosts(currentPost: any, allPosts: any[], limit: number
   if (!allPosts || allPosts.length === 0) return [];
   
   // Filter out current post
-  const otherPosts = allPosts.filter(post => post.slug !== currentPost.slug);
+  const otherPosts = allPosts.filter(post => post._id !== currentPost._id);
   
   // Score posts based on matching categories and tags
   const scoredPosts = otherPosts.map(post => {

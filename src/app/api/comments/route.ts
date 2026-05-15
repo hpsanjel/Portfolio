@@ -55,23 +55,23 @@ const getClientIP = (request: NextRequest): string => {
   return realIP;
 };
 
-// GET /api/comments?blogSlug=xxx - Get all approved comments for a blog
+// GET /api/comments?blogId=xxx - Get all approved comments for a blog
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const blogSlug = searchParams.get('blogSlug');
+    const blogId = searchParams.get('blogId');
 
-    if (!blogSlug) {
+    if (!blogId) {
       return NextResponse.json(
-        { error: 'Blog slug is required' },
+        { error: 'Blog id is required' },
         { status: 400 }
       );
     }
 
-    // Security: Validate blogSlug
-    if (!/^[a-zA-Z0-9-_]+$/.test(blogSlug) || blogSlug.length > 100) {
+    // Security: Validate blogId
+    if (!/^[a-fA-F0-9]{24}$/.test(blogId)) {
       return NextResponse.json(
-        { error: 'Invalid blog slug' },
+        { error: 'Invalid blog id' },
         { status: 400 }
       );
     }
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
 
     // Get all top-level comments
     const topLevelComments = await Comment.find({ 
-      blogSlug, 
+      blogId, 
       isApproved: true,
       parentId: null // Only get top-level comments
     }).sort({ createdAt: 1 });
@@ -88,7 +88,7 @@ export async function GET(request: NextRequest) {
     // Get all replies for these comments
     const replyIds = topLevelComments.map(comment => comment._id);
     const replies = await Comment.find({ 
-      blogSlug, 
+      blogId, 
       isApproved: true,
       parentId: { $in: replyIds }
     }).sort({ createdAt: 1 });
@@ -136,20 +136,20 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    const { blogSlug, author, email, content, parentId } = body;
+    const { blogId, author, email, content, parentId } = body;
 
     // Security: Enhanced validation
-    if (!blogSlug || !author || !email || !content) {
+    if (!blogId || !author || !email || !content) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
 
-    // Security: Validate blogSlug
-    if (!/^[a-zA-Z0-9-_]+$/.test(blogSlug) || blogSlug.length > 100) {
+    // Security: Validate blogId
+    if (!/^[a-fA-F0-9]{24}$/.test(blogId)) {
       return NextResponse.json(
-        { error: 'Invalid blog slug format' },
+        { error: 'Invalid blog id format' },
         { status: 400 }
       );
     }
@@ -199,13 +199,13 @@ export async function POST(request: NextRequest) {
     await mongoose.connect(process.env.MONGODB_URI!);
 
     // Security: Sanitize all inputs
-    const sanitizedBlogSlug = sanitizeInput(blogSlug);
+    const sanitizedBlogId = sanitizeInput(blogId);
     const sanitizedAuthor = sanitizeInput(author);
     const sanitizedEmail = sanitizeInput(email).toLowerCase();
     const sanitizedContent = sanitizeInput(content);
 
     const newComment = new Comment({
-      blogSlug: sanitizedBlogSlug,
+      blogId: sanitizedBlogId,
       author: sanitizedAuthor,
       email: sanitizedEmail,
       content: sanitizedContent,
@@ -226,7 +226,7 @@ export async function POST(request: NextRequest) {
         comment: {
           ...newComment.toObject(),
           // Don't expose internal fields
-          blogSlug: undefined,
+          blogId: undefined,
           parentId: undefined
         }
       },

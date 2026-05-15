@@ -68,9 +68,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let blogPosts: MetadataRoute.Sitemap = []
   try {
     await connectDB()
-    const blogs = await Blog.find({ status: 'published' }).select('slug updatedAt')
+    const blogs = await Blog.find({ status: 'published' }).select('_id updatedAt')
     blogPosts = blogs.map((blog) => ({
-      url: `${baseUrl}/blog/${blog.slug}`,
+      url: `${baseUrl}/blog/${blog._id}`,
       lastModified: blog.updatedAt,
       changeFrequency: 'weekly' as const,
       priority: 0.7,

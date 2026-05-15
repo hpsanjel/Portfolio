@@ -12,10 +12,10 @@ interface Comment {
 }
 
 interface CommentsProps {
-  blogSlug: string;
+  blogId: string;
 }
 
-export default function Comments({ blogSlug }: CommentsProps) {
+export default function Comments({ blogId }: CommentsProps) {
   const [comments, setComments] = useState<Comment[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -32,12 +32,11 @@ export default function Comments({ blogSlug }: CommentsProps) {
   const [likedComments, setLikedComments] = useState<Set<string>>(new Set());
   const [likeLoading, setLikeLoading] = useState<Set<string>>(new Set());
   const [replyingTo, setReplyingTo] = useState<{ id: string; author: string } | null>(null);
-  const encodedBlogSlug = encodeURIComponent(blogSlug);
 
   useEffect(() => {
     async function fetchComments() {
       try {
-        const res = await fetch(`/api/comments?blogSlug=${encodedBlogSlug}`);
+        const res = await fetch(`/api/comments?blogId=${blogId}`);
         if (res.ok) {
           const data = await res.json();
           setComments(data);
@@ -50,7 +49,7 @@ export default function Comments({ blogSlug }: CommentsProps) {
     }
 
     fetchComments();
-  }, [blogSlug]);
+  }, [blogId]);
 
   const validateForm = () => {
     const newErrors = {
@@ -122,7 +121,7 @@ export default function Comments({ blogSlug }: CommentsProps) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          blogSlug,
+          blogId,
           author: formData.author,
           email: formData.email,
           content: formData.content,
@@ -136,7 +135,7 @@ export default function Comments({ blogSlug }: CommentsProps) {
         setReplyingTo(null);
         
         // Fetch comments to update the list
-        const response = await fetch(`/api/comments?blogSlug=${encodedBlogSlug}`);
+        const response = await fetch(`/api/comments?blogId=${blogId}`);
         if (response.ok) {
           const data = await response.json();
           setComments(data);

@@ -15,13 +15,12 @@ const calculateReadingTime = (content: string): number => {
 };
 
 interface Blog {
-  id: string;
+  _id: string;
   title: string;
   content: string;
   excerpt?: string;
   image: string;
   date: string;
-  slug: string;
   author: string;
   categories: string[];
   tags: string[];
@@ -30,10 +29,10 @@ interface Blog {
 }
 
 interface BlogDetailClientProps {
-  slug: string;
+  id: string;
 }
 
-export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
+export default function BlogDetailClient({ id }: BlogDetailClientProps) {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,10 +40,10 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
 
   useEffect(() => {
     setMounted(true);
-  }, [slug]);
+  }, [id]);
 
   useEffect(() => {
-    if (!slug) return;
+    if (!id) return;
     
     async function fetchBlogData() {
       try {
@@ -52,7 +51,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
         let blogData: Blog | null = null;
         
         // Fetch current blog
-        const blogRes = await fetch(`/api/blogs/by-slug/${encodeURIComponent(slug)}`);
+        const blogRes = await fetch(`/api/blogs/${id}`);
         if (blogRes.ok) {
           blogData = await blogRes.json() as Blog;
           // Check if blog is published
@@ -71,7 +70,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
           
           // Get related posts based on categories and tags
           const relatedPosts = allBlogs
-            .filter((b: Blog) => b.slug !== slug)
+            .filter((b: Blog) => b._id !== id)
             .map((post: Blog) => {
               let score = 0;
               
@@ -107,13 +106,14 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
     }
 
     fetchBlogData();
-  }, [slug]);
+  }, [id]);
 
   // Helper function to format date consistently
   const formatDate = (dateString: string) => {
     if (!mounted) return dateString; // Return original string during SSR
     return new Date(dateString).toLocaleDateString();
   };
+  const detailUrl = blog ? `/blog/${blog._id}` : `/blog/${id}`;
 
   return (
     <div className="min-h-screen">
@@ -177,7 +177,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                     <div className="my-4 flex flex-wrap gap-3">
                       <button
                         onClick={() => {
-                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
+                          const shareUrl = `${window.location.origin}${detailUrl}`;
                           const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
                           console.log('Debug - Share URL:', shareUrl);
                           console.log('Debug - FB Share URL:', fbShareUrl);
@@ -193,7 +193,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                       
                       <button
                         onClick={() => {
-                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
+                          const shareUrl = `${window.location.origin}${detailUrl}`;
                           const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out: "${blog.title}" by ${blog.author}`)}`;
                           window.open(twitterUrl, 'twitter-share', 'width=600,height=400,scrollbars=yes,resizable=yes');
                         }}
@@ -207,7 +207,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                       
                       <button
                         onClick={() => {
-                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
+                          const shareUrl = `${window.location.origin}${detailUrl}`;
                           navigator.clipboard.writeText(shareUrl).then(() => {
                             alert('Link copied to clipboard!');
                           });
@@ -279,7 +279,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                 </div>
               </article>
               {/* Comments Section */}
-              <Comments blogSlug={slug} />
+              <Comments blogId={id} />
             </div>
 
             {/* Sidebar */}

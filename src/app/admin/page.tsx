@@ -482,7 +482,6 @@ interface Blog {
 	content: string;
 	image: string;
 	date: string;
-	slug: string;
 	categories: string[];
 	tags: string[];
 	status: 'draft' | 'published';
@@ -1348,7 +1347,7 @@ function BlogsSection({
 												/>
 												<div>
 													<a 
-														href={`/blog/${blog.slug}`}
+														href={`/blog/${blog._id}`}
 														target="_blank"
 														rel="noopener noreferrer"
 														className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors hover:underline"
@@ -1707,7 +1706,7 @@ function CommentsSection() {
 										</td>
 										<td className="p-4">
 											<div className="text-sm text-blue-600 hover:text-blue-800">
-												{comment.blogSlug}
+												{comment.blogId}
 											</div>
 										</td>
 										<td className="p-4 text-sm text-gray-600">

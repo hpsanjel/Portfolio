@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import BlogDetailClient from "@/app/blog/[slug]/BlogDetailClient"
+import BlogDetailClient from "@/app/blog/[id]/BlogDetailClient"
 import connectDB from "@/lib/mongoose";
 import { Blog as BlogModel } from "@/models";
 
@@ -10,7 +10,6 @@ interface Blog {
   excerpt?: string;
   image: string;
   date: string;
-  slug: string;
   author: string;
   tags: string[];
   link?: string;
@@ -26,17 +25,16 @@ function getJpgOpenGraphImageUrl(imageUrl: string): string {
 
 // Generate metadata for the blog page
 export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
-  const { slug } = await params;
+  const { id } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_AUTH_BASE_URL || 'https://www.sanjeltech.com';
-  const decodedSlug = decodeURIComponent(slug);
-  const canonicalUrl = `${baseUrl}/blog/${encodeURIComponent(decodedSlug)}`;
+  const canonicalUrl = `${baseUrl}/blog/${id}`;
   
   
   try {
     await connectDB();
-    const blog = await BlogModel.findOne({ slug: decodedSlug }).lean();
+    const blog = await BlogModel.findById(id).lean();
       
     // Check if blog is published
     if (blog && blog.status !== 'draft') {
@@ -132,7 +130,7 @@ export async function generateMetadata(
 }
 
 // Server component that just renders the client component
-export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  return <BlogDetailClient slug={decodeURIComponent(slug)} />;
+export default async function BlogDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  return <BlogDetailClient id={id} />;
 }

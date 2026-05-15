@@ -5,7 +5,6 @@ export interface Blog {
   content: string;
   image: string;
   date: string;
-  slug: string;
   excerpt?: string;
   author?: string;
   link?: string;

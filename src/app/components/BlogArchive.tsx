@@ -13,13 +13,12 @@ interface ArchiveItem {
 }
 
 interface Blog {
-  id: string;
+  _id: string;
   title: string;
   excerpt?: string;
   content?: string;
   image: string;
   date: string;
-  slug: string;
 }
 
 interface BlogArchiveProps {
@@ -101,9 +100,9 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
               <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Recent posts</h4>
               <div className="space-y-3">
                 {recentBlogs.map((blog, index) => (
-                  <div key={blog.id || index} className="group">
+                  <div key={blog._id || index} className="group">
                     <Link 
-                      href={`/blog/${blog.slug}`}
+                      href={`/blog/${blog._id}`}
                       className="flex gap-3 p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                     >
                       {/* Blog Image */}

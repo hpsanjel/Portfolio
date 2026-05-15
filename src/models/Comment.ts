@@ -2,7 +2,7 @@ import mongoose, { Document, Schema } from 'mongoose';
 
 export interface IComment extends Document {
   _id: mongoose.Types.ObjectId;
-  blogSlug: string;
+  blogId: string;
   author: string;
   email: string;
   content: string;
@@ -15,7 +15,7 @@ export interface IComment extends Document {
 }
 
 const CommentSchema: Schema = new Schema({
-  blogSlug: {
+  blogId: {
     type: String,
     required: true,
     index: true,
@@ -68,7 +68,7 @@ const CommentSchema: Schema = new Schema({
 });
 
 // Add indexes for better performance
-CommentSchema.index({ blogSlug: 1, createdAt: -1 });
+CommentSchema.index({ blogId: 1, createdAt: -1 });
 CommentSchema.index({ isApproved: 1 });
 
 export default mongoose.models.Comment || mongoose.model('Comment', CommentSchema);
