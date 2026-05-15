@@ -22,12 +22,13 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_AUTH_BASE_URL || 'https://www.sanjeltech.com';
-  const canonicalUrl = `${baseUrl}/blog/${encodeURIComponent(slug)}`;
+  const decodedSlug = decodeURIComponent(slug);
+  const canonicalUrl = `${baseUrl}/blog/${encodeURIComponent(decodedSlug)}`;
   
   
   try {
     await connectDB();
-    const blog = await BlogModel.findOne({ slug }).lean();
+    const blog = await BlogModel.findOne({ slug: decodedSlug }).lean();
       
     // Check if blog is published
     if (blog && blog.status !== 'draft') {
@@ -123,5 +124,5 @@ export async function generateMetadata(
 // Server component that just renders the client component
 export default async function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  return <BlogDetailClient slug={slug} />;
+  return <BlogDetailClient slug={decodeURIComponent(slug)} />;
 }
