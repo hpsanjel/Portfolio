@@ -6,7 +6,7 @@ import { Project, IProject } from "../../../models";
 export async function GET() {
 	try {
 		await connectDB();
-		const projects = await Project.find({}).sort({ createdAt: -1 });
+		const projects = await Project.find({}).sort({ order: 1, createdAt: -1 });
 		return NextResponse.json(projects);
 	} catch (error) {
 		console.error('Error fetching projects:', error);
@@ -19,10 +19,14 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 		const body = await request.json();
-		const { title, description, image, liveUrl, codeUrl, technologies, projectstory } = body ?? {};
+		const { title, description, image, liveUrl, codeUrl, technologies, projectstory, status, order } = body ?? {};
 		if (!title || !description || !image || !liveUrl || !Array.isArray(technologies)) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
+		
+		// Get the highest order value and increment it
+		const maxOrder = await Project.findOne().sort({ order: -1 }).select('order');
+		const nextOrder = order !== undefined ? order : (maxOrder?.order || 0) + 1;
 		
 		const project = new Project({
 			title,
@@ -32,6 +36,8 @@ export async function POST(request: Request) {
 			codeUrl: codeUrl || "#",
 			technologies,
 			projectstory: projectstory || "",
+			status: status || 'published',
+			order: nextOrder,
 		});
 		
 		await project.save();

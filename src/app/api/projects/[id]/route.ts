@@ -8,7 +8,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { title, description, image, liveUrl, codeUrl, technologies, projectstory } = body ?? {};
+		const { title, description, image, liveUrl, codeUrl, technologies, projectstory, status } = body ?? {};
 		
 		if (!title || !description || !image || !liveUrl || !Array.isArray(technologies)) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -43,9 +43,10 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			codeUrl: codeUrl || "#",
 			technologies,
 			projectstory: projectstory || "",
+			status: status || existingProject.status,
 		};
 		
-		const updatedProject = await Project.findByIdAndUpdate(id, updateData, { new: true });
+		const updatedProject = await Project.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
 		
 		return NextResponse.json(updatedProject);
 	} catch (error) {

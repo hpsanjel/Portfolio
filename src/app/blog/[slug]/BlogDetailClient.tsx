@@ -183,6 +183,8 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                           const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
                           const shareText = `Check out this blog post: "${blog.title}" by ${blog.author}`;
                           const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+                          console.log('Debug - Share URL:', shareUrl);
+                          console.log('Debug - FB Share URL:', fbShareUrl);
                           window.open(fbShareUrl, 'facebook-share', 'width=600,height=400,scrollbars=yes,resizable=yes');
                         }}
                         className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"

@@ -12,6 +12,7 @@ export interface IBlog extends Document {
   categories: string[];
   tags: string[];
   status: 'draft' | 'published';
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -59,6 +60,10 @@ const BlogSchema: Schema = new Schema({
     type: String,
     enum: ['draft', 'published'],
     default: 'published'
+  },
+  order: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

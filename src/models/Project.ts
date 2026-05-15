@@ -9,6 +9,8 @@ export interface IProject extends Document {
   technologies: string[];
   slug: string;
   projectstory?: string;
+  status: 'draft' | 'published';
+  order: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -48,6 +50,15 @@ const ProjectSchema: Schema = new Schema({
   projectstory: {
     type: String,
     default: ''
+  },
+  status: {
+    type: String,
+    enum: ['draft', 'published'],
+    default: 'published'
+  },
+  order: {
+    type: Number,
+    default: 0
   }
 }, {
   timestamps: true

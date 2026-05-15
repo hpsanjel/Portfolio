@@ -12,7 +12,10 @@ interface Project {
 	liveUrl: string;
 	codeUrl: string;
 	technologies: string[];
+	slug: string;
 	projectstory?: string;
+	status: 'draft' | 'published';
+	order: number;
 }
 
 const MENU_ITEMS = [
@@ -483,6 +486,7 @@ interface Blog {
 	categories: string[];
 	tags: string[];
 	status: 'draft' | 'published';
+	order: number;
 }
 
 // Utility function to strip HTML tags
@@ -794,12 +798,16 @@ function BlogsSection({
 		categories: [] as string[],
 		tags: [] as string[],
 		status: "published" as 'draft' | 'published',
+		order: 0,
 	});
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
 	const [mounted, setMounted] = useState(false);
+	const [draggedBlog, setDraggedBlog] = useState<Blog | null>(null);
+	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+	const [isReordering, setIsReordering] = useState(false);
 
 	useEffect(() => {
 		setMounted(true);
@@ -859,13 +867,14 @@ function BlogsSection({
 			categories: blog.categories || [],
 			tags: blog.tags || [],
 			status: blog.status || "published",
+			order: blog.order || 0,
 		});
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", categories: [], tags: [], status: "published" });
+		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", categories: [], tags: [], status: "published", order: 0 });
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -920,6 +929,88 @@ function BlogsSection({
 		if (!confirm("Are you sure you want to delete this blog post?")) return;
 		const res = await fetch(`/api/blogs/${id}`, { method: "DELETE" });
 		if (res.ok) fetchBlogs();
+	}
+
+	// Drag and drop handlers
+	function handleDragStart(blog: Blog, index: number) {
+		setDraggedBlog(blog);
+	}
+
+	function handleDragOver(e: React.DragEvent, index: number) {
+		e.preventDefault();
+		setDragOverIndex(index);
+	}
+
+	function handleDragLeave() {
+		setDragOverIndex(null);
+	}
+
+	async function handleDrop(e: React.DragEvent, dropIndex: number) {
+		e.preventDefault();
+		setDragOverIndex(null);
+		
+		if (!draggedBlog) return;
+		
+		const draggedIndex = paginatedBlogs.findIndex(blog => blog._id === draggedBlog._id);
+		if (draggedIndex === dropIndex) return;
+		
+		// Create a new array with the reordered blogs
+		const newBlogs = [...paginatedBlogs];
+		const [removed] = newBlogs.splice(draggedIndex, 1);
+		newBlogs.splice(dropIndex, 0, removed);
+		
+		// Update the order values based on the new position
+		const updatedBlogs = newBlogs.map((blog, index) => ({
+			...blog,
+			order: (currentPage - 1) * itemsPerPage + index
+		}));
+		
+		// Update the local state immediately for better UX
+		const allBlogs = [...blogs];
+		const allDraggedIndex = allBlogs.findIndex(blog => blog._id === draggedBlog._id);
+		const allDropIndex = allBlogs.findIndex(blog => blog._id === newBlogs[dropIndex]._id);
+		const [allRemoved] = allBlogs.splice(allDraggedIndex, 1);
+		allBlogs.splice(allDropIndex, 0, allRemoved);
+		
+		// Update order values for all blogs
+		allBlogs.forEach((blog, index) => {
+			blog.order = index;
+		});
+		
+		setBlogs(allBlogs);
+		setDraggedBlog(null);
+		
+		// Send the update to the server
+		setIsReordering(true);
+		try {
+			const blogOrders = allBlogs.map((blog, index) => ({
+				id: blog._id,
+				order: index
+			}));
+			
+			const res = await fetch('/api/blogs/order', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ blogOrders })
+			});
+			
+			if (!res.ok) {
+				// If the server update fails, revert the changes
+				await fetchBlogs();
+				alert('Failed to update blog order. Changes have been reverted.');
+			}
+		} catch (error) {
+			console.error('Error updating blog order:', error);
+			await fetchBlogs();
+			alert('Failed to update blog order. Changes have been reverted.');
+		} finally {
+			setIsReordering(false);
+		}
+	}
+
+	function handleDragEnd() {
+		setDraggedBlog(null);
+		setDragOverIndex(null);
 	}
 
 	const filteredBlogs = blogs.filter(blog =>
@@ -1163,6 +1254,14 @@ function BlogsSection({
 						<option value="draft">Draft</option>
 					</select>
 				</div>
+				{isReordering && (
+					<div className="mt-3 flex items-center justify-center p-2 bg-blue-50 rounded-lg">
+						<div className="flex items-center space-x-2 text-blue-700">
+							<div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+							<span className="text-sm">Updating blog order...</span>
+						</div>
+					</div>
+				)}
 			</div>
 
 			{/* Data Table */}
@@ -1171,6 +1270,9 @@ function BlogsSection({
 					<table className="w-full">
 						<thead className="bg-gray-50 border-b border-gray-200">
 							<tr>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-8">
+									<span className="text-gray-400" title="Drag to reorder">☰</span>
+								</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Blog</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Excerpt</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
@@ -1181,19 +1283,44 @@ function BlogsSection({
 						<tbody className="bg-white divide-y divide-gray-200">
 							{loading ? (
 								<tr>
-									<td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+									<td colSpan={6} className="px-6 py-8 text-center text-gray-500">
 										Loading blog posts...
 									</td>
 								</tr>
 							) : filteredBlogs.length === 0 ? (
 								<tr>
-									<td colSpan={5} className="px-6 py-8 text-center text-gray-500">
+									<td colSpan={6} className="px-6 py-8 text-center text-gray-500">
 										No blog posts found
 									</td>
 								</tr>
 							) : (
-								paginatedBlogs.map((blog) => (
-									<tr key={blog._id} className="hover:bg-gray-50 transition-colors">
+								paginatedBlogs.map((blog, index) => (
+									<tr 
+										key={blog._id} 
+										className={`hover:bg-gray-50 transition-colors ${
+											draggedBlog?._id === blog._id ? 'opacity-50' : ''
+										} ${
+											dragOverIndex === index ? 'bg-blue-50 border-blue-300' : ''
+										}`}
+										draggable
+										onDragStart={() => handleDragStart(blog, index)}
+										onDragOver={(e) => handleDragOver(e, index)}
+										onDragLeave={handleDragLeave}
+										onDrop={(e) => handleDrop(e, index)}
+										onDragEnd={handleDragEnd}
+									>
+										<td className="px-6 py-4">
+											<div className="flex items-center justify-center">
+												<div 
+													className="w-6 h-6 flex items-center justify-center text-gray-400 cursor-move hover:text-gray-600"
+													title="Drag to reorder"
+												>
+													<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+														<path d="M2.5 7a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM3 9.5a.5.5 0 0 0 0 1h10a.5.5 0 0 0 0-1H3zM2.5 12.5A.5.5 0 0 1 3 12h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</div>
+											</div>
+										</td>
 										<td className="px-6 py-4">
 											<div className="flex items-center space-x-4">
 												<Image
@@ -1241,6 +1368,7 @@ function BlogsSection({
 													onClick={() => handleEdit(blog)}
 													className="text-blue-600 hover:text-blue-900 transition-colors"
 													title="Edit"
+													disabled={isReordering}
 												>
 													<Edit2 size={18} />
 												</button>
@@ -1252,13 +1380,15 @@ function BlogsSection({
 															: 'text-green-600 hover:text-green-900'
 													}`}
 													title={blog.status === 'published' ? 'Set to Draft' : 'Publish'}
+													disabled={isReordering}
 												>
-													{blog.status === 'published' ? 'Draft' : 'Publish'}
+													{blog.status === 'published' ? '📝' : '✅'} {blog.status === 'published' ? 'Draft' : 'Publish'}
 												</button>
 												<button
 													onClick={() => handleDelete(blog._id)}
 													className="text-red-600 hover:text-red-900 transition-colors"
 													title="Delete"
+													disabled={isReordering}
 												>
 													<Trash2 size={18} />
 												</button>
@@ -1629,12 +1759,17 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 		codeUrl: "",
 		technologies: "",
 		projectstory: "",
+		status: "published" as 'draft' | 'published',
+		order: 0,
 	});
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const itemsPerPage = 5;
 	const [mounted, setMounted] = useState(false);
+	const [draggedProject, setDraggedProject] = useState<Project | null>(null);
+	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+	const [isReordering, setIsReordering] = useState(false);
 
 	useEffect(() => {
 		setMounted(true);
@@ -1691,6 +1826,8 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 			codeUrl: project.codeUrl,
 			technologies: project.technologies.join(", "),
 			projectstory: project.projectstory || "",
+			status: project.status || "published",
+			order: project.order || 0,
 		});
 		setEditMode(true);
 		setShowForm(true);
@@ -1706,6 +1843,8 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 			codeUrl: "", 
 			technologies: "",
 			projectstory: "",
+			status: "published",
+			order: 0,
 		});
 		setEditMode(false);
 		setShowForm(false);
@@ -1724,6 +1863,8 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 				.map((t) => t.trim())
 				.filter(Boolean),
 			projectstory: form.projectstory,
+			status: form.status,
+			order: form.order,
 		};
 		const url = editMode ? `/api/projects/${form._id}` : "/api/projects";
 		const method = editMode ? "PUT" : "POST";
@@ -1742,6 +1883,127 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 		if (!confirm("Are you sure you want to delete this project?")) return;
 		const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
 		if (res.ok) fetchProjects();
+	}
+
+	// Drag and drop handlers
+	function handleDragStart(project: Project, index: number) {
+		console.log('Drag started:', project.title, 'at index:', index);
+		setDraggedProject(project);
+	}
+
+	function handleDragOver(e: React.DragEvent, index: number) {
+		e.preventDefault();
+		setDragOverIndex(index);
+	}
+
+	function handleDragLeave() {
+		setDragOverIndex(null);
+	}
+
+	async function handleDrop(e: React.DragEvent, dropIndex: number) {
+		e.preventDefault();
+		setDragOverIndex(null);
+		
+		if (!draggedProject) {
+			console.log('No dragged project');
+			return;
+		}
+		
+		const draggedIndex = paginatedProjects.findIndex(project => project._id === draggedProject._id);
+		console.log('Dragged index:', draggedIndex, 'Drop index:', dropIndex);
+		
+		if (draggedIndex === dropIndex) {
+			console.log('Same index, no change');
+			return;
+		}
+		
+		// Create a new array with the reordered projects (paginated view)
+		const newPaginatedProjects = [...paginatedProjects];
+		const [removed] = newPaginatedProjects.splice(draggedIndex, 1);
+		newPaginatedProjects.splice(dropIndex, 0, removed);
+		
+		console.log('New paginated order:', newPaginatedProjects.map(p => p.title));
+		
+		// Update the local state immediately for better UX
+		const allProjects = [...projects];
+		const allDraggedIndex = allProjects.findIndex(project => project._id === draggedProject._id);
+		const allDropIndex = allProjects.findIndex(project => project._id === newPaginatedProjects[dropIndex]._id);
+		
+		console.log('All dragged index:', allDraggedIndex, 'All drop index:', allDropIndex);
+		
+		// Reorder in the full array
+		const [allRemoved] = allProjects.splice(allDraggedIndex, 1);
+		allProjects.splice(allDropIndex, 0, allRemoved);
+		
+		// Update order values for all projects
+		allProjects.forEach((project, index) => {
+			project.order = index;
+		});
+		
+		console.log('Final all projects order:', allProjects.map(p => `${p.title} (${p.order})`));
+		
+		setProjects(allProjects);
+		setDraggedProject(null);
+		
+		// Send the update to the server
+		setIsReordering(true);
+		try {
+			const projectOrders = allProjects.map((project, index) => ({
+				id: project._id,
+				order: index
+			}));
+			
+			console.log('Sending order update:', projectOrders);
+			
+			const res = await fetch('/api/projects/order', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ projectOrders })
+			});
+			
+			if (!res.ok) {
+				console.error('Server update failed');
+				// If the server update fails, revert the changes
+				await fetchProjects();
+				alert('Failed to update project order. Changes have been reverted.');
+			} else {
+				console.log('Server update successful');
+			}
+		} catch (error) {
+			console.error('Error updating project order:', error);
+			await fetchProjects();
+			alert('Failed to update project order. Changes have been reverted.');
+		} finally {
+			setIsReordering(false);
+		}
+	}
+
+	function handleDragEnd() {
+		console.log('Drag ended');
+		setDraggedProject(null);
+		setDragOverIndex(null);
+	}
+
+	async function handleToggleStatus(project: Project) {
+		const newStatus = project.status === 'published' ? 'draft' : 'published';
+		const action = newStatus === 'published' ? 'publish' : 'set to draft';
+		if (!confirm(`Are you sure you want to ${action} this project?`)) return;
+		
+		try {
+			const res = await fetch(`/api/projects/${project._id}`, {
+				method: "PUT",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ ...project, status: newStatus }),
+			});
+			if (res.ok) {
+				fetchProjects();
+			} else {
+				alert('Failed to update project status. Please try again.');
+			}
+		} catch (error) {
+			console.error('Error updating project status:', error);
+			alert('Failed to update project status. Please try again.');
+		}
 	}
 
 	const filteredProjects = projects.filter(project =>
@@ -1894,6 +2156,18 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 								placeholder="Describe your project story, challenges, and learnings..."
 							/>
 						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+							<select
+								name="status"
+								value={form.status}
+								onChange={(e) => setForm({ ...form, status: e.target.value as 'draft' | 'published' })}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							>
+								<option value="draft">Draft</option>
+								<option value="published">Published</option>
+							</select>
+						</div>
 						<div className="flex gap-3 pt-4">
 							<button
 								type="submit"
@@ -1931,6 +2205,14 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 						<span>Filter</span>
 					</button>
 				</div>
+				{isReordering && (
+					<div className="mt-3 flex items-center justify-center p-2 bg-blue-50 rounded-lg">
+						<div className="flex items-center space-x-2 text-blue-700">
+							<div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+							<span className="text-sm">Updating project order...</span>
+						</div>
+					</div>
+				)}
 			</div>
 
 			{/* Data Table */}
@@ -1939,28 +2221,57 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 					<table className="w-full">
 						<thead className="bg-gray-50 border-b border-gray-200">
 							<tr>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-8">
+									<span className="text-gray-400" title="Drag to reorder">☰</span>
+								</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Project</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Technologies</th>
 								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Links</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
 								<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
 							</tr>
 						</thead>
 						<tbody className="bg-white divide-y divide-gray-200">
 							{loading ? (
 								<tr>
-									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+									<td colSpan={6} className="px-6 py-8 text-center text-gray-500">
 										Loading projects...
 									</td>
 								</tr>
 							) : filteredProjects.length === 0 ? (
 								<tr>
-									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+									<td colSpan={6} className="px-6 py-8 text-center text-gray-500">
 										No projects found
 									</td>
 								</tr>
 							) : (
-								paginatedProjects.map((project) => (
-									<tr key={project._id} className="hover:bg-gray-50 transition-colors">
+								paginatedProjects.map((project, index) => (
+									<tr 
+										key={project._id} 
+										className={`hover:bg-gray-50 transition-colors ${
+											draggedProject?._id === project._id ? 'opacity-50' : ''
+										} ${
+										dragOverIndex === index ? 'bg-blue-50 border-blue-300' : ''
+									}`}
+										draggable
+										onDragStart={() => handleDragStart(project, index)}
+										onDragOver={(e) => handleDragOver(e, index)}
+										onDragLeave={handleDragLeave}
+										onDrop={(e) => handleDrop(e, index)}
+										onDragEnd={handleDragEnd}
+									>
+										<td className="px-6 py-4">
+											<div className="flex items-center justify-center">
+												<div 
+													className="w-6 h-6 flex items-center justify-center text-gray-400 cursor-move hover:text-gray-600"
+													title="Drag to reorder"
+												>
+													<svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+														<path d="M2.5 7a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM2.5 4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zM3 9.5a.5.5 0 0 0 0 1h10a.5.5 0 0 0 0-1H3zM2.5 12.5A.5.5 0 0 1 3 12h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"/>
+													</svg>
+												</div>
+											</div>
+										</td>
 										<td className="px-6 py-4">
 											<div className="flex items-center space-x-4">
 												<Image
@@ -2015,19 +2326,42 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 												)}
 											</div>
 										</td>
+										<td className="px-6 py-4">
+											<span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+														project.status === 'published' 
+															? 'bg-green-100 text-green-800' 
+															: 'bg-yellow-100 text-yellow-800'
+														}`}>
+														{project.status === 'published' ? 'Published' : 'Draft'}
+													</span>
+										</td>
 										<td className="px-6 py-4 text-right text-sm font-medium">
 											<div className="flex items-center justify-end space-x-2">
 												<button
-													onClick={() => handleEdit(project)}
-													className="text-blue-600 hover:text-blue-900 transition-colors"
-													title="Edit"
+													 onClick={() => handleEdit(project)}
+													 className="text-blue-600 hover:text-blue-900 transition-colors"
+													 title="Edit"
+													 disabled={isReordering}
 												>
 													<Edit2 size={18} />
 												</button>
 												<button
-													onClick={() => handleDelete(project._id)}
-													className="text-red-600 hover:text-red-900 transition-colors"
-													title="Delete"
+													 onClick={() => handleToggleStatus(project)}
+													 className={`transition-colors ${
+														project.status === 'published' 
+															? 'text-yellow-600 hover:text-yellow-900' 
+															: 'text-green-600 hover:text-green-900'
+													}`}
+													 title={project.status === 'published' ? 'Set to Draft' : 'Publish'}
+													 disabled={isReordering}
+												>
+													{project.status === 'published' ? '📝' : '✅'} {project.status === 'published' ? 'Draft' : 'Publish'}
+												</button>
+												<button
+													 onClick={() => handleDelete(project._id)}
+												 className="text-red-600 hover:text-red-900 transition-colors"
+													 title="Delete"
+													 disabled={isReordering}
 												>
 													<Trash2 size={18} />
 												</button>

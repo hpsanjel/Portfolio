@@ -45,7 +45,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			status: status || existingBlog.status,
 		};
 		
-		const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { new: true });
+		const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
 		
 		return NextResponse.json(updatedBlog);
 	} catch (error) {
