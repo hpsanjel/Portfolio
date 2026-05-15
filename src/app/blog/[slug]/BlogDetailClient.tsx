@@ -36,15 +36,10 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUrl, setCurrentUrl] = useState('');
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    // Set current URL for sharing
-    if (typeof window !== 'undefined') {
-      setCurrentUrl(window.location.href);
-    }
   }, [slug]);
 
   useEffect(() => {
@@ -180,9 +175,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                     <div className="my-4 flex flex-wrap gap-3">
                       <button
                         onClick={() => {
-                          const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
-                          const shareText = `Check out this blog post: "${blog.title}" by ${blog.author}`;
-                          // Remove quote parameter as it may cause 400 error
+                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
                           const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
                           console.log('Debug - Share URL:', shareUrl);
                           console.log('Debug - FB Share URL:', fbShareUrl);
@@ -198,7 +191,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                       
                       <button
                         onClick={() => {
-                          const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
+                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
                           const twitterUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(`Check out: "${blog.title}" by ${blog.author}`)}`;
                           window.open(twitterUrl, 'twitter-share', 'width=600,height=400,scrollbars=yes,resizable=yes');
                         }}
@@ -212,7 +205,7 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                       
                       <button
                         onClick={() => {
-                          const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
+                          const shareUrl = `${window.location.origin}/blog/${encodeURIComponent(blog.slug)}`;
                           navigator.clipboard.writeText(shareUrl).then(() => {
                             alert('Link copied to clipboard!');
                           });

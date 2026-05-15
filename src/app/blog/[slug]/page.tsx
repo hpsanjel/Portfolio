@@ -22,6 +22,7 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { slug } = await params;
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_AUTH_BASE_URL || 'https://www.sanjeltech.com';
+  const canonicalUrl = `${baseUrl}/blog/${encodeURIComponent(slug)}`;
   
   
   try {
@@ -33,10 +34,13 @@ export async function generateMetadata(
       return {
         title: blog.title,
         description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
+        alternates: {
+          canonical: canonicalUrl,
+        },
         openGraph: {
           title: blog.title,
           description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
-          url: `${baseUrl}/blog/${slug}`,
+          url: canonicalUrl,
           siteName: 'Hari Prasad Sanjel',
           images: [
             {
@@ -74,10 +78,13 @@ export async function generateMetadata(
     return {
       title: 'Blog Post Not Found',
       description: 'This blog post is not available.',
+      alternates: {
+        canonical: canonicalUrl,
+      },
       openGraph: {
         title: 'Blog Post Not Found',
         description: 'This blog post is not available.',
-        url: `${baseUrl}/blog/${slug}`,
+        url: canonicalUrl,
         siteName: 'Hari Prasad Sanjel',
         type: 'article',
       },
@@ -95,10 +102,13 @@ export async function generateMetadata(
   return {
     title: 'Blog Post',
     description: 'Read this blog post',
+    alternates: {
+      canonical: canonicalUrl,
+    },
     openGraph: {
       title: 'Blog Post',
       description: 'Read this blog post',
-      url: `${baseUrl}/blog/${slug}`,
+      url: canonicalUrl,
       siteName: 'Hari Prasad Sanjel',
       type: 'article',
     },
