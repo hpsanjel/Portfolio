@@ -14,6 +14,40 @@ const calculateReadingTime = (content: string): number => {
   return Math.ceil(wordCount / wordsPerMinute);
 };
 
+function BlogDetailSkeleton() {
+  return (
+    <div className="space-y-6 animate-pulse">
+      <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
+        <div className="p-4 md:p-8 space-y-5">
+          <div className="h-4 w-32 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="space-y-3">
+            <div className="h-9 w-11/12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-9 w-8/12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+          <div className="flex gap-3">
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-4 w-20 bg-gray-200 dark:bg-gray-700 rounded"></div>
+            <div className="h-4 w-24 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          </div>
+          <div className="flex gap-3">
+            <div className="h-10 w-28 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-10 w-28 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+            <div className="h-10 w-28 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+          </div>
+        </div>
+        <div className="mx-4 md:mx-8 h-64 md:h-96 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        <div className="p-4 md:p-8 space-y-4">
+          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-4 w-10/12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded"></div>
+          <div className="h-4 w-9/12 bg-gray-200 dark:bg-gray-700 rounded"></div>
+        </div>
+      </article>
+    </div>
+  );
+}
+
 interface Blog {
   _id: string;
   title: string;
@@ -116,14 +150,11 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
   const detailUrl = blog ? `/blog/${blog._id}` : `/blog/${id}`;
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:py-6">
+    <>
         {loading ? (
-          <div className="flex items-center justify-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
-          </div>
+          <BlogDetailSkeleton />
         ) : !blog ? (
-          <div className="min-h-screen flex items-center justify-center">
+          <div className="min-h-[50vh] flex items-center justify-center">
             <div className="text-center">
               <h1 className="text-2xl font-bold mb-4">Blog post not found</h1>
               <Link href="/blog" className="text-blue-600 hover:text-blue-800">
@@ -132,9 +163,7 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content */}
-            <div className="lg:col-span-2">
+          <div>
               <article className="bg-white dark:bg-gray-800 rounded-lg shadow-sm overflow-hidden">
                 <div className="p-4 md:p-8">
                     <Link 
@@ -280,34 +309,8 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
               </article>
               {/* Comments Section */}
               <Comments blogId={id} />
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-36">
-           
-                
-                
-
-                
-                {/* Blog Archive */}
-                <BlogArchive />
-                
-                {/* Back to all blogs */}
-                <div className="mt-8">
-                  <Link
-                    href="/blog"
-                    className="block w-full text-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
-                  >
-                    View All Blogs
-                  </Link>
-                </div>
-
-              </div>
-            </div>
           </div>
         )}
-      </div>
-    </div>
+    </>
   );
 }

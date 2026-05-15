@@ -35,19 +35,29 @@ const stripHtml = (html: string): string => {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
 };
 
+let cachedArchives: ArchiveItem[] | null = null;
+let cachedRecentBlogs: Blog[] | null = null;
+
 export default function BlogArchive({ className = "" }: BlogArchiveProps) {
-  const [archives, setArchives] = useState<ArchiveItem[]>([]);
-  const [recentBlogs, setRecentBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [archives, setArchives] = useState<ArchiveItem[]>(cachedArchives || []);
+  const [recentBlogs, setRecentBlogs] = useState<Blog[]>(cachedRecentBlogs || []);
+  const [loading, setLoading] = useState(!cachedArchives || !cachedRecentBlogs);
 
   useEffect(() => {
+    if (cachedArchives && cachedRecentBlogs) {
+      return;
+    }
+
+    let cancelled = false;
+
     async function fetchData() {
       try {
         // Fetch archives
         const archivesRes = await fetch("/api/blogs/archives");
         if (archivesRes.ok) {
           const archivesData = await archivesRes.json();
-          setArchives(archivesData);
+          cachedArchives = archivesData;
+          if (!cancelled) setArchives(archivesData);
         }
 
         // Fetch recent blogs
@@ -58,16 +68,21 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
           const sortedBlogs = Array.isArray(blogsData) 
             ? blogsData.sort((a: Blog, b: Blog) => new Date(b.date).getTime() - new Date(a.date).getTime()).slice(0, 10)
             : [];
-          setRecentBlogs(sortedBlogs);
+          cachedRecentBlogs = sortedBlogs;
+          if (!cancelled) setRecentBlogs(sortedBlogs);
         }
       } catch (error) {
         console.error("Error fetching blog data:", error);
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
 
     fetchData();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {
