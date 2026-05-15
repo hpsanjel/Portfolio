@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 type ThemeMode = "light" | "dark";
 
 export default function useThemeToggle() {
-	const [theme, setTheme] = useState<ThemeMode>("light");
+	const [theme, setTheme] = useState<ThemeMode>("dark");
 
 	useEffect(() => {
 		if (typeof window !== "undefined") {
@@ -16,13 +16,8 @@ export default function useThemeToggle() {
 					document.documentElement.classList.remove("dark");
 				}
 			} else {
-				const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-				setTheme(prefersDark ? "dark" : "light");
-				if (prefersDark) {
-					document.documentElement.classList.add("dark");
-				} else {
-					document.documentElement.classList.remove("dark");
-				}
+				setTheme("dark");
+				document.documentElement.classList.add("dark");
 			}
 		}
 	}, []);

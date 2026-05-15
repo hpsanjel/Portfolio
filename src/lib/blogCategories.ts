@@ -1,18 +1,10 @@
 // Predefined blog categories
 export const BLOG_CATEGORIES = [
   'Technology',
-  'News',
   'Visa and Immigration',
-  'Work Visa Abroad',
-  'Study Visa',
-  'Tax',
-  'Finance',
   'Personal',
-  'Report',
-  'Jobs',
-  'Internships',
-  'Scholarships',
-  'Success Mantras'
+  'Jobs Abroad',
+  'Study Abroad'
 ] as const;
 
 export type BlogCategory = typeof BLOG_CATEGORIES[number];

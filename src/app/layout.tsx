@@ -25,7 +25,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en">
+		<html lang="en" className="dark">
 			<body className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden font-Outfit leading-6 dark:bg-darkTheme dark:text-white bg-[url('/images/page-bg.png')] bg-cover`}>
 				<LayoutWrapper>{children}</LayoutWrapper>
 				<Analytics />
