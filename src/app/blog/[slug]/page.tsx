@@ -1,5 +1,7 @@
 import { Metadata } from "next";
 import BlogDetailClient from "@/app/blog/[slug]/BlogDetailClient"
+import connectDB from "@/lib/mongoose";
+import { Blog as BlogModel } from "@/models";
 
 interface Blog {
   id: string;
@@ -19,46 +21,15 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_AUTH_BASE_URL || 'https://www.sanjeltech.com';
   
   
   try {
-    // Try to fetch blog data for rich metadata
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    
-    console.log('Fetching metadata for slug:', slug, 'from:', `${baseUrl}/api/blogs/by-slug/${slug}`);
-    
-    const response = await fetch(`${baseUrl}/api/blogs/by-slug/${slug}`, {
-      cache: 'no-store',
-      // Add timeout to prevent hanging
-      signal: AbortSignal.timeout(5000)
-    });
-    
-    console.log('Metadata fetch response status:', response.status);
-    
-    
-    if (response.ok) {
-      const blog = await response.json();
+    await connectDB();
+    const blog = await BlogModel.findOne({ slug }).lean();
       
-      // Check if blog is published
-      if (blog.status === 'draft') {
-        return {
-          title: 'Blog Post Not Found',
-          description: 'This blog post is not available.',
-          openGraph: {
-            title: 'Blog Post Not Found',
-            description: 'This blog post is not available.',
-            url: `${baseUrl}/blog/${slug}`,
-            siteName: 'Hari Prasad Sanjel',
-            type: 'article',
-          },
-          twitter: {
-            card: 'summary_large_image',
-            title: 'Blog Post Not Found',
-            description: 'This blog post is not available.',
-          },
-        };
-      }
-      
+    // Check if blog is published
+    if (blog && blog.status !== 'draft') {
       return {
         title: blog.title,
         description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
@@ -99,8 +70,24 @@ export async function generateMetadata(
         },
       };
     }
+    
+    return {
+      title: 'Blog Post Not Found',
+      description: 'This blog post is not available.',
+      openGraph: {
+        title: 'Blog Post Not Found',
+        description: 'This blog post is not available.',
+        url: `${baseUrl}/blog/${slug}`,
+        siteName: 'Hari Prasad Sanjel',
+        type: 'article',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: 'Blog Post Not Found',
+        description: 'This blog post is not available.',
+      },
+    };
   } catch (error) {
-    // Fallback to generic metadata if fetch fails
     console.error('Metadata fetch error:', error);
   }
   
@@ -111,7 +98,7 @@ export async function generateMetadata(
     openGraph: {
       title: 'Blog Post',
       description: 'Read this blog post',
-      url: `${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/blog/${slug}`,
+      url: `${baseUrl}/blog/${slug}`,
       siteName: 'Hari Prasad Sanjel',
       type: 'article',
     },
