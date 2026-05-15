@@ -111,7 +111,7 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
         <>
           {/* Recent Blogs Section */}
           {recentBlogs.length > 0 && (
-            <div className="mb-6">
+            <div className="mb-6 h-[600px] overflow-y-auto">
               <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Recent posts</h4>
               <div className="space-y-3">
                 {recentBlogs.map((blog, index) => (

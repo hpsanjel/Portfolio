@@ -3,10 +3,14 @@ import connectDB from "../../../lib/mongoose";
 import { Project, IProject } from "../../../models";
 
 // GET /api/projects
-export async function GET() {
+export async function GET(request: Request) {
 	try {
+		const { searchParams } = new URL(request.url);
+		const status = searchParams.get('status');
+		const query = status ? { status } : {};
+
 		await connectDB();
-		const projects = await Project.find({}).sort({ order: 1, createdAt: -1 });
+		const projects = await Project.find(query).sort({ order: 1, createdAt: -1 });
 		return NextResponse.json(projects);
 	} catch (error) {
 		console.error('Error fetching projects:', error);
