@@ -112,7 +112,7 @@ export default function AdminPage() {
 	}, [sidebarOpen]);
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex">
+		<div className="min-h-screen bg-gray-50 text-gray-900 flex">
 			{/* Skip to main content link for screen readers */}
 			<a 
 				href="#main-content" 
@@ -498,11 +498,16 @@ function stripHtml(html: string): string {
 
 // WYSIWYG Editor Component
 function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChange: (value: string) => void; placeholder: string }) {
-	const [editorContent, setEditorContent] = useState(value);
 	const editorRef = useRef<HTMLDivElement>(null);
+	const lastValueRef = useRef(value);
+	const initializedRef = useRef(false);
 
 	useEffect(() => {
-		setEditorContent(value);
+		if (editorRef.current && (!initializedRef.current || value !== lastValueRef.current)) {
+			editorRef.current.innerHTML = value;
+			lastValueRef.current = value;
+			initializedRef.current = true;
+		}
 	}, [value]);
 
 	const execCommand = (command: string, value?: string) => {
@@ -538,7 +543,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 			
 			// Update content state
 			const content = editorRef.current.innerHTML || '';
-			setEditorContent(content);
+			lastValueRef.current = content;
 			onChange(content);
 		}
 	};
@@ -546,7 +551,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 	const handleInput = () => {
 		if (editorRef.current) {
 			const content = editorRef.current.innerHTML || '';
-			setEditorContent(content);
+			lastValueRef.current = content;
 			onChange(content);
 		}
 	};
@@ -632,7 +637,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 					
 					// Update content state
 					const content = editorRef.current.innerHTML || '';
-					setEditorContent(content);
+					lastValueRef.current = content;
 					onChange(content);
 				}
 			} catch (error) {
@@ -652,9 +657,19 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 	};
 
 	return (
-		<div className="border border-gray-300 rounded-lg overflow-hidden">
+		<div className="border border-gray-300 rounded-lg overflow-hidden bg-white text-gray-900">
+			<style jsx>{`
+				.admin-wysiwyg-editor,
+				.admin-wysiwyg-editor * {
+					color: #111827 !important;
+					-webkit-text-fill-color: #111827 !important;
+				}
+				.admin-wysiwyg-editor {
+					caret-color: #111827;
+				}
+			`}</style>
 			{/* Toolbar */}
-			<div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1">
+			<div className="bg-gray-50 border-b border-gray-300 p-2 flex flex-wrap gap-1 text-gray-900">
 				<button
 					type="button"
 					onClick={() => execCommand('bold')}
@@ -747,7 +762,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 				>
 					&lt;/&gt;
 				</button>
-				<label className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100 cursor-pointer" title="Insert Image">
+				<label className="px-2 py-1 text-sm border border-gray-300 rounded bg-white text-gray-900 hover:bg-gray-100 cursor-pointer" title="Insert Image">
 					📷
 					<input
 						type="file"
@@ -762,11 +777,11 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 			<div
 				ref={editorRef}
 				contentEditable
+				suppressContentEditableWarning
 				onInput={handleInput}
 				onFocus={handleFocus}
-				className="min-h-[200px] p-4 focus:outline-none bg-white"
-				style={{ minHeight: '200px' }}
-				dangerouslySetInnerHTML={{ __html: editorContent }}
+				className="admin-wysiwyg-editor min-h-[200px] p-4 focus:outline-none bg-white text-gray-900"
+				style={{ minHeight: '200px', color: '#111827', WebkitTextFillColor: '#111827' }}
 				data-placeholder={placeholder}
 			/>
 		</div>
@@ -1067,7 +1082,7 @@ function BlogsSection({
 									value={form.title}
 									onChange={handleChange}
 									required
-									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 									placeholder="Enter blog title"
 								/>
 							</div>
@@ -1079,7 +1094,7 @@ function BlogsSection({
 									value={form.date}
 									onChange={handleChange}
 									required
-									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								/>
 							</div>
 						</div>
@@ -1090,7 +1105,7 @@ function BlogsSection({
 								value={form.excerpt}
 								onChange={handleChange}
 								rows={2}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 								placeholder="Enter a short excerpt or subtitle for this blog post..."
 							/>
 						</div>
@@ -1137,7 +1152,7 @@ function BlogsSection({
 									<input
 										type="text"
 										placeholder="Add a tag and press Enter"
-										className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										className="flex-1 px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 										onKeyPress={(e) => {
 											if (e.key === 'Enter') {
 												e.preventDefault();
@@ -1162,7 +1177,7 @@ function BlogsSection({
 								name="status"
 								value={form.status}
 								onChange={(e) => setForm({ ...form, status: e.target.value as 'draft' | 'published' })}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 							>
 								<option value="draft">Draft</option>
 								<option value="published">Published</option>
@@ -1172,7 +1187,7 @@ function BlogsSection({
 							<label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
 							<WYSIWYGEditor
 								value={form.content}
-								onChange={(value) => setForm({ ...form, content: value })}
+								onChange={(value) => setForm((prev) => ({ ...prev, content: value }))}
 								placeholder="Write your blog content here..."
 							/>
 						</div>
@@ -1184,7 +1199,7 @@ function BlogsSection({
 										type="file"
 										accept="image/*"
 										onChange={(e) => handleImageUpload(e.target.files?.[0] ?? null)}
-										className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+										className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
 									/>
 									{imageUploading && <span className="text-sm text-gray-500">Uploading...</span>}
 								</div>
@@ -1206,7 +1221,7 @@ function BlogsSection({
 											onChange={handleChange}
 											required
 											placeholder="Image URL"
-											className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											className="flex-1 px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
 										/>
 									</div>
 								)}
