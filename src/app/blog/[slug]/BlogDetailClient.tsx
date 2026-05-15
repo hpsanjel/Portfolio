@@ -182,7 +182,8 @@ export default function BlogDetailClient({ slug }: BlogDetailClientProps) {
                         onClick={() => {
                           const shareUrl = currentUrl || `${window.location.origin}/blog/${blog.slug}`;
                           const shareText = `Check out this blog post: "${blog.title}" by ${blog.author}`;
-                          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}&quote=${encodeURIComponent(shareText)}`;
+                          // Remove quote parameter as it may cause 400 error
+                          const fbShareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
                           console.log('Debug - Share URL:', shareUrl);
                           console.log('Debug - FB Share URL:', fbShareUrl);
                           window.open(fbShareUrl, 'facebook-share', 'width=600,height=400,scrollbars=yes,resizable=yes');

@@ -25,11 +25,15 @@ export async function generateMetadata(
     // Try to fetch blog data for rich metadata
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     
+    console.log('Fetching metadata for slug:', slug, 'from:', `${baseUrl}/api/blogs/by-slug/${slug}`);
+    
     const response = await fetch(`${baseUrl}/api/blogs/by-slug/${slug}`, {
       cache: 'no-store',
       // Add timeout to prevent hanging
       signal: AbortSignal.timeout(5000)
     });
+    
+    console.log('Metadata fetch response status:', response.status);
     
     
     if (response.ok) {
