@@ -267,26 +267,31 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 		services: 0,
 		views: 0,
 	});
+	const [recentViews, setRecentViews] = useState<any[]>([]);
 
 	useEffect(() => {
-		// Fetch dashboard stats
 		const fetchStats = async () => {
 			try {
-				const [blogsRes, projectsRes, servicesRes] = await Promise.all([
+				const [blogsRes, projectsRes, servicesRes, analyticsRes] = await Promise.all([
 					fetch("/api/blogs"),
 					fetch("/api/projects"),
 					fetch("/api/services"),
+					fetch("/api/analytics"),
 				]);
 				const blogs = await blogsRes.json();
 				const projects = await projectsRes.json();
 				const services = await servicesRes.json();
+				const analytics = analyticsRes.ok ? await analyticsRes.json() : null;
 				
 				setStats({
 					blogs: Array.isArray(blogs) ? blogs.length : 0,
 					projects: Array.isArray(projects) ? projects.length : 0,
 					services: Array.isArray(services) ? services.length : 0,
-					views: Math.floor(Math.random() * 1000) + 500, // Mock data
+					views: analytics?.totalViews ?? 0,
 				});
+				if (analytics?.recentViews) {
+					setRecentViews(analytics.recentViews);
+				}
 			} catch (error) {
 				console.error("Error fetching stats:", error);
 			}
@@ -295,10 +300,10 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 	}, []);
 
 	const statCards = [
-		{ title: "Total Blogs", value: stats.blogs, icon: FileText, color: "from-blue-500 to-blue-600", change: "+12%" },
-		{ title: "Projects", value: stats.projects, icon: Briefcase, color: "from-purple-500 to-purple-600", change: "+8%" },
-		{ title: "Services", value: stats.services, icon: Settings, color: "from-green-500 to-green-600", change: "+5%" },
-		{ title: "Total Views", value: stats.views, icon: Eye, color: "from-orange-500 to-orange-600", change: "+25%" },
+		{ title: "Total Blogs", value: stats.blogs, icon: FileText, color: "from-blue-500 to-blue-600" },
+		{ title: "Projects", value: stats.projects, icon: Briefcase, color: "from-purple-500 to-purple-600" },
+		{ title: "Services", value: stats.services, icon: Settings, color: "from-green-500 to-green-600" },
+		{ title: "Total Views", value: stats.views, icon: Eye, color: "from-orange-500 to-orange-600" },
 	];
 
 	return (
@@ -308,13 +313,8 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 					<h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
 					<p className="text-gray-600 mt-1">Welcome back! Here's an overview of your portfolio.</p>
 				</div>
-				<button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-					<Download size={20} />
-					<span>Export Report</span>
-				</button>
 			</div>
 
-			{/* Stats Grid */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
 				{statCards.map((stat, index) => {
 					const Icon = stat.icon;
@@ -324,7 +324,6 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 								<div>
 									<p className="text-sm font-medium text-gray-600">{stat.title}</p>
 									<p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
-									<p className="text-sm text-green-600 mt-2">{stat.change} from last month</p>
 								</div>
 								<div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-lg flex items-center justify-center`}>
 									<Icon size={24} className="text-white" />
@@ -335,21 +334,19 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 				})}
 			</div>
 
-			{/* Recent Activity */}
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activity</h2>
+					<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Page Views</h2>
 					<div className="space-y-4">
-						{[
-							{ action: "New blog post created", item: "Getting Started with React", time: "2 hours ago", color: "bg-blue-100 text-blue-600" },
-							{ action: "Project updated", item: "Portfolio Website", time: "5 hours ago", color: "bg-purple-100 text-purple-600" },
-							{ action: "Service added", item: "Web Development", time: "1 day ago", color: "bg-green-100 text-green-600" },
-						].map((activity, index) => (
+						{recentViews.length === 0 && (
+							<p className="text-sm text-gray-500">No views recorded yet.</p>
+						)}
+						{recentViews.slice(0, 10).map((view: any, index: number) => (
 							<div key={index} className="flex items-center space-x-3">
-								<div className={`w-2 h-2 rounded-full ${activity.color}`}></div>
+								<div className="w-2 h-2 rounded-full bg-blue-100 text-blue-600"></div>
 								<div className="flex-1">
-									<p className="text-sm text-gray-900">{activity.action}</p>
-									<p className="text-xs text-gray-500">{activity.item} • {activity.time}</p>
+									<p className="text-sm text-gray-900">{view.path}</p>
+									<p className="text-xs text-gray-500">{new Date(view.timestamp).toLocaleString()}</p>
 								</div>
 							</div>
 						))}
@@ -396,6 +393,30 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 
 // Analytics Section
 function AnalyticsSection() {
+	const [analytics, setAnalytics] = useState<any>(null);
+	const [days, setDays] = useState(30);
+	const maxViews = analytics?.dailyViews?.length
+		? Math.max(...analytics.dailyViews.map((d: any) => d.views), 1)
+		: 1;
+
+	useEffect(() => {
+		const fetchAnalytics = async () => {
+			try {
+				const res = await fetch(`/api/analytics?days=${days}`);
+				if (res.ok) {
+					setAnalytics(await res.json());
+				}
+			} catch (error) {
+				console.error("Error fetching analytics:", error);
+			}
+		};
+		fetchAnalytics();
+	}, [days]);
+
+	const topMax = analytics?.topPages?.length
+		? Math.max(...analytics.topPages.map((p: any) => p.views), 1)
+		: 1;
+
 	return (
 		<div className="space-y-6">
 			<div className="flex items-center justify-between">
@@ -404,71 +425,86 @@ function AnalyticsSection() {
 					<p className="text-gray-600 mt-1">Track your portfolio performance and user engagement.</p>
 				</div>
 				<div className="flex items-center space-x-3">
-					<select className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-						<option>Last 7 days</option>
-						<option>Last 30 days</option>
-						<option>Last 3 months</option>
-						<option>Last year</option>
+					<select
+						className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+						value={days}
+						onChange={(e) => setDays(Number(e.target.value))}
+					>
+						<option value={7}>Last 7 days</option>
+						<option value={30}>Last 30 days</option>
+						<option value={90}>Last 3 months</option>
+						<option value={365}>Last year</option>
 					</select>
-					<button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-						<Download size={20} />
-						<span>Export</span>
-					</button>
 				</div>
 			</div>
 
-			{/* Analytics Cards */}
+			{/* Summary cards */}
+			<div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h3 className="text-sm font-medium text-gray-600 mb-2">Total Views</h3>
+					<p className="text-2xl font-bold text-gray-900">{analytics?.totalViews ?? "—"}</p>
+				</div>
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h3 className="text-sm font-medium text-gray-600 mb-2">Unique Visitors</h3>
+					<p className="text-2xl font-bold text-gray-900">{analytics?.totalSessions ?? "—"}</p>
+				</div>
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h3 className="text-sm font-medium text-gray-600 mb-2">Pages</h3>
+					<p className="text-2xl font-bold text-gray-900">{analytics?.totalPages ?? "—"}</p>
+				</div>
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h3 className="text-sm font-medium text-gray-600 mb-2">Bounce Rate</h3>
+					<p className="text-2xl font-bold text-gray-900">{analytics?.bounceRate ?? "—"}</p>
+				</div>
+			</div>
+
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 				<div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-4">Traffic Overview</h2>
-					<div className="h-64 flex items-center justify-center bg-gray-50 rounded-lg">
-						<div className="text-center">
-							<BarChart3 size={48} className="text-gray-400 mx-auto mb-2" />
-							<p className="text-gray-500">Analytics charts will be displayed here</p>
-							<p className="text-sm text-gray-400">Integration with analytics service needed</p>
-						</div>
+					<h2 className="text-lg font-semibold text-gray-900 mb-4">Daily Views (last {days} days)</h2>
+					<div className="h-64 flex items-end gap-1">
+						{analytics?.dailyViews?.length ? (
+							analytics.dailyViews.map((d: any, i: number) => (
+								<div
+									key={i}
+									className="flex-1 bg-blue-500 rounded-t hover:bg-blue-600 transition-colors relative group"
+									style={{ height: `${(d.views / maxViews) * 100}%` }}
+									title={`${d.date}: ${d.views} views`}
+								>
+									<div className="absolute -top-6 left-1/2 -translate-x-1/2 text-xs text-gray-600 whitespace-nowrap opacity-0 group-hover:opacity-100">
+										{d.views}
+									</div>
+								</div>
+							))
+						) : (
+							<div className="w-full h-full flex items-center justify-center">
+								<p className="text-gray-500">No data yet.</p>
+							</div>
+						)}
 					</div>
 				</div>
 
 				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">Top Pages</h2>
 					<div className="space-y-4">
-						{[
-							{ page: "/projects", views: 1234, percentage: 45 },
-							{ page: "/about", views: 987, percentage: 35 },
-							{ page: "/blog", views: 654, percentage: 25 },
-							{ page: "/contact", views: 432, percentage: 15 },
-						].map((item, index) => (
-							<div key={index}>
-								<div className="flex items-center justify-between mb-1">
-									<span className="text-sm text-gray-900">{item.page}</span>
-									<span className="text-sm text-gray-500">{item.views} views</span>
+						{analytics?.topPages?.length ? (
+							analytics.topPages.map((item: any, index: number) => (
+								<div key={index}>
+									<div className="flex items-center justify-between mb-1">
+										<span className="text-sm text-gray-900 truncate mr-2">{item.path}</span>
+										<span className="text-sm text-gray-500 whitespace-nowrap">{item.views} views</span>
+									</div>
+									<div className="w-full bg-gray-200 rounded-full h-2">
+										<div
+											className="bg-blue-600 h-2 rounded-full"
+											style={{ width: `${(item.views / topMax) * 100}%` }}
+										></div>
+									</div>
 								</div>
-								<div className="w-full bg-gray-200 rounded-full h-2">
-									<div className="bg-blue-600 h-2 rounded-full" style={{ width: `${item.percentage}%` }}></div>
-								</div>
-							</div>
-						))}
+							))
+						) : (
+							<p className="text-sm text-gray-500">No data yet.</p>
+						)}
 					</div>
-				</div>
-			</div>
-
-			{/* Additional Analytics */}
-			<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h3 className="text-sm font-medium text-gray-600 mb-2">Avg. Session Duration</h3>
-					<p className="text-2xl font-bold text-gray-900">3m 24s</p>
-					<p className="text-sm text-green-600 mt-2">+12% from last month</p>
-				</div>
-				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h3 className="text-sm font-medium text-gray-600 mb-2">Bounce Rate</h3>
-					<p className="text-2xl font-bold text-gray-900">32.5%</p>
-					<p className="text-sm text-green-600 mt-2">-5% from last month</p>
-				</div>
-				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h3 className="text-sm font-medium text-gray-600 mb-2">Conversion Rate</h3>
-					<p className="text-2xl font-bold text-gray-900">4.2%</p>
-					<p className="text-sm text-green-600 mt-2">+8% from last month</p>
 				</div>
 			</div>
 		</div>

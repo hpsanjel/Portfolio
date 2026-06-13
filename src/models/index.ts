@@ -22,3 +22,5 @@ export { default as CvReference } from './CvReference';
 export type { ICvReference } from './CvReference';
 export { default as CvProject } from './CvProject';
 export type { ICvProject } from './CvProject';
+export { default as PageView } from './PageView';
+export type { IPageView } from './PageView';
