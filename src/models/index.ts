@@ -24,3 +24,5 @@ export { default as CvProject } from './CvProject';
 export type { ICvProject } from './CvProject';
 export { default as PageView } from './PageView';
 export type { IPageView } from './PageView';
+export { default as ActivityLog } from './ActivityLog';
+export type { IActivityLog } from './ActivityLog';

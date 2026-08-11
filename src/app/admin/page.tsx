@@ -267,31 +267,31 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 		services: 0,
 		views: 0,
 	});
-	const [recentViews, setRecentViews] = useState<any[]>([]);
+	const [recentActivities, setRecentActivities] = useState<any[]>([]);
 
 	useEffect(() => {
 		const fetchStats = async () => {
 			try {
-				const [blogsRes, projectsRes, servicesRes, analyticsRes] = await Promise.all([
+				const [blogsRes, projectsRes, servicesRes, analyticsRes, activitiesRes] = await Promise.all([
 					fetch("/api/blogs"),
 					fetch("/api/projects"),
 					fetch("/api/services"),
 					fetch("/api/analytics"),
+					fetch("/api/admin/activities"),
 				]);
 				const blogs = await blogsRes.json();
 				const projects = await projectsRes.json();
 				const services = await servicesRes.json();
 				const analytics = analyticsRes.ok ? await analyticsRes.json() : null;
-				
+				const activities = activitiesRes.ok ? await activitiesRes.json() : [];
+
 				setStats({
 					blogs: Array.isArray(blogs) ? blogs.length : 0,
 					projects: Array.isArray(projects) ? projects.length : 0,
 					services: Array.isArray(services) ? services.length : 0,
 					views: analytics?.totalViews ?? 0,
 				});
-				if (analytics?.recentViews) {
-					setRecentViews(analytics.recentViews);
-				}
+				setRecentActivities(activities);
 			} catch (error) {
 				console.error("Error fetching stats:", error);
 			}
@@ -336,17 +336,19 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 
 			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
 				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-					<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Page Views</h2>
+					<h2 className="text-lg font-semibold text-gray-900 mb-4">Recent Activities</h2>
 					<div className="space-y-4">
-						{recentViews.length === 0 && (
-							<p className="text-sm text-gray-500">No views recorded yet.</p>
+						{recentActivities.length === 0 && (
+							<p className="text-sm text-gray-500">No activities recorded yet.</p>
 						)}
-						{recentViews.slice(0, 10).map((view: any, index: number) => (
-							<div key={index} className="flex items-center space-x-3">
+						{recentActivities.slice(0, 10).map((activity: any, index: number) => (
+							<div key={activity._id || index} className="flex items-center space-x-3">
 								<div className="w-2 h-2 rounded-full bg-blue-100 text-blue-600"></div>
 								<div className="flex-1">
-									<p className="text-sm text-gray-900">{view.path}</p>
-									<p className="text-xs text-gray-500">{new Date(view.timestamp).toLocaleString()}</p>
+									<p className="text-sm text-gray-900">
+										{activity.action} {activity.entityTitle ? `- ${activity.entityTitle}` : ""}
+									</p>
+									<p className="text-xs text-gray-500">{new Date(activity.timestamp).toLocaleString()}</p>
 								</div>
 							</div>
 						))}

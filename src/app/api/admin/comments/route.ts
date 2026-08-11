@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import Comment from '../../../../models/Comment';
+import { ActivityLog } from '../../../../models';
 
 // GET /api/admin/comments - Get all comments (including unapproved)
 export async function GET(request: NextRequest) {
@@ -53,26 +54,46 @@ export async function PUT(request: NextRequest) {
 
     await mongoose.connect(process.env.MONGODB_URI!);
 
+    let result: any = {};
+
     if (action === 'reject') {
       // Delete rejected comments
-      const result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      await ActivityLog.create({
+        action: "rejected comments",
+        entityType: "comment",
+        entityId: commentIds.join(","),
+        details: `${result.deletedCount} comment(s) were rejected.`,
+      });
       return NextResponse.json({ 
         message: 'Comments rejected successfully', 
         deletedCount: result.deletedCount 
       });
     } else if (action === 'delete') {
       // Delete comments
-      const result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      await ActivityLog.create({
+        action: "deleted comments",
+        entityType: "comment",
+        entityId: commentIds.join(","),
+        details: `${result.deletedCount} comment(s) were deleted.`,
+      });
       return NextResponse.json({ 
         message: 'Comments deleted successfully', 
         deletedCount: result.deletedCount 
       });
     } else {
       // Approve comments
-      const result = await Comment.updateMany(
+      result = await Comment.updateMany(
         { _id: { $in: commentIds } },
         { isApproved: true, updatedAt: new Date() }
       );
+      await ActivityLog.create({
+        action: "approved comments",
+        entityType: "comment",
+        entityId: commentIds.join(","),
+        details: `${result.modifiedCount} comment(s) were approved.`,
+      });
       
       return NextResponse.json({ 
         message: 'Comments approved successfully', 

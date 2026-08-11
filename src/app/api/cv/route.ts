@@ -11,6 +11,7 @@ import {
   CvReference,
   CvProject
 } from "../../../models";
+import { ActivityLog } from "../../../models";
 
 export const runtime = "nodejs";
 
@@ -237,6 +238,13 @@ export async function PUT(request: Request) {
 				await CvProject.insertMany(projectData);
 			}
 		}
+
+		await ActivityLog.create({
+			action: "updated CV",
+			entityType: "cv",
+			entityId: "cv",
+			details: "CV data was updated.",
+		});
 
 		return NextResponse.json({ ok: true });
 	} catch (error) {

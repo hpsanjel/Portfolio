@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../lib/mongoose";
 import { Blog, IBlog } from "../../../models";
+import { ActivityLog } from "../../../models";
 
 // GET /api/blogs
 export async function GET(request: Request) {
@@ -45,6 +46,15 @@ export async function POST(request: Request) {
 		});
 		
 		await blog.save();
+
+		await ActivityLog.create({
+			action: "created blog",
+			entityType: "blog",
+			entityId: blog._id.toString(),
+			entityTitle: title,
+			details: `Blog "${title}" was created.`,
+		});
+
 		return NextResponse.json(blog, { status: 201 });
 	} catch (error) {
 		console.error('Error creating blog:', error);

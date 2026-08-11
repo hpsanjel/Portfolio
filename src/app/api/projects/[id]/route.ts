@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Project } from "../../../../models";
 import { deleteImage, extractPublicId, isCloudinaryUrl } from "../../../../lib/cloudinary";
+import { ActivityLog } from "../../../../models";
 
 // PUT /api/projects/:id
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -48,6 +49,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 		
 		const updatedProject = await Project.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
 		
+		await ActivityLog.create({
+			action: "updated project",
+			entityType: "project",
+			entityId: id,
+			entityTitle: title,
+			details: `Project "${title}" was updated.`,
+		});
+
 		return NextResponse.json(updatedProject);
 	} catch (error) {
 		console.error('Error updating project:', error);
@@ -62,7 +71,7 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 		
 		await connectDB();
 		
-		const deletedProject = await Project.findByIdAndDelete(id);
+		const deletedProject = await Project.findById(id);
 		
 		if (!deletedProject) {
 			return NextResponse.json({ message: "Project not found" }, { status: 404 });
@@ -80,6 +89,16 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 				}
 			}
 		}
+
+		await Project.findByIdAndDelete(id);
+
+		await ActivityLog.create({
+			action: "deleted project",
+			entityType: "project",
+			entityId: id,
+			entityTitle: deletedProject.title,
+			details: `Project "${deletedProject.title}" was deleted.`,
+		});
 		
 		return NextResponse.json({ ok: true });
 	} catch (error) {

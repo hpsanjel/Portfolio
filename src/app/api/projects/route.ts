@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../lib/mongoose";
 import { Project, IProject } from "../../../models";
+import { ActivityLog } from "../../../models";
 
 // GET /api/projects
 export async function GET(request: Request) {
@@ -45,6 +46,15 @@ export async function POST(request: Request) {
 		});
 		
 		await project.save();
+
+		await ActivityLog.create({
+			action: "created project",
+			entityType: "project",
+			entityId: project._id.toString(),
+			entityTitle: title,
+			details: `Project "${title}" was created.`,
+		});
+
 		return NextResponse.json(project, { status: 201 });
 	} catch (error) {
 		console.error('Error creating project:', error);

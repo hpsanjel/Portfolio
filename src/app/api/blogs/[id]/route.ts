@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Blog } from "../../../../models";
 import { deleteImage, extractPublicId, isCloudinaryUrl } from "../../../../lib/cloudinary";
+import { ActivityLog } from "../../../../models";
 
 // GET /api/blogs/[id]
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -67,6 +68,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 		
 		const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
 		
+		await ActivityLog.create({
+			action: "updated blog",
+			entityType: "blog",
+			entityId: id,
+			entityTitle: title,
+			details: `Blog "${title}" was updated.`,
+		});
+
 		return NextResponse.json(updatedBlog);
 	} catch (error) {
 		console.error('Error updating blog:', error);
@@ -81,7 +90,7 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 		
 		await connectDB();
 		
-		const deletedBlog = await Blog.findByIdAndDelete(id);
+		const deletedBlog = await Blog.findById(id);
 		
 		if (!deletedBlog) {
 			return NextResponse.json({ message: "Blog not found" }, { status: 404 });
@@ -99,6 +108,16 @@ export async function DELETE(request: Request, { params }: { params: Promise<{ i
 				}
 			}
 		}
+
+		await Blog.findByIdAndDelete(id);
+
+		await ActivityLog.create({
+			action: "deleted blog",
+			entityType: "blog",
+			entityId: id,
+			entityTitle: deletedBlog.title,
+			details: `Blog "${deletedBlog.title}" was deleted.`,
+		});
 		
 		return NextResponse.json({ message: "Blog deleted successfully" });
 	} catch (error) {

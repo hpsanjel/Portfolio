@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
 import Comment from '../../../../../models/Comment';
+import { ActivityLog } from '../../../../../models';
 
 // PUT /api/admin/comments/[id] - Approve/reject a single comment
 export async function PUT(
@@ -33,6 +34,14 @@ export async function PUT(
           { status: 404 }
         );
       }
+
+      await ActivityLog.create({
+        action: "rejected comment",
+        entityType: "comment",
+        entityId: id,
+        details: `Comment was rejected.`,
+      });
+
       return NextResponse.json({ message: 'Comment rejected successfully' });
     } else {
       // Approve the comment
@@ -48,6 +57,13 @@ export async function PUT(
           { status: 404 }
         );
       }
+
+      await ActivityLog.create({
+        action: "approved comment",
+        entityType: "comment",
+        entityId: id,
+        details: `Comment was approved.`,
+      });
       
       return NextResponse.json({ message: 'Comment approved successfully', comment: result });
     }
@@ -79,6 +95,13 @@ export async function DELETE(
         { status: 404 }
       );
     }
+
+    await ActivityLog.create({
+      action: "deleted comment",
+      entityType: "comment",
+      entityId: id,
+      details: `Comment was deleted.`,
+    });
 
     return NextResponse.json({ message: 'Comment deleted successfully' });
   } catch (error) {

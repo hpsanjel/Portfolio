@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../lib/mongoose";
 import { Service, IService } from "../../../models";
+import { ActivityLog } from "../../../models";
 
 // GET /api/services
 export async function GET() {
@@ -31,6 +32,15 @@ export async function POST(request: Request) {
 		});
 		
 		await service.save();
+
+		await ActivityLog.create({
+			action: "created service",
+			entityType: "service",
+			entityId: service._id.toString(),
+			entityTitle: title,
+			details: `Service "${title}" was created.`,
+		});
+
 		return NextResponse.json(service, { status: 201 });
 	} catch (error) {
 		console.error('Error creating service:', error);

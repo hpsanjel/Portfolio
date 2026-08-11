@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Project } from "../../../../models";
+import { ActivityLog } from "../../../../models";
 
 // PUT /api/projects/order
 export async function PUT(request: Request) {
@@ -19,6 +20,13 @@ export async function PUT(request: Request) {
     );
 
     const updatedProjects = await Promise.all(updatePromises);
+
+	await ActivityLog.create({
+		action: "reordered projects",
+		entityType: "project",
+		entityId: projectOrders.map((p: any) => p.id).join(","),
+		details: `Reordered ${projectOrders.length} project(s).`,
+	});
 
     return NextResponse.json({ 
       message: "Project orders updated successfully", 

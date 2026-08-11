@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Blog } from "../../../../models";
+import { ActivityLog } from "../../../../models";
 
 // PUT /api/blogs/order
 export async function PUT(request: Request) {
@@ -19,6 +20,13 @@ export async function PUT(request: Request) {
     );
 
     const updatedBlogs = await Promise.all(updatePromises);
+
+	await ActivityLog.create({
+		action: "reordered blogs",
+		entityType: "blog",
+		entityId: blogOrders.map((b: any) => b.id).join(","),
+		details: `Reordered ${blogOrders.length} blog(s).`,
+	});
 
     return NextResponse.json({ 
       message: "Blog orders updated successfully", 

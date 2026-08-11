@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Service } from "../../../../models";
 import { deleteImage, extractPublicId, isCloudinaryUrl } from "../../../../lib/cloudinary";
+import { ActivityLog } from "../../../../models";
 
 // PUT /api/services/:id
 export async function PUT(request: Request, { params }: { params: Promise<{ id: string }> }) {
@@ -43,6 +44,14 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 		
 		const updatedService = await Service.findByIdAndUpdate(id, updateData, { new: true });
 		
+		await ActivityLog.create({
+			action: "updated service",
+			entityType: "service",
+			entityId: id,
+			entityTitle: title,
+			details: `Service "${title}" was updated.`,
+		});
+
 		return NextResponse.json(updatedService);
 	} catch (error) {
 		console.error('Error updating service:', error);
@@ -57,7 +66,7 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 		
 		await connectDB();
 		
-		const deletedService = await Service.findByIdAndDelete(id);
+		const deletedService = await Service.findById(id);
 		
 		if (!deletedService) {
 			return NextResponse.json({ message: "Service not found" }, { status: 404 });
@@ -75,6 +84,16 @@ export async function DELETE(_: Request, { params }: { params: Promise<{ id: str
 				}
 			}
 		}
+
+		await Service.findByIdAndDelete(id);
+
+		await ActivityLog.create({
+			action: "deleted service",
+			entityType: "service",
+			entityId: id,
+			entityTitle: deletedService.title,
+			details: `Service "${deletedService.title}" was deleted.`,
+		});
 		
 		return NextResponse.json({ ok: true });
 	} catch (error) {
