@@ -4,7 +4,7 @@ import { PageView } from "../../../models";
 
 export const runtime = "nodejs";
 
-// Get the visitor's real IP from proxy headers (Vercel/Cloudflare/etc.)
+// Get the visitor's real IP from proxy headers (nginx/Vercel/Cloudflare/etc.)
 function getClientIP(request: NextRequest): string {
   const forwarded = request.headers.get("x-forwarded-for");
   return (
@@ -25,19 +25,30 @@ function isPrivateIP(ip: string): boolean {
   );
 }
 
-// Best-effort city/country lookup via a free, keyless geo-IP API. Fails silently.
+// Best-effort city/country lookup via a free, keyless geo-IP API. Fails silently to the
+// caller, but logs the reason server-side so failures are diagnosable from server logs.
 async function lookupGeo(ip: string): Promise<{ city?: string; country?: string }> {
-  if (isPrivateIP(ip)) return {};
+  if (isPrivateIP(ip)) {
+    console.warn(`[analytics] Skipping geo lookup — IP "${ip}" looks private/local. This usually means the reverse proxy in front of this app isn't forwarding the real client IP (check X-Forwarded-For / X-Real-IP in your nginx or proxy config).`);
+    return {};
+  }
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    const timeout = setTimeout(() => controller.abort(), 5000);
     const res = await fetch(`https://ipwho.is/${ip}`, { signal: controller.signal });
     clearTimeout(timeout);
-    if (!res.ok) return {};
+    if (!res.ok) {
+      console.warn(`[analytics] Geo lookup for ${ip} failed: HTTP ${res.status}`);
+      return {};
+    }
     const data = await res.json();
-    if (!data.success) return {};
+    if (!data.success) {
+      console.warn(`[analytics] Geo lookup for ${ip} returned success:false — ${data.message || "no message"}`);
+      return {};
+    }
     return { city: data.city || undefined, country: data.country || undefined };
-  } catch {
+  } catch (error) {
+    console.warn(`[analytics] Geo lookup for ${ip} threw:`, error instanceof Error ? error.message : error);
     return {};
   }
 }
