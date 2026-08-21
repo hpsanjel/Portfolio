@@ -4,6 +4,8 @@ export interface IPageView extends Document {
   path: string;
   timestamp: Date;
   sessionId: string;
+  city?: string;
+  country?: string;
 }
 
 const PageViewSchema: Schema = new Schema({
@@ -21,6 +23,12 @@ const PageViewSchema: Schema = new Schema({
     type: String,
     required: true,
     index: true,
+  },
+  city: {
+    type: String,
+  },
+  country: {
+    type: String,
   },
 });
 

@@ -397,6 +397,8 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 function AnalyticsSection() {
 	const [analytics, setAnalytics] = useState<any>(null);
 	const [days, setDays] = useState(30);
+	const [selectedPath, setSelectedPath] = useState("/cv-builder");
+	const [pathAnalytics, setPathAnalytics] = useState<any>(null);
 	const maxViews = analytics?.dailyViews?.length
 		? Math.max(...analytics.dailyViews.map((d: any) => d.views), 1)
 		: 1;
@@ -415,8 +417,30 @@ function AnalyticsSection() {
 		fetchAnalytics();
 	}, [days]);
 
+	useEffect(() => {
+		if (!selectedPath) return;
+		const fetchPathAnalytics = async () => {
+			try {
+				const res = await fetch(`/api/analytics?days=${days}&path=${encodeURIComponent(selectedPath)}`);
+				if (res.ok) {
+					setPathAnalytics(await res.json());
+				}
+			} catch (error) {
+				console.error("Error fetching page location analytics:", error);
+			}
+		};
+		fetchPathAnalytics();
+	}, [days, selectedPath]);
+
 	const topMax = analytics?.topPages?.length
 		? Math.max(...analytics.topPages.map((p: any) => p.views), 1)
+		: 1;
+
+	const pathOptions = Array.from(
+		new Set(["/cv-builder", ...(analytics?.topPages?.map((p: any) => p.path) ?? [])])
+	);
+	const locationMax = pathAnalytics?.pathLocations?.length
+		? Math.max(...pathAnalytics.pathLocations.map((l: any) => l.views), 1)
 		: 1;
 
 	return (
@@ -507,6 +531,53 @@ function AnalyticsSection() {
 							<p className="text-sm text-gray-500">No data yet.</p>
 						)}
 					</div>
+				</div>
+			</div>
+
+			{/* Page Views by Location */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+				<div className="flex items-center justify-between mb-4 flex-wrap gap-3">
+					<h2 className="text-lg font-semibold text-gray-900">Page Views by Location</h2>
+					<select
+						className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+						value={selectedPath}
+						onChange={(e) => setSelectedPath(e.target.value)}
+					>
+						{pathOptions.map((p) => (
+							<option key={p} value={p}>
+								{p}
+							</option>
+						))}
+					</select>
+				</div>
+
+				<p className="text-sm text-gray-600 mb-4">
+					<span className="font-semibold text-gray-900">{pathAnalytics?.pathViews ?? "—"}</span> total loads of{" "}
+					<span className="font-mono">{selectedPath}</span> (all-time). Breakdown below is for the last {days} days.
+				</p>
+
+				<div className="space-y-3">
+					{pathAnalytics?.pathLocations?.length ? (
+						pathAnalytics.pathLocations.map((loc: any, index: number) => (
+							<div key={index}>
+								<div className="flex items-center justify-between mb-1">
+									<span className="text-sm text-gray-900 truncate mr-2">
+										{loc.city !== "Unknown" ? `${loc.city}, ` : ""}
+										{loc.country}
+									</span>
+									<span className="text-sm text-gray-500 whitespace-nowrap">{loc.views} views</span>
+								</div>
+								<div className="w-full bg-gray-200 rounded-full h-2">
+									<div
+										className="bg-emerald-600 h-2 rounded-full"
+										style={{ width: `${(loc.views / locationMax) * 100}%` }}
+									></div>
+								</div>
+							</div>
+						))
+					) : (
+						<p className="text-sm text-gray-500">No location data yet — this fills in as visitors load the page.</p>
+					)}
 				</div>
 			</div>
 		</div>
