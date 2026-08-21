@@ -12,6 +12,7 @@ export interface IComment extends Document {
   createdAt: Date;
   updatedAt: Date;
   parentId?: mongoose.Types.ObjectId; // For threaded replies
+  isAdminReply?: boolean; // True when this comment was posted by the site admin
 }
 
 const CommentSchema: Schema = new Schema({
@@ -56,6 +57,10 @@ const CommentSchema: Schema = new Schema({
     type: String,
     ref: 'Comment',
     default: null
+  },
+  isAdminReply: {
+    type: Boolean,
+    default: false
   },
   createdAt: {
     type: Date,

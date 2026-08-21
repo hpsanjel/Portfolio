@@ -9,6 +9,7 @@ interface Comment {
   likes: string[];
   likeCount: number;
   replies?: Comment[];
+  isAdminReply?: boolean;
 }
 
 interface CommentsProps {
@@ -502,11 +503,16 @@ export default function Comments({ blogId }: CommentsProps) {
                     {comment.replies.length} {comment.replies.length === 1 ? 'Reply' : 'Replies'}
                   </div>
                   {comment.replies.map((reply: any) => (
-                    <div key={reply._id} className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4">
+                    <div key={reply._id} className={`rounded-lg p-4 ${reply.isAdminReply ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800' : 'bg-gray-50 dark:bg-gray-700'}`}>
                       <div className="flex items-start justify-between mb-2">
                         <div>
-                          <h5 className="font-medium text-gray-800 dark:text-gray-200 text-sm">
+                          <h5 className="font-medium text-gray-800 dark:text-gray-200 text-sm flex items-center gap-2">
                             {reply.author}
+                            {reply.isAdminReply && (
+                              <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-600 text-white">
+                                Author
+                              </span>
+                            )}
                           </h5>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                             {formatDate(reply.createdAt)}

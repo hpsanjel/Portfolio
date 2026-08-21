@@ -1575,6 +1575,15 @@ function CommentsSection() {
 	const [filter, setFilter] = useState('all'); // 'all', 'pending', 'approved'
 	const [selectedComments, setSelectedComments] = useState<string[]>([]);
 	const [actionLoading, setActionLoading] = useState(false);
+	const [replyingToId, setReplyingToId] = useState<string | null>(null);
+	const [replyDraft, setReplyDraft] = useState('');
+	const [replySubmitting, setReplySubmitting] = useState(false);
+
+	const refetchComments = async () => {
+		const response = await fetch(`/api/admin/comments${filter !== 'all' ? `?status=${filter}` : ''}`);
+		const data = await response.json();
+		setComments(data);
+	};
 
 	useEffect(() => {
 		async function fetchComments() {
@@ -1593,6 +1602,34 @@ function CommentsSection() {
 
 		fetchComments();
 	}, [filter]);
+
+	const handleSendReply = async (commentId: string) => {
+		if (!replyDraft.trim()) return;
+
+		setReplySubmitting(true);
+		try {
+			const res = await fetch(`/api/admin/comments/${commentId}/reply`, {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ content: replyDraft.trim() })
+			});
+
+			if (res.ok) {
+				setReplyDraft('');
+				setReplyingToId(null);
+				await refetchComments();
+				alert('Reply posted successfully!');
+			} else {
+				const errorData = await res.json();
+				alert(`Failed to post reply: ${errorData.error || 'Unknown error'}`);
+			}
+		} catch (error) {
+			console.error('Error posting reply:', error);
+			alert('Failed to post reply');
+		} finally {
+			setReplySubmitting(false);
+		}
+	};
 
 	const handleSelectComment = (commentId: string) => {
 		setSelectedComments(prev => 
@@ -1802,7 +1839,14 @@ function CommentsSection() {
 										</td>
 										<td className="p-4">
 											<div>
-												<div className="font-medium text-gray-900">{comment.author}</div>
+												<div className="font-medium text-gray-900 flex items-center gap-2">
+													{comment.author}
+													{comment.isAdminReply && (
+														<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+															Admin Reply
+														</span>
+													)}
+												</div>
 												<div className="text-sm text-gray-600">{comment.email}</div>
 											</div>
 										</td>
@@ -1814,9 +1858,18 @@ function CommentsSection() {
 											</div>
 										</td>
 										<td className="p-4">
-											<div className="text-sm text-blue-600 hover:text-blue-800">
-												{comment.blogId}
-											</div>
+											{comment.blogId?._id ? (
+												<a
+													href={`/blog/${comment.blogId._id}`}
+													target="_blank"
+													rel="noopener noreferrer"
+													className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+												>
+													{comment.blogId.title || comment.blogId._id}
+												</a>
+											) : (
+												<span className="text-sm text-gray-400 italic">Blog not found</span>
+											)}
 										</td>
 										<td className="p-4 text-sm text-gray-600">
 											{formatDate(comment.createdAt)}
@@ -1831,30 +1884,62 @@ function CommentsSection() {
 											</span>
 										</td>
 										<td className="p-4">
-											<div className="flex gap-2">
-												{!comment.isApproved && (
+											<div className="flex flex-col gap-2">
+												<div className="flex gap-2">
+													{!comment.isApproved && (
+														<button
+															onClick={() => handleIndividualAction(comment._id, 'approve')}
+															disabled={actionLoading}
+															className="text-green-600 hover:text-green-800 text-sm disabled:text-green-400 disabled:cursor-not-allowed transition-colors"
+														>
+															{actionLoading ? '...' : 'Approve'}
+														</button>
+													)}
+													{comment.isApproved && !comment.isAdminReply && (
+														<button
+															onClick={() => {
+																setReplyingToId(replyingToId === comment._id ? null : comment._id);
+																setReplyDraft('');
+															}}
+															disabled={actionLoading}
+															className="text-blue-600 hover:text-blue-800 text-sm disabled:text-blue-400 disabled:cursor-not-allowed transition-colors"
+														>
+															{replyingToId === comment._id ? 'Cancel' : 'Reply'}
+														</button>
+													)}
 													<button
-														onClick={() => handleIndividualAction(comment._id, 'approve')}
+														onClick={() => handleIndividualAction(comment._id, 'reject')}
 														disabled={actionLoading}
-														className="text-green-600 hover:text-green-800 text-sm disabled:text-green-400 disabled:cursor-not-allowed transition-colors"
+														className="text-red-600 hover:text-red-800 text-sm disabled:text-red-400 disabled:cursor-not-allowed transition-colors"
 													>
-														{actionLoading ? '...' : 'Approve'}
+														{actionLoading ? '...' : 'Reject'}
 													</button>
+													<button
+														onClick={() => handleIndividualAction(comment._id, 'delete')}
+														disabled={actionLoading}
+														className="text-gray-600 hover:text-gray-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
+													>
+														{actionLoading ? '...' : 'Delete'}
+													</button>
+												</div>
+												{replyingToId === comment._id && (
+													<div className="flex flex-col gap-2 w-64">
+														<textarea
+															value={replyDraft}
+															onChange={(e) => setReplyDraft(e.target.value)}
+															rows={3}
+															placeholder="Write your reply..."
+															className="text-sm p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+														/>
+														<button
+															onClick={() => handleSendReply(comment._id)}
+															disabled={replySubmitting || !replyDraft.trim()}
+															className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm disabled:bg-blue-400 disabled:cursor-not-allowed transition-colors self-start"
+														>
+															{replySubmitting ? 'Sending...' : 'Send Reply'}
+														</button>
+													</div>
 												)}
-												<button
-													onClick={() => handleIndividualAction(comment._id, 'reject')}
-													disabled={actionLoading}
-													className="text-red-600 hover:text-red-800 text-sm disabled:text-red-400 disabled:cursor-not-allowed transition-colors"
-												>
-													{actionLoading ? '...' : 'Reject'}
-												</button>
-												<button
-													onClick={() => handleIndividualAction(comment._id, 'delete')}
-													disabled={actionLoading}
-													className="text-gray-600 hover:text-gray-800 text-sm disabled:text-gray-400 disabled:cursor-not-allowed transition-colors"
-												>
-													{actionLoading ? '...' : 'Delete'}
-												</button>
 											</div>
 										</td>
 									</tr>

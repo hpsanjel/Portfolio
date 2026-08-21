@@ -20,7 +20,8 @@ export async function GET(request: NextRequest) {
 
     const comments = await Comment.find(query)
       .sort({ createdAt: -1 })
-      .populate('parentId', 'author content');
+      .populate('parentId', 'author content')
+      .populate('blogId', 'title');
 
     return NextResponse.json(comments);
   } catch (error) {
