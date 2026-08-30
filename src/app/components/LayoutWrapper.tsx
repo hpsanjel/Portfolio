@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import HomeNavHeader from "./HomeNavHeader";
+import TopInfoBar from "./TopInfoBar";
 import Footer from "./Footer";
 
 function getSessionId(): string {
@@ -34,8 +35,14 @@ export default function LayoutWrapper({ children }: { children: React.ReactNode 
 	
 	return (
 		<>
+			<a href="#main-content" className="skip-link">
+				Skip to main content
+			</a>
+			<TopInfoBar />
 			<HomeNavHeader />
-			<main className="pt-32">{children}</main>
+			<main id="main-content" className="pt-40 sm:pt-41">
+				{children}
+			</main>
 			<Footer />
 		</>
 	);

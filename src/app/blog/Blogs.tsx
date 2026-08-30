@@ -101,13 +101,14 @@ function BlogsContent() {
 
     return (
         <section id="blog" className="w-full px-[5%] md:px-[8%] py-10 scroll-mt-32">
-            <SectionHeader 
+            <SectionHeader
+                as={isListingPage ? "h1" : "h2"}
                 intro="Blogs"
                 title={yearParam || monthParam ? "Archived Blogs" : "Thoughts and Insights"}
                 description={
                     yearParam || monthParam 
                         ? `Blogs from ${monthParam ? new Date(0, parseInt(monthParam) - 1).toLocaleDateString('en-US', { month: 'long' }) : ''} ${yearParam || ''}`.trim()
-                        : "Dive into my blog where I share my thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology."
+                        : "Dive into our blog where we share our thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology."
                 }
             />
             
@@ -321,10 +322,10 @@ function BlogsContent() {
                                     </div>
                                 )}
                                 <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined}>
-                                    <h5 className="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title group-hover:text-yellow-600 dark:group-hover:text-yellow-600 transition-colors duration-300">{blog.title}</h5>
+                                    <h5 className="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title group-hover:text-accent dark:group-hover:text-yellow-400 transition-colors duration-300">{blog.title}</h5>
                                 </Link>
                                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-300">{blog.excerpt || (blog.content ? stripHtml(blog.content).substring(0, 150) + '...' : "")}</p>
-                                <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined} className="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white group-hover:text-yellow-600 dark:group-hover:text-yellow-600 transition-colors duration-300" aria-label={`Read more about ${blog.title}`}>
+                                <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined} className="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white group-hover:text-accent dark:group-hover:text-yellow-400 transition-colors duration-300" aria-label={`Read more about ${blog.title}`}>
                                     Read more
                                     <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />

@@ -39,7 +39,7 @@ const BlogSchema: Schema = new Schema({
   },
   author: {
     type: String,
-    default: 'Hari Prasad Sanjel'
+    default: 'SanjelTech'
   },
   link: {
     type: String,
@@ -70,11 +70,10 @@ function stripHtml(html: string): string {
 }
 
 // Generate excerpt before validation
-BlogSchema.pre('validate', function() {
-  const blog = this as any;
-  if (blog.isModified('content') && !blog.excerpt) {
-    const plainText = stripHtml(blog.content);
-    blog.excerpt = plainText.substring(0, 150) + '...';
+BlogSchema.pre('validate', function (this: IBlog) {
+  if (this.isModified('content') && !this.excerpt) {
+    const plainText = stripHtml(this.content);
+    this.excerpt = plainText.substring(0, 150) + '...';
   }
 });
 

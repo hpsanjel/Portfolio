@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect, Suspense } from "react"
+import { useState, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Lock, Eye, EyeOff } from "lucide-react"
 
@@ -12,34 +12,23 @@ function AdminLoginContent() {
   const searchParams = useSearchParams()
   const redirectPath = searchParams.get('redirect') || '/admin'
 
-  useEffect(() => {
-    // Check if already has access
-    const hasAccess = document.cookie.includes('admin-access=')
-    if (hasAccess) {
-      router.push(redirectPath)
-    }
-  }, [router, redirectPath])
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setError("")
 
     try {
-      // For demo purposes, using a simple password
-      // In production, you should verify against a secure backend
-      const correctPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || "P@ssw0rd_N0rw@y"
-      
-      if (password === correctPassword) {
-        // Set cookie that expires in 24 hours
-        document.cookie = `admin-access=${correctPassword}; path=/; max-age=86400`
-        
-        // Add a small delay before redirect
-        setTimeout(() => {
-          router.push(redirectPath)
-        }, 100)
+      const response = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      })
+
+      if (response.ok) {
+        router.push(redirectPath)
       } else {
-        setError("Incorrect password. Please try again.")
+        const result = await response.json().catch(() => ({}))
+        setError(result.error || "Incorrect password. Please try again.")
       }
     } catch (err) {
       setError("An error occurred. Please try again.")
@@ -78,15 +67,17 @@ function AdminLoginContent() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-pressed={showPassword}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <EyeOff className="w-5 h-5" aria-hidden="true" /> : <Eye className="w-5 h-5" aria-hidden="true" />}
                 </button>
               </div>
             </div>
 
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
+              <div role="alert" className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                 {error}
               </div>
             )}

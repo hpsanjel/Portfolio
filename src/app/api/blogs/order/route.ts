@@ -24,7 +24,7 @@ export async function PUT(request: Request) {
 	await ActivityLog.create({
 		action: "reordered blogs",
 		entityType: "blog",
-		entityId: blogOrders.map((b: any) => b.id).join(","),
+		entityId: blogOrders.map((b: { id: string; order: number }) => b.id).join(","),
 		details: `Reordered ${blogOrders.length} blog(s).`,
 	});
 

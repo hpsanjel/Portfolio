@@ -1,8 +1,13 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-	title: "Admin - Hari Prasad Sanjel",
+	title: "Admin",
 	description: "Admin Panel for Portfolio Management",
+	robots: {
+		index: false,
+		follow: false,
+		nocache: true,
+	},
 };
 
 export default function AdminLayout({

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar, MessageSquare } from "lucide-react";
+import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar, MessageSquare, Star, HelpCircle } from "lucide-react";
 import Image from "next/image";
 import { BLOG_CATEGORIES, PREDEFINED_TAGS } from "../../lib/blogCategories";
 
@@ -18,13 +18,21 @@ interface Project {
 	order: number;
 }
 
+interface SearchResultItem {
+	type: 'blog' | 'project' | 'service';
+	title: string;
+	content: string;
+	[key: string]: unknown;
+}
+
 const MENU_ITEMS = [
 	{ key: "dashboard", label: "Dashboard", icon: Home },
 	{ key: "blogs", label: "Blog Posts", icon: FileText },
 	{ key: "comments", label: "Comments", icon: MessageSquare },
 	{ key: "projects", label: "Projects", icon: Briefcase },
 	{ key: "services", label: "Services", icon: Settings },
-	{ key: "cv", label: "CV Management", icon: User },
+	{ key: "testimonials", label: "Testimonials", icon: Star },
+	{ key: "faqs", label: "FAQs", icon: HelpCircle },
 	{ key: "analytics", label: "Analytics", icon: BarChart3 },
 ];
 
@@ -36,7 +44,7 @@ export default function AdminPage() {
 	const [notificationsOpen, setNotificationsOpen] = useState(false);
 	const [currentDate, setCurrentDate] = useState<string>("");
 	const [mounted, setMounted] = useState(false);
-	const [searchResults, setSearchResults] = useState<any[]>([]);
+	const [searchResults, setSearchResults] = useState<SearchResultItem[]>([]);
 	const [showSearchResults, setShowSearchResults] = useState(false);
 
 	useEffect(() => {
@@ -64,10 +72,10 @@ export default function AdminPage() {
 				const projects = await projectsRes.json();
 				const services = await servicesRes.json();
 
-				const allData = [
-					...(Array.isArray(blogs) ? blogs.map((blog: any) => ({ ...blog, type: 'blog', title: blog.title, content: blog.content })) : []),
-					...(Array.isArray(projects) ? projects.map((project: any) => ({ ...project, type: 'project', title: project.title, content: project.description })) : []),
-					...(Array.isArray(services) ? services.map((service: any) => ({ ...service, type: 'service', title: service.title, content: service.description })) : []),
+				const allData: SearchResultItem[] = [
+					...(Array.isArray(blogs) ? blogs.map((blog: { title: string; content: string }) => ({ ...blog, type: 'blog' as const, title: blog.title, content: blog.content })) : []),
+					...(Array.isArray(projects) ? projects.map((project: { title: string; description: string }) => ({ ...project, type: 'project' as const, title: project.title, content: project.description })) : []),
+					...(Array.isArray(services) ? services.map((service: { title: string; description: string }) => ({ ...service, type: 'service' as const, title: service.title, content: service.description })) : []),
 				];
 
 				const filtered = allData.filter(item =>
@@ -175,14 +183,13 @@ export default function AdminPage() {
 							</div>
 							<div className="flex-1">
 								<p className="text-sm font-medium text-gray-900">Admin User</p>
-								<p className="text-xs text-gray-500">admin@harisanjel.com.np</p>
+								<p className="text-xs text-gray-500">harisanjel@gmail.com</p>
 							</div>
-							<button 
+							<button
 								onClick={() => {
-									// Clear authentication cookie
-									document.cookie = 'admin-access=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT'
-									// Redirect to login page
-									window.location.href = '/admin-login'
+									fetch('/api/admin/logout', { method: 'POST' }).finally(() => {
+										window.location.href = '/admin-login'
+									})
 								}}
 								className="text-gray-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50"
 								aria-label="Logout"
@@ -251,12 +258,20 @@ export default function AdminPage() {
 					{activeTab === "comments" && <CommentsSection />}
 					{activeTab === "projects" && <ProjectsSection setActiveTab={setActiveTab} searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "services" && <ServicesSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
-					{activeTab === "cv" && <CVSection />}
+					{activeTab === "testimonials" && <TestimonialsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+					{activeTab === "faqs" && <FAQsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "analytics" && <AnalyticsSection />}
 				</main>
 			</div>
 		</div>
 	);
+}
+
+interface ActivityItem {
+	_id: string;
+	action: string;
+	entityTitle?: string;
+	timestamp: string;
 }
 
 // Dashboard Section
@@ -267,7 +282,7 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 		services: 0,
 		views: 0,
 	});
-	const [recentActivities, setRecentActivities] = useState<any[]>([]);
+	const [recentActivities, setRecentActivities] = useState<ActivityItem[]>([]);
 
 	useEffect(() => {
 		const fetchStats = async () => {
@@ -311,7 +326,7 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 			<div className="flex items-center justify-between">
 				<div>
 					<h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-					<p className="text-gray-600 mt-1">Welcome back! Here's an overview of your portfolio.</p>
+					<p className="text-gray-600 mt-1">Welcome back! Here&apos;s an overview of your portfolio.</p>
 				</div>
 			</div>
 
@@ -341,7 +356,7 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 						{recentActivities.length === 0 && (
 							<p className="text-sm text-gray-500">No activities recorded yet.</p>
 						)}
-						{recentActivities.slice(0, 10).map((activity: any, index: number) => (
+						{recentActivities.slice(0, 10).map((activity: ActivityItem, index: number) => (
 							<div key={activity._id || index} className="flex items-center space-x-3">
 								<div className="w-2 h-2 rounded-full bg-blue-100 text-blue-600"></div>
 								<div className="flex-1">
@@ -372,19 +387,26 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 							<Plus size={24} className="text-gray-400 mb-2" />
 							<span className="text-sm text-gray-600">Add Project</span>
 						</button>
-						<button 
+						<button
 							onClick={() => setActiveTab('services')}
 							className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-green-500 hover:bg-green-50 transition-colors"
 						>
 							<Plus size={24} className="text-gray-400 mb-2" />
 							<span className="text-sm text-gray-600">Add Service</span>
 						</button>
-						<button 
-							onClick={() => setActiveTab('cv')}
-							className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-orange-500 hover:bg-orange-50 transition-colors"
+						<button
+							onClick={() => setActiveTab('testimonials')}
+							className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-yellow-500 hover:bg-yellow-50 transition-colors"
 						>
-							<Upload size={24} className="text-gray-400 mb-2" />
-							<span className="text-sm text-gray-600">Upload CV</span>
+							<Plus size={24} className="text-gray-400 mb-2" />
+							<span className="text-sm text-gray-600">Add Testimonial</span>
+						</button>
+						<button
+							onClick={() => setActiveTab('faqs')}
+							className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-500 hover:bg-indigo-50 transition-colors"
+						>
+							<Plus size={24} className="text-gray-400 mb-2" />
+							<span className="text-sm text-gray-600">Add FAQ</span>
 						</button>
 					</div>
 				</div>
@@ -393,14 +415,22 @@ function DashboardSection({ setActiveTab }: { setActiveTab: (tab: string) => voi
 	);
 }
 
+interface AnalyticsData {
+	totalViews: number;
+	totalSessions: number;
+	totalPages: number;
+	bounceRate: string;
+	dailyViews: { date: string; views: number }[];
+	topPages: { path: string; views: number }[];
+	recentViews?: unknown[];
+}
+
 // Analytics Section
 function AnalyticsSection() {
-	const [analytics, setAnalytics] = useState<any>(null);
+	const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
 	const [days, setDays] = useState(30);
-	const [selectedPath, setSelectedPath] = useState("/cv-builder");
-	const [pathAnalytics, setPathAnalytics] = useState<any>(null);
 	const maxViews = analytics?.dailyViews?.length
-		? Math.max(...analytics.dailyViews.map((d: any) => d.views), 1)
+		? Math.max(...analytics.dailyViews.map((d) => d.views), 1)
 		: 1;
 
 	useEffect(() => {
@@ -417,30 +447,8 @@ function AnalyticsSection() {
 		fetchAnalytics();
 	}, [days]);
 
-	useEffect(() => {
-		if (!selectedPath) return;
-		const fetchPathAnalytics = async () => {
-			try {
-				const res = await fetch(`/api/analytics?days=${days}&path=${encodeURIComponent(selectedPath)}`);
-				if (res.ok) {
-					setPathAnalytics(await res.json());
-				}
-			} catch (error) {
-				console.error("Error fetching page location analytics:", error);
-			}
-		};
-		fetchPathAnalytics();
-	}, [days, selectedPath]);
-
 	const topMax = analytics?.topPages?.length
-		? Math.max(...analytics.topPages.map((p: any) => p.views), 1)
-		: 1;
-
-	const pathOptions = Array.from(
-		new Set(["/cv-builder", ...(analytics?.topPages?.map((p: any) => p.path) ?? [])])
-	);
-	const locationMax = pathAnalytics?.pathLocations?.length
-		? Math.max(...pathAnalytics.pathLocations.map((l: any) => l.views), 1)
+		? Math.max(...analytics.topPages.map((p) => p.views), 1)
 		: 1;
 
 	return (
@@ -489,7 +497,7 @@ function AnalyticsSection() {
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">Daily Views (last {days} days)</h2>
 					<div className="h-64 flex items-end gap-1">
 						{analytics?.dailyViews?.length ? (
-							analytics.dailyViews.map((d: any, i: number) => (
+							analytics.dailyViews.map((d, i: number) => (
 								<div
 									key={i}
 									className="flex-1 bg-blue-500 rounded-t hover:bg-blue-600 transition-colors relative group"
@@ -513,7 +521,7 @@ function AnalyticsSection() {
 					<h2 className="text-lg font-semibold text-gray-900 mb-4">Top Pages</h2>
 					<div className="space-y-4">
 						{analytics?.topPages?.length ? (
-							analytics.topPages.map((item: any, index: number) => (
+							analytics.topPages.map((item, index: number) => (
 								<div key={index}>
 									<div className="flex items-center justify-between mb-1">
 										<span className="text-sm text-gray-900 truncate mr-2">{item.path}</span>
@@ -531,53 +539,6 @@ function AnalyticsSection() {
 							<p className="text-sm text-gray-500">No data yet.</p>
 						)}
 					</div>
-				</div>
-			</div>
-
-			{/* Page Views by Location */}
-			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-				<div className="flex items-center justify-between mb-4 flex-wrap gap-3">
-					<h2 className="text-lg font-semibold text-gray-900">Page Views by Location</h2>
-					<select
-						className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-						value={selectedPath}
-						onChange={(e) => setSelectedPath(e.target.value)}
-					>
-						{pathOptions.map((p) => (
-							<option key={p} value={p}>
-								{p}
-							</option>
-						))}
-					</select>
-				</div>
-
-				<p className="text-sm text-gray-600 mb-4">
-					<span className="font-semibold text-gray-900">{pathAnalytics?.pathViews ?? "—"}</span> total loads of{" "}
-					<span className="font-mono">{selectedPath}</span> (all-time). Breakdown below is for the last {days} days.
-				</p>
-
-				<div className="space-y-3">
-					{pathAnalytics?.pathLocations?.length ? (
-						pathAnalytics.pathLocations.map((loc: any, index: number) => (
-							<div key={index}>
-								<div className="flex items-center justify-between mb-1">
-									<span className="text-sm text-gray-900 truncate mr-2">
-										{loc.city !== "Unknown" ? `${loc.city}, ` : ""}
-										{loc.country}
-									</span>
-									<span className="text-sm text-gray-500 whitespace-nowrap">{loc.views} views</span>
-								</div>
-								<div className="w-full bg-gray-200 rounded-full h-2">
-									<div
-										className="bg-emerald-600 h-2 rounded-full"
-										style={{ width: `${(loc.views / locationMax) * 100}%` }}
-									></div>
-								</div>
-							</div>
-						))
-					) : (
-						<p className="text-sm text-gray-500">No location data yet — this fills in as visitors load the page.</p>
-					)}
 				</div>
 			</div>
 		</div>
@@ -860,7 +821,7 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 					className="px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
 					title="Blockquote"
 				>
-					"
+					&quot;
 				</button>
 				<button
 					type="button"
@@ -1568,9 +1529,20 @@ function BlogsSection({
 	);
 }
 
+interface AdminComment {
+	_id: string;
+	author: string;
+	email: string;
+	content: string;
+	createdAt: string;
+	isApproved: boolean;
+	isAdminReply?: boolean;
+	blogId?: { _id: string; title?: string };
+}
+
 // Comments Section
 function CommentsSection() {
-	const [comments, setComments] = useState<any[]>([]);
+	const [comments, setComments] = useState<AdminComment[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [filter, setFilter] = useState('all'); // 'all', 'pending', 'approved'
 	const [selectedComments, setSelectedComments] = useState<string[]>([]);
@@ -1643,7 +1615,7 @@ function CommentsSection() {
 		setSelectedComments(
 			selectedComments.length === comments.length 
 				? [] 
-				: comments.map((c: any) => c._id)
+				: comments.map((c: AdminComment) => c._id)
 		);
 	};
 
@@ -1827,7 +1799,7 @@ function CommentsSection() {
 								</tr>
 							</thead>
 							<tbody>
-								{comments.map((comment: any) => (
+								{comments.map((comment: AdminComment) => (
 									<tr key={comment._id} className="border-b border-gray-100 hover:bg-gray-50">
 										<td className="p-4">
 											<input
@@ -2996,950 +2968,653 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 			</div>
 		</div>
 	);
-}
-interface CV {
-	id: string;
-	title: string;
-	description: string;
-	fileUrl: string;
-	date: string;
+
 }
 
-// CV Section - Full Form and Sections
-function CVSection() {
-	// Header
-	const [header, setHeader] = useState({
+interface Testimonial {
+	_id: string;
+	name: string;
+	role: string;
+	quote: string;
+	rating: number;
+	avatar?: string;
+}
+
+function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
+	const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [avatarUploading, setAvatarUploading] = useState(false);
+	const [avatarUploadError, setAvatarUploadError] = useState("");
+	const [form, setForm] = useState({
+		_id: "",
 		name: "",
-		title: "",
-		address: "",
-		phone: "",
-		email: "",
-		linkedin: "",
-		github: "",
-		portfolio: "",
+		role: "",
+		quote: "",
+		rating: "5",
+		avatar: "",
 	});
-	// Summary
-	const [summary, setSummary] = useState("");
-	// Competencies
-	const [competencies, setCompetencies] = useState<{ category: string; skills: string }[]>([]);
-	const [competencyForm, setCompetencyForm] = useState({ category: "", skills: "", editIndex: -2 });
-	// Experience
-	const [experience, setExperience] = useState<any[]>([]);
-	const [experienceForm, setExperienceForm] = useState({ title: "", company: "", location: "", date: "", responsibilities: "", editIndex: -2 });
-	// Education
-	const [education, setEducation] = useState<any[]>([]);
-	const [educationForm, setEducationForm] = useState({ degree: "", institution: "", date: "", details: "", editIndex: -2 });
-	// Certifications
-	const [certifications, setCertifications] = useState<any[]>([]);
-	const [certificationForm, setCertificationForm] = useState({ title: "", issuer: "", date: "", editIndex: -2 });
-	// Languages
-	const [languages, setLanguages] = useState<any[]>([]);
-	const [languageForm, setLanguageForm] = useState({ language: "", level: "", editIndex: -2 });
-	// References
-	const [references, setReferences] = useState<any[]>([]);
-	const [referenceForm, setReferenceForm] = useState({ name: "", position: "", company: "", location: "", phone: "", email: "", editIndex: -2 });
-	// Projects
-	const [projects, setProjects] = useState<any[]>([]);
-	const [projectForm, setProjectForm] = useState({ title: "", description: "", tech: "", github: "", preview: "", editIndex: -2 });
+	const [editMode, setEditMode] = useState(false);
+	const [showForm, setShowForm] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 5;
 
-	// Fetch CV data
 	useEffect(() => {
-		fetchCV();
-	}, []);
+		fetchTestimonials();
+	}, [searchQuery]);
 
-	async function fetchCV() {
+	async function fetchTestimonials() {
+		setLoading(true);
 		try {
-			const res = await fetch("/api/cv");
-			if (!res.ok) return;
+			const res = await fetch("/api/testimonials");
 			const data = await res.json();
-			setHeader(data.header || header);
-			setSummary(data.summary || "");
-			setCompetencies(data.competencies || []);
-			setExperience(data.experience || []);
-			setEducation(data.education || []);
-			setCertifications(data.certifications || []);
-			setLanguages(data.languages || []);
-			setReferences(data.references || []);
-			setProjects(data.projects || []);
-		} catch {}
+			setTestimonials(Array.isArray(data) ? data : []);
+		} catch {
+			setTestimonials([]);
+		}
+		setLoading(false);
 	}
 
-	// Header & Summary
-	async function saveHeader() {
-		await saveCV({ header });
-	}
-	async function saveSummary() {
-		await saveCV({ summary });
+	function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+		setForm({ ...form, [e.target.name]: e.target.value });
 	}
 
-	// Competencies
-	function handleCompetencyEdit(index: number) {
-		setCompetencyForm({ ...competencies[index], editIndex: index });
-	}
-	function handleCompetencyDelete(index: number) {
-		const updated = competencies.filter((_, i) => i !== index);
-		setCompetencies(updated);
-		saveCV({ competencies: updated });
-	}
-	function handleCompetencySave() {
-		const { category, skills, editIndex } = competencyForm;
-		let updated = [...competencies];
-		if (editIndex >= 0) updated[editIndex] = { category, skills };
-		else updated.push({ category, skills });
-		setCompetencies(updated);
-		setCompetencyForm({ category: "", skills: "", editIndex: -2 });
-		saveCV({ competencies: updated });
-	}
-	function handleCompetencyCancel() {
-		setCompetencyForm({ category: "", skills: "", editIndex: -2 });
-	}
-
-	// Experience
-	function handleExperienceEdit(index: number) {
-		setExperienceForm({ ...experience[index], responsibilities: experience[index].responsibilities.join("\n"), editIndex: index });
-	}
-	function handleExperienceDelete(index: number) {
-		const updated = experience.filter((_, i) => i !== index);
-		setExperience(updated);
-		saveCV({ experience: updated });
-	}
-	function handleExperienceSave() {
-		const { title, company, location, date, responsibilities, editIndex } = experienceForm;
-		let updated = [...experience];
-		const entry = { title, company, location, date, responsibilities: responsibilities.split("\n").filter(Boolean) };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setExperience(updated);
-		setExperienceForm({ title: "", company: "", location: "", date: "", responsibilities: "", editIndex: -2 });
-		saveCV({ experience: updated });
-	}
-	function handleExperienceCancel() {
-		setExperienceForm({ title: "", company: "", location: "", date: "", responsibilities: "", editIndex: -2 });
+	async function handleAvatarUpload(file: File | null) {
+		if (!file) return;
+		if (file.size > 1024 * 1024) {
+			setAvatarUploadError("Image must be less than 1 MB.");
+			return;
+		}
+		setAvatarUploadError("");
+		setAvatarUploading(true);
+		try {
+			const data = new FormData();
+			data.append("file", file);
+			const res = await fetch("/api/upload", { method: "POST", body: data });
+			const payload = await res.json();
+			if (res.ok) {
+				setForm((prev) => ({ ...prev, avatar: payload.url }));
+			}
+		} finally {
+			setAvatarUploading(false);
+		}
 	}
 
-	// Education
-	function handleEducationEdit(index: number) {
-		setEducationForm({ ...education[index], editIndex: index });
-	}
-	function handleEducationDelete(index: number) {
-		const updated = education.filter((_, i) => i !== index);
-		setEducation(updated);
-		saveCV({ education: updated });
-	}
-	function handleEducationSave() {
-		const { degree, institution, date, details, editIndex } = educationForm;
-		let updated = [...education];
-		const entry = { degree, institution, date, details };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setEducation(updated);
-		setEducationForm({ degree: "", institution: "", date: "", details: "", editIndex: -2 });
-		saveCV({ education: updated });
-	}
-	function handleEducationCancel() {
-		setEducationForm({ degree: "", institution: "", date: "", details: "", editIndex: -2 });
-	}
-
-	// Certifications
-	function handleCertificationEdit(index: number) {
-		setCertificationForm({ ...certifications[index], editIndex: index });
-	}
-	function handleCertificationDelete(index: number) {
-		const updated = certifications.filter((_, i) => i !== index);
-		setCertifications(updated);
-		saveCV({ certifications: updated });
-	}
-	function handleCertificationSave() {
-		const { title, issuer, date, editIndex } = certificationForm;
-		let updated = [...certifications];
-		const entry = { title, issuer, date };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setCertifications(updated);
-		setCertificationForm({ title: "", issuer: "", date: "", editIndex: -2 });
-		saveCV({ certifications: updated });
-	}
-	function handleCertificationCancel() {
-		setCertificationForm({ title: "", issuer: "", date: "", editIndex: -2 });
-	}
-
-	// Languages
-	function handleLanguageEdit(index: number) {
-		setLanguageForm({ ...languages[index], editIndex: index });
-	}
-	function handleLanguageDelete(index: number) {
-		const updated = languages.filter((_, i) => i !== index);
-		setLanguages(updated);
-		saveCV({ languages: updated });
-	}
-	function handleLanguageSave() {
-		const { language, level, editIndex } = languageForm;
-		let updated = [...languages];
-		const entry = { language, level };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setLanguages(updated);
-		setLanguageForm({ language: "", level: "", editIndex: -2 });
-		saveCV({ languages: updated });
-	}
-	function handleLanguageCancel() {
-		setLanguageForm({ language: "", level: "", editIndex: -2 });
-	}
-
-	// References
-	function handleReferenceEdit(index: number) {
-		setReferenceForm({ ...references[index], editIndex: index });
-	}
-	function handleReferenceDelete(index: number) {
-		const updated = references.filter((_, i) => i !== index);
-		setReferences(updated);
-		saveCV({ references: updated });
-	}
-	function handleReferenceSave() {
-		const { name, position, company, location, phone, email, editIndex } = referenceForm;
-		let updated = [...references];
-		const entry = { name, position, company, location, phone, email };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setReferences(updated);
-		setReferenceForm({ name: "", position: "", company: "", location: "", phone: "", email: "", editIndex: -2 });
-		saveCV({ references: updated });
-	}
-	function handleReferenceCancel() {
-		setReferenceForm({ name: "", position: "", company: "", location: "", phone: "", email: "", editIndex: -2 });
-	}
-
-	// Projects
-	function handleProjectEdit(index: number) {
-		setProjectForm({ ...projects[index], editIndex: index });
-	}
-	function handleProjectDelete(index: number) {
-		const updated = projects.filter((_, i) => i !== index);
-		setProjects(updated);
-		saveCV({ projects: updated });
-	}
-	function handleProjectSave() {
-		const { title, description, tech, github, preview, editIndex } = projectForm;
-		let updated = [...projects];
-		const entry = { title, description, tech, github, preview };
-		if (editIndex >= 0) updated[editIndex] = entry;
-		else updated.push(entry);
-		setProjects(updated);
-		setProjectForm({ title: "", description: "", tech: "", github: "", preview: "", editIndex: -2 });
-		saveCV({ projects: updated });
-	}
-	function handleProjectCancel() {
-		setProjectForm({ title: "", description: "", tech: "", github: "", preview: "", editIndex: -2 });
-	}
-
-	// Save CV (partial update)
-	async function saveCV(update: any) {
-		await fetch("/api/cv", {
-			method: "PUT",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(update),
+	function handleEdit(testimonial: Testimonial) {
+		setForm({
+			_id: testimonial._id,
+			name: testimonial.name,
+			role: testimonial.role,
+			quote: testimonial.quote,
+			rating: String(testimonial.rating),
+			avatar: testimonial.avatar || "",
 		});
-		fetchCV();
+		setEditMode(true);
+		setShowForm(true);
 	}
+
+	function handleCancel() {
+		setForm({ _id: "", name: "", role: "", quote: "", rating: "5", avatar: "" });
+		setEditMode(false);
+		setShowForm(false);
+	}
+
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		const payload = {
+			name: form.name,
+			role: form.role,
+			quote: form.quote,
+			rating: Number(form.rating),
+			avatar: form.avatar,
+		};
+		const url = editMode ? `/api/testimonials/${form._id}` : "/api/testimonials";
+		const method = editMode ? "PUT" : "POST";
+		const res = await fetch(url, {
+			method,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(payload),
+		});
+		if (res.ok) {
+			fetchTestimonials();
+			handleCancel();
+		}
+	}
+
+	async function handleDelete(id: string) {
+		if (!confirm("Are you sure you want to delete this testimonial?")) return;
+		const res = await fetch(`/api/testimonials/${id}`, { method: "DELETE" });
+		if (res.ok) fetchTestimonials();
+	}
+
+	const filteredTestimonials = testimonials.filter(
+		(testimonial) => testimonial.name.toLowerCase().includes(searchQuery.toLowerCase()) || testimonial.quote.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+	const totalPages = Math.ceil(filteredTestimonials.length / itemsPerPage);
+	const paginatedTestimonials = filteredTestimonials.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
 	return (
 		<div className="space-y-6">
 			{/* Header */}
+			<div className="flex items-center justify-between">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900">CV Management</h1>
-					<p className="text-gray-600 mt-1">Manage your professional CV information and career details.</p>
+					<h1 className="text-3xl font-bold text-gray-900">Testimonials</h1>
+					<p className="text-gray-600 mt-1">Manage client testimonials shown on the homepage.</p>
 				</div>
-		
-
-			{/* CV Content */}
-			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-				<h2 className="text-2xl font-bold mb-4">CV Header Information</h2>
-				<form className="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">Full Name</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.name} onChange={(e) => setHeader({ ...header, name: e.target.value })} />
-					</div>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">Professional Title</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.title} onChange={(e) => setHeader({ ...header, title: e.target.value })} />
-					</div>
-					<div className="md:col-span-2">
-						<label className="block text-gray-700 font-semibold mb-2">Address</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.address} onChange={(e) => setHeader({ ...header, address: e.target.value })} />
-					</div>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">Phone</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.phone} onChange={(e) => setHeader({ ...header, phone: e.target.value })} />
-					</div>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">Email</label>
-						<input type="email" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.email} onChange={(e) => setHeader({ ...header, email: e.target.value })} />
-					</div>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">LinkedIn URL</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.linkedin} onChange={(e) => setHeader({ ...header, linkedin: e.target.value })} />
-					</div>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">GitHub URL</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.github} onChange={(e) => setHeader({ ...header, github: e.target.value })} />
-					</div>
-					<div className="md:col-span-2">
-						<label className="block text-gray-700 font-semibold mb-2">Portfolio URL</label>
-						<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={header.portfolio} onChange={(e) => setHeader({ ...header, portfolio: e.target.value })} />
-					</div>
-				</form>
-				<div className="mt-4">
-					<button
-						type="button"
-						onClick={(e) => {
-							e.preventDefault();
-							saveHeader();
-						}}
-						className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-					>
-						Save Header
-					</button>
-				</div>
-			</div>
-
-			{/* Summary Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Professional Summary</h2>
-				<form>
-					<div>
-						<label className="block text-gray-700 font-semibold mb-2">Summary</label>
-						<textarea rows={4} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={summary} onChange={(e) => setSummary(e.target.value)}></textarea>
-					</div>
-				</form>
-				<div className="mt-4">
-					<button
-						type="button"
-						onClick={(e) => {
-							e.preventDefault();
-							saveSummary();
-						}}
-						className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700"
-					>
-						Save Summary
-					</button>
-				</div>
-			</div>
-
-			{/* Competencies Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Key Competencies</h2>
-				<div className="space-y-2 mb-4">
-					{competencies.map((c, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{c.category}:</span> {c.skills}
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleCompetencyEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleCompetencyDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
-				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setCompetencyForm({ category: "", skills: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Competency Category
+				<button onClick={() => setShowForm(!showForm)} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+					<Plus size={20} />
+					<span>{editMode ? "Edit Testimonial" : "Add New Testimonial"}</span>
 				</button>
-				{competencyForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Category</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={competencyForm.category} onChange={(e) => setCompetencyForm((f) => ({ ...f, category: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Skills (comma separated)</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={competencyForm.skills} onChange={(e) => setCompetencyForm((f) => ({ ...f, skills: e.target.value }))} />
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleCompetencySave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-								>
-									Save
-								</button>
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleCompetencyCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
-					</div>
-				)}
 			</div>
 
-			{/* Experience Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Professional Experience</h2>
-				<div className="space-y-2 mb-4">
-					{experience.map((exp, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{exp.title}</span> at {exp.company}, {exp.location} <span className="text-xs text-gray-400">({exp.date})</span>
-								<ul className="list-disc ml-6 text-sm text-gray-700">
-									{exp.responsibilities.map((r: string, idx: number) => (
-										<li key={idx}>{r}</li>
-									))}
-								</ul>
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleExperienceEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleExperienceDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
-				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setExperienceForm({ title: "", company: "", location: "", date: "", responsibilities: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Experience
-				</button>
-				{experienceForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Job Title</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={experienceForm.title} onChange={(e) => setExperienceForm((f) => ({ ...f, title: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Company</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={experienceForm.company} onChange={(e) => setExperienceForm((f) => ({ ...f, company: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Location</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={experienceForm.location} onChange={(e) => setExperienceForm((f) => ({ ...f, location: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Date</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={experienceForm.date} onChange={(e) => setExperienceForm((f) => ({ ...f, date: e.target.value }))} placeholder="e.g., January 2020 - Present" />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Responsibilities (one per line)</label>
-								<textarea rows={5} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={experienceForm.responsibilities} onChange={(e) => setExperienceForm((f) => ({ ...f, responsibilities: e.target.value }))} placeholder="Enter each responsibility on a new line"></textarea>
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleExperienceSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-								>
-									Save
-								</button>
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleExperienceCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
+			{/* Form Modal/Card */}
+			{showForm && (
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<div className="flex items-center justify-between mb-6">
+						<h2 className="text-xl font-semibold text-gray-900">{editMode ? "Edit Testimonial" : "Add New Testimonial"}</h2>
+						<button onClick={handleCancel} className="text-gray-400 hover:text-gray-600 transition-colors">
+							<X size={24} />
+						</button>
 					</div>
-				)}
-			</div>
-
-			{/* Projects Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">CV Projects</h2>
-				<div className="space-y-2 mb-4">
-					{projects.map((proj, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{proj.title}</span> <span className="text-xs text-gray-400">({proj.tech})</span>
-								{proj.description && <div className="text-sm text-gray-600">{proj.description}</div>}
-								<div className="text-xs text-gray-500">
-									{proj.github && <span className="mr-2">GitHub</span>}
-									{proj.preview && <span>Live Preview</span>}
+					<form className="space-y-4" onSubmit={handleSubmit}>
+						<input type="hidden" name="editingTestimonialId" value={form._id} />
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">Client Name</label>
+								<input
+									type="text"
+									name="name"
+									value={form.name}
+									onChange={handleChange}
+									required
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="e.g. Jane Doe"
+								/>
+							</div>
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">Role / Company</label>
+								<input
+									type="text"
+									name="role"
+									value={form.role}
+									onChange={handleChange}
+									required
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="e.g. Founder, Acme Inc."
+								/>
+							</div>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Quote</label>
+							<textarea
+								name="quote"
+								value={form.quote}
+								onChange={handleChange}
+								required
+								rows={3}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="What did the client say about working with you?"
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+							<select
+								name="rating"
+								value={form.rating}
+								onChange={handleChange}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+							>
+								{[5, 4, 3, 2, 1].map((n) => (
+									<option key={n} value={n}>
+										{n} star{n === 1 ? "" : "s"}
+									</option>
+								))}
+							</select>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Avatar (optional)</label>
+							<div className="space-y-3">
+								<div className="flex items-center gap-4">
+									<input
+										type="file"
+										accept="image/*"
+										onChange={(e) => handleAvatarUpload(e.target.files?.[0] ?? null)}
+										className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+									/>
+									{avatarUploading && <span className="text-sm text-gray-500">Uploading...</span>}
 								</div>
+								{avatarUploadError && <div className="text-sm text-red-600">{avatarUploadError}</div>}
+								{form.avatar && (
+									<div className="flex items-center gap-4">
+										<Image
+											src={form.avatar}
+											alt="Avatar preview"
+											width={64}
+											height={64}
+											className="h-16 w-16 object-cover rounded-full border border-gray-200"
+											onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/64")}
+										/>
+										<input
+											type="text"
+											name="avatar"
+											value={form.avatar}
+											onChange={handleChange}
+											placeholder="Avatar URL"
+											className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+								)}
 							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleProjectEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
+						</div>
+						<div className="flex gap-3 pt-4">
+							<button type="submit" className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+								{editMode ? "Update Testimonial" : "Add Testimonial"}
 							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleProjectDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
+							<button type="button" onClick={handleCancel} className="px-6 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+								Cancel
 							</button>
 						</div>
-					))}
+					</form>
 				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setProjectForm({ title: "", description: "", tech: "", github: "", preview: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Project
-				</button>
-				{projectForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Project Title</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={projectForm.title} onChange={(e) => setProjectForm((f) => ({ ...f, title: e.target.value }))} />
+			)}
+
+			{/* Search */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+				<div className="flex flex-col sm:flex-row gap-4">
+					<div className="relative flex-1">
+						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+						<input
+							type="text"
+							placeholder="Search testimonials..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
+				</div>
+			</div>
+
+			{/* Data Table */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+				<div className="overflow-x-auto">
+					<table className="w-full">
+						<thead className="bg-gray-50 border-b border-gray-200">
+							<tr>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quote</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Rating</th>
+								<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+							</tr>
+						</thead>
+						<tbody className="bg-white divide-y divide-gray-200">
+							{loading ? (
+								<tr>
+									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+										Loading testimonials...
+									</td>
+								</tr>
+							) : filteredTestimonials.length === 0 ? (
+								<tr>
+									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+										No testimonials found
+									</td>
+								</tr>
+							) : (
+								paginatedTestimonials.map((testimonial) => (
+									<tr key={testimonial._id} className="hover:bg-gray-50 transition-colors">
+										<td className="px-6 py-4">
+											<div className="flex items-center space-x-4">
+												{testimonial.avatar ? (
+													<Image
+														src={testimonial.avatar}
+														alt={testimonial.name}
+														width={40}
+														height={40}
+														className="w-10 h-10 object-cover rounded-full"
+														onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/40")}
+													/>
+												) : (
+													<div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600">
+														{testimonial.name.split(" ").map((n) => n[0]).join("")}
+													</div>
+												)}
+												<div>
+													<div className="text-sm font-medium text-gray-900">{testimonial.name}</div>
+													<div className="text-xs text-gray-500">{testimonial.role}</div>
+												</div>
+											</div>
+										</td>
+										<td className="px-6 py-4">
+											<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{testimonial.quote}</div>
+										</td>
+										<td className="px-6 py-4">
+											<span className="text-sm text-gray-700">{"★".repeat(testimonial.rating)}{"☆".repeat(5 - testimonial.rating)}</span>
+										</td>
+										<td className="px-6 py-4 text-right text-sm font-medium">
+											<div className="flex items-center justify-end space-x-2">
+												<button onClick={() => handleEdit(testimonial)} className="text-blue-600 hover:text-blue-900 transition-colors" title="Edit">
+													<Edit2 size={18} />
+												</button>
+												<button onClick={() => handleDelete(testimonial._id)} className="text-red-600 hover:text-red-900 transition-colors" title="Delete">
+													<Trash2 size={18} />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))
+							)}
+						</tbody>
+					</table>
+				</div>
+
+				{/* Pagination */}
+				{totalPages > 1 && (
+					<div className="px-6 py-4 border-t border-gray-200">
+						<div className="flex items-center justify-between">
+							<div className="text-sm text-gray-700">
+								Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredTestimonials.length)} of {filteredTestimonials.length} results
 							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Tech Stack</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={projectForm.tech} onChange={(e) => setProjectForm((f) => ({ ...f, tech: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Description</label>
-								<textarea rows={3} className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={projectForm.description} onChange={(e) => setProjectForm((f) => ({ ...f, description: e.target.value }))}></textarea>
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">GitHub URL</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={projectForm.github} onChange={(e) => setProjectForm((f) => ({ ...f, github: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Live Preview URL</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={projectForm.preview} onChange={(e) => setProjectForm((f) => ({ ...f, preview: e.target.value }))} />
-							</div>
-							<div className="flex gap-2">
+							<div className="flex items-center space-x-2">
 								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleProjectSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+									onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+									disabled={currentPage === 1}
+									className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Save
+									Previous
 								</button>
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+									<button
+										key={page}
+										onClick={() => setCurrentPage(page)}
+										className={`px-3 py-1 text-sm border rounded-lg transition-colors ${
+											currentPage === page ? "bg-blue-600 text-white border-blue-600" : "border-gray-300 hover:bg-gray-50"
+										}`}
+									>
+										{page}
+									</button>
+								))}
 								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleProjectCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
+									onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+									disabled={currentPage === totalPages}
+									className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Cancel
+									Next
 								</button>
 							</div>
 						</div>
 					</div>
 				)}
 			</div>
+		</div>
+	);
+}
 
-			{/* Education Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Education</h2>
-				<div className="space-y-2 mb-4">
-					{education.map((edu, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{edu.degree}</span> at {edu.institution} <span className="text-xs text-gray-400">({edu.date})</span> {edu.details && <span className="text-xs text-gray-500">- {edu.details}</span>}
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleEducationEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleEducationDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
+interface FAQItem {
+	_id: string;
+	question: string;
+	answer: string;
+	order: number;
+}
+
+function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
+	const [faqs, setFaqs] = useState<FAQItem[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [form, setForm] = useState({
+		_id: "",
+		question: "",
+		answer: "",
+		order: "0",
+	});
+	const [editMode, setEditMode] = useState(false);
+	const [showForm, setShowForm] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const itemsPerPage = 5;
+
+	async function fetchFaqs() {
+		setLoading(true);
+		try {
+			const res = await fetch("/api/faqs");
+			const data = await res.json();
+			setFaqs(Array.isArray(data) ? data : []);
+		} catch {
+			setFaqs([]);
+		}
+		setLoading(false);
+	}
+
+	useEffect(() => {
+		fetchFaqs();
+	}, [searchQuery]);
+
+	function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+		setForm({ ...form, [e.target.name]: e.target.value });
+	}
+
+	function handleEdit(faq: FAQItem) {
+		setForm({
+			_id: faq._id,
+			question: faq.question,
+			answer: faq.answer,
+			order: String(faq.order),
+		});
+		setEditMode(true);
+		setShowForm(true);
+	}
+
+	function handleCancel() {
+		setForm({ _id: "", question: "", answer: "", order: "0" });
+		setEditMode(false);
+		setShowForm(false);
+	}
+
+	async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+		const payload = {
+			question: form.question,
+			answer: form.answer,
+			order: Number(form.order),
+		};
+		const url = editMode ? `/api/faqs/${form._id}` : "/api/faqs";
+		const method = editMode ? "PUT" : "POST";
+		const res = await fetch(url, {
+			method,
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(payload),
+		});
+		if (res.ok) {
+			fetchFaqs();
+			handleCancel();
+		}
+	}
+
+	async function handleDelete(id: string) {
+		if (!confirm("Are you sure you want to delete this FAQ?")) return;
+		const res = await fetch(`/api/faqs/${id}`, { method: "DELETE" });
+		if (res.ok) fetchFaqs();
+	}
+
+	const filteredFaqs = faqs.filter(
+		(faq) => faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+	);
+
+	const totalPages = Math.ceil(filteredFaqs.length / itemsPerPage);
+	const paginatedFaqs = filteredFaqs.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+	return (
+		<div className="space-y-6">
+			{/* Header */}
+			<div className="flex items-center justify-between">
+				<div>
+					<h1 className="text-3xl font-bold text-gray-900">FAQs</h1>
+					<p className="text-gray-600 mt-1">Manage the frequently asked questions shown on the homepage.</p>
 				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setEducationForm({ degree: "", institution: "", date: "", details: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Education
+				<button onClick={() => setShowForm(!showForm)} className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+					<Plus size={20} />
+					<span>{editMode ? "Edit FAQ" : "Add New FAQ"}</span>
 				</button>
-				{educationForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Degree/Certificate</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={educationForm.degree} onChange={(e) => setEducationForm((f) => ({ ...f, degree: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Institution</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={educationForm.institution} onChange={(e) => setEducationForm((f) => ({ ...f, institution: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Date/Year</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={educationForm.date} onChange={(e) => setEducationForm((f) => ({ ...f, date: e.target.value }))} placeholder="e.g., 2015-2019" />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Details (optional)</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={educationForm.details} onChange={(e) => setEducationForm((f) => ({ ...f, details: e.target.value }))} placeholder="e.g., GPA, honors" />
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleEducationSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-								>
-									Save
-								</button>
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleEducationCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
-					</div>
-				)}
 			</div>
 
-			{/* Certifications Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Certifications</h2>
-				<div className="space-y-2 mb-4">
-					{certifications.map((cert, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{cert.title}</span> – {cert.issuer}, {cert.date}
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleCertificationEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleCertificationDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
-				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setCertificationForm({ title: "", issuer: "", date: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Certification
-				</button>
-				{certificationForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Certification Title</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={certificationForm.title} onChange={(e) => setCertificationForm((f) => ({ ...f, title: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Issuer</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={certificationForm.issuer} onChange={(e) => setCertificationForm((f) => ({ ...f, issuer: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Date/Serial Number</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={certificationForm.date} onChange={(e) => setCertificationForm((f) => ({ ...f, date: e.target.value }))} />
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleCertificationSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-								>
-									Save
-								</button>
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleCertificationCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
+			{/* Form Modal/Card */}
+			{showForm && (
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<div className="flex items-center justify-between mb-6">
+						<h2 className="text-xl font-semibold text-gray-900">{editMode ? "Edit FAQ" : "Add New FAQ"}</h2>
+						<button onClick={handleCancel} className="text-gray-400 hover:text-gray-600 transition-colors">
+							<X size={24} />
+						</button>
 					</div>
-				)}
+					<form className="space-y-4" onSubmit={handleSubmit}>
+						<input type="hidden" name="editingFaqId" value={form._id} />
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Question</label>
+							<input
+								type="text"
+								name="question"
+								value={form.question}
+								onChange={handleChange}
+								required
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="e.g. How much does a project cost?"
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Answer</label>
+							<textarea
+								name="answer"
+								value={form.answer}
+								onChange={handleChange}
+								required
+								rows={4}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="Write a clear, honest answer..."
+							/>
+						</div>
+						<div>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
+							<input
+								type="number"
+								name="order"
+								value={form.order}
+								onChange={handleChange}
+								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+								placeholder="0"
+							/>
+							<p className="text-xs text-gray-500 mt-1">Lower numbers appear first on the page.</p>
+						</div>
+						<div className="flex gap-3 pt-4">
+							<button type="submit" className="flex-1 bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
+								{editMode ? "Update FAQ" : "Add FAQ"}
+							</button>
+							<button type="button" onClick={handleCancel} className="px-6 bg-gray-200 text-gray-700 py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+								Cancel
+							</button>
+						</div>
+					</form>
+				</div>
+			)}
+
+			{/* Search */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+				<div className="flex flex-col sm:flex-row gap-4">
+					<div className="relative flex-1">
+						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+						<input
+							type="text"
+							placeholder="Search FAQs..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+						/>
+					</div>
+				</div>
 			</div>
 
-			{/* Languages Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">Languages</h2>
-				<div className="space-y-2 mb-4">
-					{languages.map((lang, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{lang.language}</span> – {lang.level}
-							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleLanguageEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleLanguageDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
+			{/* Data Table */}
+			<div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+				<div className="overflow-x-auto">
+					<table className="w-full">
+						<thead className="bg-gray-50 border-b border-gray-200">
+							<tr>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Question</th>
+								<th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Answer</th>
+								<th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+							</tr>
+						</thead>
+						<tbody className="bg-white divide-y divide-gray-200">
+							{loading ? (
+								<tr>
+									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+										Loading FAQs...
+									</td>
+								</tr>
+							) : filteredFaqs.length === 0 ? (
+								<tr>
+									<td colSpan={4} className="px-6 py-8 text-center text-gray-500">
+										No FAQs found
+									</td>
+								</tr>
+							) : (
+								paginatedFaqs.map((faq) => (
+									<tr key={faq._id} className="hover:bg-gray-50 transition-colors">
+										<td className="px-6 py-4">
+											<span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{faq.order}</span>
+										</td>
+										<td className="px-6 py-4">
+											<div className="text-sm font-medium text-gray-900 max-w-xs">{faq.question}</div>
+										</td>
+										<td className="px-6 py-4">
+											<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{faq.answer}</div>
+										</td>
+										<td className="px-6 py-4 text-right text-sm font-medium">
+											<div className="flex items-center justify-end space-x-2">
+												<button onClick={() => handleEdit(faq)} className="text-blue-600 hover:text-blue-900 transition-colors" title="Edit">
+													<Edit2 size={18} />
+												</button>
+												<button onClick={() => handleDelete(faq._id)} className="text-red-600 hover:text-red-900 transition-colors" title="Delete">
+													<Trash2 size={18} />
+												</button>
+											</div>
+										</td>
+									</tr>
+								))
+							)}
+						</tbody>
+					</table>
 				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setLanguageForm({ language: "", level: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Language
-				</button>
-				{languageForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Language</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={languageForm.language} onChange={(e) => setLanguageForm((f) => ({ ...f, language: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Proficiency Level</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={languageForm.level} onChange={(e) => setLanguageForm((f) => ({ ...f, level: e.target.value }))} placeholder="e.g., Native, Fluent, Intermediate" />
-							</div>
-							<div className="flex gap-2">
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleLanguageSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
-								>
-									Save
-								</button>
-								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleLanguageCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
-								>
-									Cancel
-								</button>
-							</div>
-						</div>
-					</div>
-				)}
-			</div>
 
-			{/* References Section */}
-			<div className="bg-white rounded-lg shadow-md p-6">
-				<h2 className="text-2xl font-bold mb-4">References</h2>
-				<div className="space-y-2 mb-4">
-					{references.map((ref, i) => (
-						<div key={i} className="flex items-center gap-2">
-							<div className="flex-1">
-								<span className="font-semibold">{ref.name}</span> – {ref.position}, {ref.company} {ref.location && <span className="text-xs text-gray-500">({ref.location})</span>} {ref.phone && <span className="text-xs text-gray-400">{ref.phone}</span>} {ref.email && <span className="text-xs text-gray-400">{ref.email}</span>}
+				{/* Pagination */}
+				{totalPages > 1 && (
+					<div className="px-6 py-4 border-t border-gray-200">
+						<div className="flex items-center justify-between">
+							<div className="text-sm text-gray-700">
+								Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filteredFaqs.length)} of {filteredFaqs.length} results
 							</div>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleReferenceEdit(i);
-								}}
-								className="px-3 py-1 bg-yellow-500 text-white rounded text-xs"
-							>
-								Edit
-							</button>
-							<button
-								type="button"
-								onClick={(e) => {
-									e.preventDefault();
-									handleReferenceDelete(i);
-								}}
-								className="px-3 py-1 bg-red-500 text-white rounded text-xs"
-							>
-								Delete
-							</button>
-						</div>
-					))}
-				</div>
-				<button
-					type="button"
-					onClick={(e) => {
-						e.preventDefault();
-						setReferenceForm({ name: "", position: "", company: "", location: "", phone: "", email: "", editIndex: -1 });
-					}}
-					className="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 mb-2 font-semibold"
-				>
-					+ Add Reference
-				</button>
-				{referenceForm.editIndex !== -2 && (
-					<div className="mt-4 p-4 border-2 border-green-500 rounded-lg">
-						<div className="space-y-3">
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Full Name</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.name} onChange={(e) => setReferenceForm((f) => ({ ...f, name: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Position/Title</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.position} onChange={(e) => setReferenceForm((f) => ({ ...f, position: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Company</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.company} onChange={(e) => setReferenceForm((f) => ({ ...f, company: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Location</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.location} onChange={(e) => setReferenceForm((f) => ({ ...f, location: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Phone</label>
-								<input type="text" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.phone} onChange={(e) => setReferenceForm((f) => ({ ...f, phone: e.target.value }))} />
-							</div>
-							<div>
-								<label className="block text-gray-700 font-semibold mb-2">Email</label>
-								<input type="email" className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" value={referenceForm.email} onChange={(e) => setReferenceForm((f) => ({ ...f, email: e.target.value }))} />
-							</div>
-							<div className="flex gap-2">
+							<div className="flex items-center space-x-2">
 								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleReferenceSave();
-									}}
-									className="flex-1 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+									onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+									disabled={currentPage === 1}
+									className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Save
+									Previous
 								</button>
+								{Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+									<button
+										key={page}
+										onClick={() => setCurrentPage(page)}
+										className={`px-3 py-1 text-sm border rounded-lg transition-colors ${
+											currentPage === page ? "bg-blue-600 text-white border-blue-600" : "border-gray-300 hover:bg-gray-50"
+										}`}
+									>
+										{page}
+									</button>
+								))}
 								<button
-									type="button"
-									onClick={(e) => {
-										e.preventDefault();
-										handleReferenceCancel();
-									}}
-									className="px-6 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600"
+									onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+									disabled={currentPage === totalPages}
+									className="px-3 py-1 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
 								>
-									Cancel
+									Next
 								</button>
 							</div>
 						</div>

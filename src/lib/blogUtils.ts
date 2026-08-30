@@ -27,8 +27,15 @@ export function formatDateForArchive(dateString: string): string {
   });
 }
 
+interface PostLike {
+  _id: string;
+  categories?: string[];
+  tags?: string[];
+  [key: string]: unknown;
+}
+
 // Get related posts based on categories and tags
-export function getRelatedPosts(currentPost: any, allPosts: any[], limit: number = 3): any[] {
+export function getRelatedPosts(currentPost: PostLike, allPosts: PostLike[], limit: number = 3): PostLike[] {
   if (!allPosts || allPosts.length === 0) return [];
   
   // Filter out current post
@@ -39,17 +46,19 @@ export function getRelatedPosts(currentPost: any, allPosts: any[], limit: number
     let score = 0;
     
     // Category matches (higher weight)
-    if (currentPost.categories && post.categories) {
-      const commonCategories = currentPost.categories.filter((cat: string) => 
-        post.categories.includes(cat)
+    const postCategories = post.categories;
+    if (currentPost.categories && postCategories) {
+      const commonCategories = currentPost.categories.filter((cat: string) =>
+        postCategories.includes(cat)
       );
       score += commonCategories.length * 3;
     }
-    
+
     // Tag matches (lower weight)
-    if (currentPost.tags && post.tags) {
-      const commonTags = currentPost.tags.filter((tag: string) => 
-        post.tags.includes(tag)
+    const postTags = post.tags;
+    if (currentPost.tags && postTags) {
+      const commonTags = currentPost.tags.filter((tag: string) =>
+        postTags.includes(tag)
       );
       score += commonTags.length;
     }
@@ -71,8 +80,18 @@ export function generateExcerpt(content: string, maxLength: number = 150): strin
   return plainText.substring(0, maxLength) + '...';
 }
 
+interface BlogInput {
+  title?: string;
+  content?: string;
+  image?: string;
+  date?: string;
+  categories?: unknown;
+  tags?: unknown;
+  status?: string;
+}
+
 // Validate blog data
-export function validateBlogData(data: any): { isValid: boolean; errors: string[] } {
+export function validateBlogData(data: BlogInput): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
   
   if (!data.title || data.title.trim().length === 0) {

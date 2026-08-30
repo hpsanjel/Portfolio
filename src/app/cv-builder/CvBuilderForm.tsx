@@ -75,6 +75,7 @@ export default function CvBuilderForm() {
 	return (
 		<section className="w-full px-[6%] md:px-[12%] py-10">
 			<SectionHeader
+				as="h1"
 				intro="Free Tool — Nothing Is Saved to Any Server"
 				title="Build Your CV / Resume"
 				description="Fill in your details below and download a clean, ready-to-print PDF resume. Everything stays in your browser — your data is never sent anywhere or stored in a database. Refresh freely; your draft is kept locally until you clear it."
@@ -83,53 +84,72 @@ export default function CvBuilderForm() {
 			<div className="max-w-4xl mx-auto">
 				{/* Header */}
 				<section className="mb-10">
-					<h3 className="text-lg font-semibold mb-4">Personal Details</h3>
+					<h2 className="text-lg font-semibold mb-4">Personal Details</h2>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<div>
-							<label className={labelClass}>Full Name</label>
-							<input className={inputClass} value={draft.header.name} onChange={(e) => updateHeader({ name: e.target.value })} placeholder="Jane Doe" />
+							<label className={labelClass}>
+								Full Name
+								<input className={inputClass} value={draft.header.name} onChange={(e) => updateHeader({ name: e.target.value })} placeholder="Jane Doe" />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>Professional Title</label>
-							<input className={inputClass} value={draft.header.title} onChange={(e) => updateHeader({ title: e.target.value })} placeholder="Frontend Developer" />
+							<label className={labelClass}>
+								Professional Title
+								<input className={inputClass} value={draft.header.title} onChange={(e) => updateHeader({ title: e.target.value })} placeholder="Frontend Developer" />
+							</label>
 						</div>
 						<div className="md:col-span-2">
-							<label className={labelClass}>Address</label>
-							<input className={inputClass} value={draft.header.address} onChange={(e) => updateHeader({ address: e.target.value })} placeholder="City, Country" />
+							<label className={labelClass}>
+								Address
+								<input className={inputClass} value={draft.header.address} onChange={(e) => updateHeader({ address: e.target.value })} placeholder="City, Country" />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>Phone</label>
-							<input className={inputClass} value={draft.header.phone} onChange={(e) => updateHeader({ phone: e.target.value })} />
+							<label className={labelClass}>
+								Phone
+								<input className={inputClass} value={draft.header.phone} onChange={(e) => updateHeader({ phone: e.target.value })} />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>Email</label>
-							<input className={inputClass} value={draft.header.email} onChange={(e) => updateHeader({ email: e.target.value })} />
+							<label className={labelClass}>
+								Email
+								<input className={inputClass} value={draft.header.email} onChange={(e) => updateHeader({ email: e.target.value })} />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>LinkedIn URL</label>
-							<input className={inputClass} value={draft.header.linkedin} onChange={(e) => updateHeader({ linkedin: e.target.value })} />
+							<label className={labelClass}>
+								LinkedIn URL
+								<input className={inputClass} value={draft.header.linkedin} onChange={(e) => updateHeader({ linkedin: e.target.value })} />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>GitHub URL</label>
-							<input className={inputClass} value={draft.header.github} onChange={(e) => updateHeader({ github: e.target.value })} />
+							<label className={labelClass}>
+								GitHub URL
+								<input className={inputClass} value={draft.header.github} onChange={(e) => updateHeader({ github: e.target.value })} />
+							</label>
 						</div>
 						<div>
-							<label className={labelClass}>Portfolio URL</label>
-							<input className={inputClass} value={draft.header.portfolio} onChange={(e) => updateHeader({ portfolio: e.target.value })} />
+							<label className={labelClass}>
+								Portfolio URL
+								<input className={inputClass} value={draft.header.portfolio} onChange={(e) => updateHeader({ portfolio: e.target.value })} />
+							</label>
 						</div>
 					</div>
 				</section>
 
 				{/* Summary */}
 				<section className="mb-10">
-					<h3 className="text-lg font-semibold mb-4">Summary</h3>
-					<textarea
-						rows={4}
-						className={inputClass}
-						value={draft.summary}
-						onChange={(e) => setDraft((prev) => ({ ...prev, summary: e.target.value }))}
-						placeholder="A short summary about your professional background and goals."
-					/>
+					<h2 className="text-lg font-semibold mb-4">Summary</h2>
+					<label className={labelClass}>
+						Summary
+						<textarea
+							rows={4}
+							className={inputClass}
+							value={draft.summary}
+							onChange={(e) => setDraft((prev) => ({ ...prev, summary: e.target.value }))}
+							placeholder="A short summary about your professional background and goals."
+						/>
+					</label>
 				</section>
 
 				{/* Competencies */}

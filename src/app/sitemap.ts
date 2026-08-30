@@ -2,9 +2,10 @@ import { MetadataRoute } from 'next'
 import connectDB from '@/lib/mongoose'
 import { Blog } from '@/models'
 import { Project } from '@/models'
+import { SITE_URL } from '@/lib/seo'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://www.sanjeltech.com'
+  const baseUrl = SITE_URL
 
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
@@ -45,7 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.6,
     },
     {
-      url: `${baseUrl}/cv`,
+      url: `${baseUrl}/cv-builder`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.7,

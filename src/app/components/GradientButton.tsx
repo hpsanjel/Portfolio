@@ -27,7 +27,7 @@ export default function GradientButton({
   showArrow = true,
   children
 }: GradientButtonProps) {
-  const baseClasses = "group px-6 md:px-8 py-2 md:py-3 border rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-white font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden";
+  const baseClasses = "group px-6 md:px-8 py-2 md:py-3 border rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 font-semibold flex items-center gap-2 dark:border-transparent shadow-lg hover:shadow-2xl hover:scale-105 transition-all duration-300 relative overflow-hidden";
   const disabledClasses = disabled ? "disabled:opacity-50 disabled:hover:scale-100 disabled:hover:shadow-lg" : "";
   const combinedClasses = `${baseClasses} ${disabledClasses} ${className}`;
 
@@ -35,12 +35,13 @@ export default function GradientButton({
     <>
       <span className="relative z-10">{text}</span>
       {showArrow && (
-        <Image 
-          src="/images/arrow-right-white.svg" 
-          alt="arrow icon" 
-          width={20} 
-          height={20} 
-          className="w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300" 
+        <Image
+          src="/images/arrow-right.svg"
+          alt=""
+          width={20}
+          height={20}
+          aria-hidden="true"
+          className="w-5 relative z-10 group-hover:translate-x-1 transition-transform duration-300"
         />
       )}
       <div className="absolute inset-0 bg-linear-to-r from-[#c17e0a] to-[#eda40d] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

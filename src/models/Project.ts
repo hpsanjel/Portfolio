@@ -65,10 +65,9 @@ const ProjectSchema: Schema = new Schema({
 });
 
 // Generate slug before validation
-ProjectSchema.pre('validate', function() {
-  const project = this as any;
-  if (project.isModified('title') && !project.slug) {
-    project.slug = project.title
+ProjectSchema.pre('validate', function (this: IProject) {
+  if (this.isModified('title') && !this.slug) {
+    this.slug = this.title
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');

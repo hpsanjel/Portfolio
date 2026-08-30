@@ -55,11 +55,9 @@ export async function PUT(request: NextRequest) {
 
     await mongoose.connect(process.env.MONGODB_URI!);
 
-    let result: any = {};
-
     if (action === 'reject') {
       // Delete rejected comments
-      result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      const result = await Comment.deleteMany({ _id: { $in: commentIds } });
       await ActivityLog.create({
         action: "rejected comments",
         entityType: "comment",
@@ -72,7 +70,7 @@ export async function PUT(request: NextRequest) {
       });
     } else if (action === 'delete') {
       // Delete comments
-      result = await Comment.deleteMany({ _id: { $in: commentIds } });
+      const result = await Comment.deleteMany({ _id: { $in: commentIds } });
       await ActivityLog.create({
         action: "deleted comments",
         entityType: "comment",
@@ -85,7 +83,7 @@ export async function PUT(request: NextRequest) {
       });
     } else {
       // Approve comments
-      result = await Comment.updateMany(
+      const result = await Comment.updateMany(
         { _id: { $in: commentIds } },
         { isApproved: true, updatedAt: new Date() }
       );

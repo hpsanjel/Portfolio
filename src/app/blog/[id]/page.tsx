@@ -1,7 +1,9 @@
 import { Metadata } from "next";
+import { cache } from "react";
 import BlogDetailClient from "@/app/blog/[id]/BlogDetailClient"
 import connectDB from "@/lib/mongoose";
 import { Blog as BlogModel } from "@/models";
+import { SITE_URL, SITE_NAME, getJpgOpenGraphImageUrl } from "@/lib/seo";
 
 interface Blog {
   id: string;
@@ -15,27 +17,24 @@ interface Blog {
   link?: string;
 }
 
-function getJpgOpenGraphImageUrl(imageUrl: string): string {
-  if (!imageUrl.includes('res.cloudinary.com')) {
-    return imageUrl;
-  }
-
-  return imageUrl.replace(/\.[a-zA-Z0-9]+(?:\?.*)?$/, '.jpg');
-}
+// Deduped between generateMetadata and the page body — one DB round-trip per request.
+const getBlog = cache(async (id: string) => {
+  await connectDB();
+  return BlogModel.findById(id).lean();
+});
 
 // Generate metadata for the blog page
 export async function generateMetadata(
   { params }: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
   const { id } = await params;
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_AUTH_BASE_URL || 'https://www.sanjeltech.com';
+  const baseUrl = SITE_URL;
   const canonicalUrl = `${baseUrl}/blog/${id}`;
-  
-  
+
+
   try {
-    await connectDB();
-    const blog = await BlogModel.findById(id).lean();
-      
+    const blog = await getBlog(id);
+
     // Check if blog is published
     if (blog && blog.status !== 'draft') {
       const ogImageUrl = getJpgOpenGraphImageUrl(blog.image);
@@ -50,7 +49,7 @@ export async function generateMetadata(
           title: blog.title,
           description: blog.excerpt || blog.content?.substring(0, 150) + '...' || 'Read this blog post',
           url: canonicalUrl,
-          siteName: 'Hari Prasad Sanjel',
+          siteName: 'SanjelTech',
           images: [
             {
               url: ogImageUrl,
@@ -83,10 +82,11 @@ export async function generateMetadata(
         },
       };
     }
-    
+
     return {
       title: 'Blog Post Not Found',
       description: 'This blog post is not available.',
+      robots: { index: false, follow: false },
       alternates: {
         canonical: canonicalUrl,
       },
@@ -94,7 +94,7 @@ export async function generateMetadata(
         title: 'Blog Post Not Found',
         description: 'This blog post is not available.',
         url: canonicalUrl,
-        siteName: 'Hari Prasad Sanjel',
+        siteName: 'SanjelTech',
         type: 'article',
       },
       twitter: {
@@ -106,7 +106,7 @@ export async function generateMetadata(
   } catch (error) {
     console.error('Metadata fetch error:', error);
   }
-  
+
   // Generic fallback metadata
   return {
     title: 'Blog Post',
@@ -118,7 +118,7 @@ export async function generateMetadata(
       title: 'Blog Post',
       description: 'Read this blog post',
       url: canonicalUrl,
-      siteName: 'Hari Prasad Sanjel',
+      siteName: 'SanjelTech',
       type: 'article',
     },
     twitter: {
@@ -132,5 +132,47 @@ export async function generateMetadata(
 // Server component that just renders the client component
 export default async function BlogDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  return <BlogDetailClient id={id} />;
+  const canonicalUrl = `${SITE_URL}/blog/${id}`;
+
+  let articleJsonLd: Record<string, unknown> | null = null;
+  try {
+    const blog = await getBlog(id);
+    if (blog && blog.status !== 'draft') {
+      const ogImageUrl = getJpgOpenGraphImageUrl(blog.image);
+      articleJsonLd = {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        headline: blog.title,
+        description: blog.excerpt || (blog.content ? blog.content.substring(0, 150) + '...' : undefined),
+        image: [ogImageUrl],
+        datePublished: blog.date,
+        dateModified: blog.updatedAt || blog.date,
+        author: {
+          "@type": "Person",
+          name: blog.author || "Hari Prasad Sanjel",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: SITE_NAME,
+          logo: {
+            "@type": "ImageObject",
+            url: `${SITE_URL}/images/icon-512.png`,
+          },
+        },
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": canonicalUrl,
+        },
+      };
+    }
+  } catch (error) {
+    console.error('Blog JSON-LD fetch error:', error);
+  }
+
+  return (
+    <>
+      {articleJsonLd && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }} />}
+      <BlogDetailClient id={id} />
+    </>
+  );
 }

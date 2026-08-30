@@ -29,7 +29,7 @@ export default function DynamicListSection<T>({ title, items, emptyItem, onChang
 
 	return (
 		<section className="mb-10">
-			<h3 className="text-lg font-semibold mb-4">{title}</h3>
+			<h2 className="text-lg font-semibold mb-4">{title}</h2>
 			<div className="space-y-4">
 				{items.map((item, index) => (
 					<div key={index} className="relative border-[0.5px] border-gray-400 dark:border-white/30 rounded-md p-4 pr-12 bg-white dark:bg-darkHover/30">
@@ -48,7 +48,7 @@ export default function DynamicListSection<T>({ title, items, emptyItem, onChang
 			<button
 				type="button"
 				onClick={addRow}
-				className="mt-4 flex items-center gap-2 text-sm font-medium text-[#c17e0a] hover:text-[#eda40d] transition-colors"
+				className="mt-4 flex items-center gap-2 text-sm font-medium text-accent hover:text-[#8a5a08] dark:text-[#c17e0a] dark:hover:text-[#eda40d] transition-colors"
 			>
 				<Plus className="w-4 h-4" /> {addLabel}
 			</button>

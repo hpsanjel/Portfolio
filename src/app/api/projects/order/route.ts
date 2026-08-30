@@ -24,7 +24,7 @@ export async function PUT(request: Request) {
 	await ActivityLog.create({
 		action: "reordered projects",
 		entityType: "project",
-		entityId: projectOrders.map((p: any) => p.id).join(","),
+		entityId: projectOrders.map((p: { id: string; order: number }) => p.id).join(","),
 		details: `Reordered ${projectOrders.length} project(s).`,
 	});
 

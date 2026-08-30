@@ -502,7 +502,7 @@ export default function Comments({ blogId }: CommentsProps) {
                   <div className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
                     {comment.replies.length} {comment.replies.length === 1 ? 'Reply' : 'Replies'}
                   </div>
-                  {comment.replies.map((reply: any) => (
+                  {comment.replies.map((reply: Comment) => (
                     <div key={reply._id} className={`rounded-lg p-4 ${reply.isAdminReply ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800' : 'bg-gray-50 dark:bg-gray-700'}`}>
                       <div className="flex items-start justify-between mb-2">
                         <div>
@@ -521,7 +521,7 @@ export default function Comments({ blogId }: CommentsProps) {
                       </div>
                       
                       <div className="prose prose-sm max-w-none text-gray-700 dark:text-gray-300">
-                        {reply.content.split('\n').map((paragraph: any, index: number) => (
+                        {reply.content.split('\n').map((paragraph: string, index: number) => (
                           <p key={index} className="mb-2 text-sm">
                             {paragraph}
                           </p>

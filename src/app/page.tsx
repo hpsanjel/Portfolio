@@ -1,18 +1,24 @@
 import Main from "./components/Main";
+import StatsBar from "./components/StatsBar";
 import About from "./about/About";
 import Services from "./services/Services";
+import HowWeWork from "./components/HowWeWork";
 import Projects from "./projects/Projects";
-import Blogs from "./blog/Blogs";
+import Testimonials from "./components/Testimonials";
+import FAQ from "./components/FAQ";
 import Contact from "./contact/Contact";
 
 export default function HomePage() {
 	return (
 		<>
 			<Main />
+			<StatsBar />
 			<About />
 			<Services />
+			<HowWeWork />
 			<Projects />
-			<Blogs />
+			<Testimonials />
+			<FAQ />
 			<Contact />
 		</>
 	);

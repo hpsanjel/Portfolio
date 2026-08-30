@@ -1,30 +1,40 @@
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { isValidSessionToken, ADMIN_SESSION_COOKIE } from "@/lib/auth";
 
-export function proxy(request: NextRequest) {
-  // Check if the request is for the admin route
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    // Allow admin-login page without authentication
-    if (request.nextUrl.pathname.startsWith('/admin-login')) {
-      return NextResponse.next()
-    }
-    
-    // Check for the admin password cookie
-    const adminPassword = "P@ssw0rd_N0rw@y" // TODO: Use NEXT_PUBLIC_ADMIN_PASSWORD in production
-    const cookieValue = request.cookies.get('admin-access')?.value
-    const hasAccess = adminPassword && cookieValue === adminPassword
+const ADMIN_WRITE_PREFIXES = ["/api/blogs", "/api/projects", "/api/services", "/api/testimonials", "/api/faqs"];
+const WRITE_METHODS = ["POST", "PUT", "DELETE"];
 
-    if (!hasAccess) {
-      // Redirect to a simple password verification page
-      const loginUrl = new URL('/admin-login', request.url)
-      loginUrl.searchParams.set('redirect', request.nextUrl.pathname)
-      return NextResponse.redirect(loginUrl)
-    }
-  }
+function isAdminOnlyApiRequest(pathname: string, method: string): boolean {
+	if (pathname === "/api/admin/login") return false;
+	if (pathname.startsWith("/api/admin/")) return true;
+	if (pathname === "/api/upload") return true;
+	if (pathname === "/api/analytics" && method === "GET") return true;
 
-  return NextResponse.next()
+	if (!WRITE_METHODS.includes(method)) return false;
+	return ADMIN_WRITE_PREFIXES.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
+}
+
+export async function proxy(request: NextRequest) {
+	const { pathname } = request.nextUrl;
+	const hasValidSession = await isValidSessionToken(request.cookies.get(ADMIN_SESSION_COOKIE)?.value);
+
+	if (pathname === "/admin" || pathname.startsWith("/admin/")) {
+		if (!hasValidSession) {
+			const loginUrl = new URL("/admin-login", request.url);
+			loginUrl.searchParams.set("redirect", pathname);
+			return NextResponse.redirect(loginUrl);
+		}
+		return NextResponse.next();
+	}
+
+	if (pathname.startsWith("/api/") && isAdminOnlyApiRequest(pathname, request.method) && !hasValidSession) {
+		return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+	}
+
+	return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/admin/:path*']
-}
+	matcher: ["/admin/:path*", "/api/:path*"],
+};

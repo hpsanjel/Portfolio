@@ -2,14 +2,23 @@ import { Metadata } from "next";
 import SectionHeader from "../components/SectionHeader";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Hari Prasad Sanjel",
-  description: "Terms of Service for Hari Prasad Sanjel's portfolio website. Read our terms and conditions for using our services.",
+  title: "Terms of Service",
+  description: "Terms of Service for SanjelTech's website. Read our terms and conditions for using our services.",
+  alternates: {
+    canonical: "/terms",
+  },
+  openGraph: {
+    title: "Terms of Service | SanjelTech",
+    description: "Read the terms and conditions for using SanjelTech's services.",
+    url: "/terms",
+  },
 };
 
 export default function TermsOfService() {
   return (
     <section className="w-full px-6 sm:px-8 md:px-12 lg:px-[15%] py-10">
-      <SectionHeader 
+      <SectionHeader
+        as="h1"
         intro="Legal Information"
         title="Terms of Service"
         description="Please read these terms carefully"
@@ -37,7 +46,7 @@ export default function TermsOfService() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Intellectual Property</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              All content, including but not limited to text, graphics, logos, and images, on this website is the property of Hari Prasad Sanjel or to some extent of respective content owners.
+              All content, including but not limited to text, graphics, logos, and images, on this website is the property of SanjelTech or to some extent of respective content owners.
             </p>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
               You may not reproduce, distribute, or create derivative works without explicit written permission.
@@ -54,14 +63,14 @@ export default function TermsOfService() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Privacy and Data Protection</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              Your privacy is important to us. Please review our <a href="/privacy" className="text-yellow-600 dark:text-yellow-400 hover:underline">Privacy Policy</a>, which also governs your use of our website.
+              Your privacy is important to us. Please review our <a href="/privacy" className="text-accent dark:text-yellow-400 hover:underline">Privacy Policy</a>, which also governs your use of our website.
             </p>
           </div>
 
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Limitation of Liability</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              Our website and services are provided "as is" without any warranties, express or implied. We shall not be liable for any indirect, incidental, or consequential damages.
+              Our website and services are provided &ldquo;as is&rdquo; without any warranties, express or implied. We shall not be liable for any indirect, incidental, or consequential damages.
             </p>
           </div>
 
@@ -82,7 +91,7 @@ export default function TermsOfService() {
           <div>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Contact Information</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              If you have any questions about these Terms of Service, please contact us through our <a href="/contact" className="text-yellow-600 dark:text-yellow-400 hover:underline">contact form</a>.
+              If you have any questions about these Terms of Service, please contact us through our <a href="/contact" className="text-accent dark:text-yellow-400 hover:underline">contact form</a>.
             </p>
           </div>
 

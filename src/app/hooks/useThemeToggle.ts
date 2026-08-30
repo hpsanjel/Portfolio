@@ -9,6 +9,9 @@ export default function useThemeToggle() {
 		if (typeof window !== "undefined") {
 			const savedTheme = localStorage.getItem("theme");
 			if (savedTheme === "dark" || savedTheme === "light") {
+				// Reads localStorage on mount to sync theme from a prior visit — an effect is
+				// required here since this value isn't available during server rendering.
+				// eslint-disable-next-line react-hooks/set-state-in-effect
 				setTheme(savedTheme);
 				if (savedTheme === "dark") {
 					document.documentElement.classList.add("dark");

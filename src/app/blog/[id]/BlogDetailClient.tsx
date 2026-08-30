@@ -126,9 +126,9 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
               
               return { ...post, score };
             })
-            .sort((a: any, b: any) => b.score - a.score)
+            .sort((a: Blog & { score: number }, b: Blog & { score: number }) => b.score - a.score)
             .slice(0, 3)
-            .map(({ score, ...post }: any) => post);
+            .map(({ score, ...post }: Blog & { score: number }) => post);
           
           setRelatedBlogs(relatedPosts);
         }
@@ -168,7 +168,7 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
                 <div className="p-4 md:p-8">
                     <Link 
                       href="/blog" 
-                      className="text-yellow-600 hover:text-blue-400 text-sm font-medium mb-4 inline-block"
+                      className="text-accent hover:text-[#8a5a08] dark:text-yellow-400 dark:hover:text-yellow-300 text-sm font-medium mb-4 inline-block"
                     >
                       &larr; Back to all blogs
                     </Link>

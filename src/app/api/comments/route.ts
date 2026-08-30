@@ -94,7 +94,7 @@ export async function GET(request: NextRequest) {
     }).sort({ createdAt: 1 });
 
     // Organize replies by parent ID
-    const repliesByParent: { [key: string]: any[] } = {};
+    const repliesByParent: { [key: string]: (typeof replies)[number][] } = {};
     replies.forEach(reply => {
       const parentId = reply.parentId?.toString();
       if (parentId && !repliesByParent[parentId]) {

@@ -6,6 +6,8 @@
 	--color-darkTheme: #18181b;
 	--color-darkHover: #23232a;
 	--font-family-outfit: Outfit, sans-serif;
+	/* Accessible amber for text/icons on light backgrounds — 4.5:1+ against white (WCAG 1.4.3). */
+	--color-accent: #a3690a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -28,14 +30,15 @@
 }
 
 body {
-	background: var(--background);
+	background: radial-gradient(1100px 550px at 10% -10%, rgba(237, 164, 13, 0.14), transparent 60%), radial-gradient(900px 500px at 90% 5%, rgba(37, 99, 235, 0.12), transparent 55%), linear-gradient(180deg, #fffdf8 0%, #f6f8fc 100%);
+	background-attachment: fixed;
 	color: var(--foreground);
 	font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Dark mode page gradient to match header */
+/* Dark mode page gradient — warm gold fading into cool blue */
 :root[class~="dark"] body {
-	background: radial-gradient(1200px 600px at 15% -10%, rgba(123, 75, 255, 0.28), transparent 60%), radial-gradient(900px 500px at 85% 0%, rgba(72, 24, 110, 0.35), transparent 55%), linear-gradient(180deg, #0f0b1a 0%, #0b0a14 100%);
+	background: radial-gradient(1200px 600px at 12% -10%, rgba(237, 164, 13, 0.2), transparent 60%), radial-gradient(1000px 550px at 88% 0%, rgba(37, 99, 235, 0.28), transparent 55%), linear-gradient(180deg, #120d05 0%, #090a12 100%);
 	background-attachment: fixed;
 }
 
@@ -193,5 +196,56 @@ body {
 	body {
 		background: #ffffff;
 		color: #111111;
+	}
+}
+
+/* Visible keyboard focus indicator (WCAG 2.4.7 Focus Visible / 2.4.11 Focus Not Obscured) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+[tabindex]:not([tabindex="-1"]):focus-visible {
+	outline: 2px solid #a3690a;
+	outline-offset: 2px;
+	border-radius: 2px;
+}
+
+:root[class~="dark"] a:focus-visible,
+:root[class~="dark"] button:focus-visible,
+:root[class~="dark"] input:focus-visible,
+:root[class~="dark"] textarea:focus-visible,
+:root[class~="dark"] select:focus-visible,
+:root[class~="dark"] [tabindex]:not([tabindex="-1"]):focus-visible {
+	outline-color: #eda40d;
+}
+
+/* Skip link (WCAG 2.4.1 Bypass Blocks) */
+.skip-link {
+	position: absolute;
+	top: -100px;
+	left: 1rem;
+	z-index: 100;
+	background: #a3690a;
+	color: #fff;
+	padding: 0.75rem 1.25rem;
+	border-radius: 0.5rem;
+	font-weight: 600;
+	transition: top 0.2s ease-in-out;
+}
+
+.skip-link:focus {
+	top: 1rem;
+}
+
+/* Respect the user's motion preference (WCAG 2.3.3 Animation from Interactions) */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
 	}
 }

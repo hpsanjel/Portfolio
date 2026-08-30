@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Comment from '../../../../../../models/Comment';
 import { ActivityLog } from '../../../../../../models';
 
-const ADMIN_AUTHOR = 'Hari Prasad Sanjel';
+const ADMIN_AUTHOR = 'SanjelTech';
 const ADMIN_EMAIL = 'harisanjel@gmail.com';
 
 const sanitizeInput = (input: string): string => {

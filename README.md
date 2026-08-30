@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Features
 
-- Portfolio website with blog, projects, and services sections
+- SanjelTech business website with blog, projects, and services sections
 - Cloudinary integration for media management
 - Contact form with email functionality
 - MongoDB database integration
