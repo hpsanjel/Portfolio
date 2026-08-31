@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
+import { escapeHtml } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -37,12 +38,12 @@ export async function POST(request: Request) {
       subject: `New Contact Form Message from ${name}`,
       html: `
         <h3>New Contact Form Submission</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
         <p><strong>Message:</strong></p>
-        <p>${message.replace(/\n/g, '<br>')}</p>
+        <p>${escapeHtml(message).replace(/\n/g, '<br>')}</p>
         <hr>
-        <p><em>Sent from: ${email}</em></p>
+        <p><em>Sent from: ${escapeHtml(email)}</em></p>
       `,
     };
 

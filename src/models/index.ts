@@ -12,3 +12,5 @@ export { default as PageView } from './PageView';
 export type { IPageView } from './PageView';
 export { default as ActivityLog } from './ActivityLog';
 export type { IActivityLog } from './ActivityLog';
+export { default as TimeSlot } from './TimeSlot';
+export type { ITimeSlot, ITimeSlotBooking } from './TimeSlot';

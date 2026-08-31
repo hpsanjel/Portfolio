@@ -2,6 +2,7 @@ import Main from "./components/Main";
 import StatsBar from "./components/StatsBar";
 import About from "./about/About";
 import Services from "./services/Services";
+import Pricing from "./pricing/Pricing";
 import HowWeWork from "./components/HowWeWork";
 import Projects from "./projects/Projects";
 import Testimonials from "./components/Testimonials";
@@ -15,6 +16,7 @@ export default function HomePage() {
 			<StatsBar />
 			<About />
 			<Services />
+			<Pricing />
 			<HowWeWork />
 			<Projects />
 			<Testimonials />

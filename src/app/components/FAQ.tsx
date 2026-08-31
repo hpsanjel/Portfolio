@@ -46,15 +46,8 @@ export default function FAQ() {
 						return (
 							<div key={faq._id} className="bg-white/80 dark:bg-darkHover/40 border border-gray-200/70 dark:border-white/10 rounded-2xl overflow-hidden">
 								<h3>
-									<button
-										type="button"
-										onClick={() => setOpenIndex(isOpen ? null : index)}
-										aria-expanded={isOpen}
-										aria-controls={`faq-answer-${faq._id}`}
-										id={`faq-question-${faq._id}`}
-										className="w-full flex items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 text-left"
-									>
-										<span className={`font-semibold ${isOpen ? "text-accent dark:text-[#c17e0a]" : "text-gray-900 dark:text-white"}`}>{faq.question}</span>
+									<button type="button" onClick={() => setOpenIndex(isOpen ? null : index)} aria-expanded={isOpen} aria-controls={`faq-answer-${faq._id}`} id={`faq-question-${faq._id}`} className="w-full flex items-center justify-between gap-4 px-5 py-4 sm:px-6 sm:py-5 text-left">
+										<span className={`font-medium text-sm md:text-md ${isOpen ? "text-accent dark:text-[#c17e0a]" : "text-gray-900 dark:text-white"}`}>{faq.question}</span>
 										<ChevronDown className={`w-5 h-5 shrink-0 text-accent dark:text-[#c17e0a] transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`} aria-hidden="true" />
 									</button>
 								</h3>

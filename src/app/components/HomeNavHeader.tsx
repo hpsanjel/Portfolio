@@ -4,7 +4,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import useThemeToggle from "../hooks/useThemeToggle";
 import Link from "next/link";
-import { Home, User, Briefcase, FolderOpen, Mail, X } from "lucide-react";
+import { Home, User, Briefcase, FolderOpen, Tag, Mail, Menu, X } from "lucide-react";
 
 export default function HomeNavHeader() {
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
@@ -38,6 +38,7 @@ export default function HomeNavHeader() {
 		{ href: "/", label: "Home", icon: Home },
 		{ href: "/about", label: "About", icon: User },
 		{ href: "/services", label: "Services", icon: Briefcase },
+		{ href: "/pricing", label: "Pricing", icon: Tag },
 		{ href: "/projects", label: "Projects", icon: FolderOpen },
 	];
 
@@ -91,100 +92,99 @@ export default function HomeNavHeader() {
 					<button
 						ref={menuButtonRef}
 						type="button"
-						className="flex md:hidden ml-1 items-center gap-2"
+						className="flex md:hidden items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-700 dark:text-gray-200 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200"
 						onClick={() => setSideMenuOpen(true)}
 						aria-label="Open menu"
 						aria-expanded={sideMenuOpen}
 						aria-controls="mobile-menu"
 					>
-						<span className="text-gray-700 dark:text-gray-300 font-bold text-lg">Menu</span>
-						<Image src="/images/menu.svg" alt="" width={24} height={24} className="w-8 dark:hidden" />
-						<Image src="/images/menu-white.svg" alt="" width={24} height={24} className="w-8 hidden dark:block" />
+						<Menu className="w-5 h-5" />
 					</button>
 				</div>
 				{/* Side Menu */}
 				{sideMenuOpen && (
 					<>
 						{/* Overlay */}
-						<div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSideMenuOpen(false)} aria-hidden="true" />
+						<div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onClick={() => setSideMenuOpen(false)} aria-hidden="true" />
 
 						{/* Menu Panel */}
-						<ul
+						<nav
 							id="mobile-menu"
 							role="dialog"
 							aria-modal="true"
 							aria-label="Mobile navigation"
-							className="flex md:hidden flex-col items-start justify-start gap-2 px-8 py-20 fixed right-0 top-0 bottom-0 w-80 z-50 h-screen bg-white dark:bg-gray-900 shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out"
+							className="flex md:hidden flex-col gap-2 fixed right-0 top-0 bottom-0 w-[85%] max-w-80 z-50 h-screen bg-white dark:bg-[#0a0d16] shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out overflow-y-auto"
 						>
 							{/* Header */}
-							<div className="absolute left-6 top-10">
-								<div className="flex items-center gap-3">
-									<Image
+							<div className="flex items-center justify-between px-6 pt-8 pb-6 border-b border-gray-100 dark:border-white/10">
+								<Image
 									src="/images/logo-sanjeltech-nav.png"
 									alt="SanjelTech logo"
 									width={1402}
 									height={881}
-									className="w-20 dark:filter-[drop-shadow(1px_0_0_#fff)_drop-shadow(-1px_0_0_#fff)_drop-shadow(0_1px_0_#fff)_drop-shadow(0_-1px_0_#fff)]"
+									className="w-16 dark:filter-[drop-shadow(1px_0_0_#fff)_drop-shadow(-1px_0_0_#fff)_drop-shadow(0_1px_0_#fff)_drop-shadow(0_-1px_0_#fff)]"
 								/>
-								</div>
-							</div>
-							<div className="absolute right-6 top-6">
-								<button ref={closeButtonRef} type="button" onClick={() => setSideMenuOpen(false)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors duration-200" aria-label="Close menu">
-									<X className="w-6 h-6 cursor-pointer text-gray-700 dark:text-gray-300" />
+								<button ref={closeButtonRef} type="button" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" aria-label="Close menu">
+									<X className="w-4.5 h-4.5 cursor-pointer text-gray-700 dark:text-gray-300" />
 								</button>
 							</div>
 
-							{/* Navigation Items */}
-							<div className="w-full mt-16 space-y-1">
-								{navItems.map((item) => {
-									const isActive = pathname === item.href;
-									const Icon = item.icon;
-									return (
-										<li key={item.href} className="w-full">
-											<Link
-												href={item.href}
-												onClick={() => setSideMenuOpen(false)}
-												className={`
-												flex items-center w-full px-6 py-4 text-base font-medium rounded-xl transition-all duration-200 ease-in-out
-												${isActive ? "text-gray-900 dark:text-white bg-gray-100 dark:bg-gray-800 border-l-2 border-blue-500 shadow-sm" : "text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800"}
-											`}
-											>
-												<Icon className={`w-5 h-5 mr-4 ${isActive ? "text-blue-500" : ""}`} />
-												<span>{item.label}</span>
-												{isActive && (
-													<div className="ml-auto">
-														<div className="w-1.5 h-1.5 bg-blue-500 rounded-full"></div>
-													</div>
-												)}
-											</Link>
-										</li>
-									);
-								})}
+							{/* Navigation Items — centered in the space between header and footer */}
+							<div className="flex-1 flex flex-col justify-center min-h-0">
+								<div className="w-full px-4 space-y-1">
+									{navItems.map((item) => {
+										const isActive = pathname === item.href;
+										const Icon = item.icon;
+										return (
+											<div key={item.href} className="w-full">
+												<Link
+													href={item.href}
+													onClick={() => setSideMenuOpen(false)}
+													className={`
+													flex items-center w-full px-4 py-3.5 text-base font-medium rounded-xl transition-all duration-200 ease-in-out
+													${isActive ? "text-accent dark:text-[#eda40d] bg-[#eda40d]/10 font-semibold" : "text-gray-700 dark:text-gray-300 hover:text-accent dark:hover:text-[#eda40d] hover:bg-[#eda40d]/5"}
+												`}
+												>
+													<Icon className={`w-5 h-5 mr-3.5 ${isActive ? "text-accent dark:text-[#eda40d]" : "text-gray-400 dark:text-gray-500"}`} />
+													<span>{item.label}</span>
+												</Link>
+											</div>
+										);
+									})}
+								</div>
+
+								{/* Availability strip */}
+								<div className="w-full px-8 mt-6">
+									<div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+										<span className="w-2 h-2 rounded-full bg-green-500"></span>
+										Available for new projects
+									</div>
+								</div>
 
 								{/* Contact Button */}
-								<li className="w-full pt-4">
-									<Link href="/contact" onClick={() => setSideMenuOpen(false)} className="flex items-center w-full px-6 py-4 text-base font-medium rounded-xl bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 hover:shadow-lg transform hover:scale-105 transition-all duration-200 ease-in-out">
-										<Mail className="w-5 h-5 mr-4" />
+								<div className="w-full px-4 mt-6">
+									<Link href="/contact" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center gap-2 w-full px-6 py-3.5 text-base font-semibold rounded-xl bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 hover:shadow-lg hover:shadow-[#c17e0a]/25 transition-shadow duration-200 ease-in-out">
+										<Mail className="w-5 h-5" />
 										Contact Us
 									</Link>
-								</li>
+								</div>
 							</div>
 
 							{/* Footer */}
-							<div className="absolute bottom-8 left-8 right-8">
-								<div className="flex items-center justify-center gap-4 pb-4 border-t border-gray-200 dark:border-gray-700 pt-4">
-									<a href="https://www.linkedin.com/in/hpsanjel/" className="p-2 rounded-lg bg-gray-100 dark:bg-white hover:bg-gray-200 dark:hover:bg-gray-200 transition-colors duration-200" aria-label="LinkedIn">
-										<Image src="/images/linkedin.png" alt="LinkedIn" width={20} height={20} className="w-5 h-5" />
+							<div className="w-full px-8 py-6 border-t border-gray-100 dark:border-white/10">
+								<div className="flex items-center justify-center gap-3">
+									<a href="https://www.linkedin.com/in/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="LinkedIn">
+										<Image src="/images/linkedin.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
-									<a href="https://github.com/hpsanjel" className="p-2 rounded-lg bg-gray-100 dark:bg-white hover:bg-gray-200 dark:hover:bg-gray-200 transition-colors duration-200" aria-label="GitHub">
-										<Image src="/images/github.png" alt="GitHub" width={20} height={20} className="w-5 h-5" />
+									<a href="https://github.com/hpsanjel" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="GitHub">
+										<Image src="/images/github.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
-									<a href="https://www.facebook.com/hpsanjel/" className="p-2 rounded-lg bg-gray-100 dark:bg-white hover:bg-gray-200 dark:hover:bg-gray-200 transition-colors duration-200" aria-label="Facebook">
-										<Image src="/images/facebook.png" alt="Facebook" width={20} height={20} className="w-5 h-5" />
+									<a href="https://www.facebook.com/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="Facebook">
+										<Image src="/images/facebook.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
 								</div>
 							</div>
-						</ul>
+						</nav>
 					</>
 				)}
 			</nav>

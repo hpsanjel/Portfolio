@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, LogOut, Bell, BarChart3, Users, Calendar, MessageSquare, Star, HelpCircle } from "lucide-react";
+import { Menu, X, Home, FileText, Briefcase, Settings, User, Plus, Edit2, Trash2, Search, Filter, Download, Upload, Eye, ChevronDown, ChevronLeft, ChevronRight, LogOut, Bell, BarChart3, Users, Calendar, MessageSquare, Star, HelpCircle, Phone, Mail } from "lucide-react";
 import Image from "next/image";
 import { BLOG_CATEGORIES, PREDEFINED_TAGS } from "../../lib/blogCategories";
+import { TIME_SLOTS, formatTimeLabel } from "../../lib/booking";
 
 interface Project {
 	_id: string;
@@ -33,6 +34,7 @@ const MENU_ITEMS = [
 	{ key: "services", label: "Services", icon: Settings },
 	{ key: "testimonials", label: "Testimonials", icon: Star },
 	{ key: "faqs", label: "FAQs", icon: HelpCircle },
+	{ key: "bookings", label: "Bookings", icon: Calendar },
 	{ key: "analytics", label: "Analytics", icon: BarChart3 },
 ];
 
@@ -260,6 +262,7 @@ export default function AdminPage() {
 					{activeTab === "services" && <ServicesSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "testimonials" && <TestimonialsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
 					{activeTab === "faqs" && <FAQsSection searchQuery={searchQuery} setSearchQuery={setSearchQuery} />}
+					{activeTab === "bookings" && <BookingsSection />}
 					{activeTab === "analytics" && <AnalyticsSection />}
 				</main>
 			</div>
@@ -3620,6 +3623,305 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 						</div>
 					</div>
 				)}
+			</div>
+		</div>
+	);
+}
+
+interface AvailabilitySlot {
+	_id: string;
+	date: string;
+	time: string;
+	isBooked: boolean;
+	booking?: { name: string; email: string; phone: string; message?: string; bookedAt: string };
+}
+
+function monthKeyOf(year: number, month: number): string {
+	return `${year}-${String(month + 1).padStart(2, "0")}`;
+}
+
+function dateStringOf(year: number, month: number, day: number): string {
+	return `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function BookingsSection() {
+	const now = new Date();
+	const todayStr = dateStringOf(now.getFullYear(), now.getMonth(), now.getDate());
+
+	const [viewYear, setViewYear] = useState(now.getFullYear());
+	const [viewMonth, setViewMonth] = useState(now.getMonth());
+	const [monthSummary, setMonthSummary] = useState<Record<string, { available: number; booked: number }>>({});
+	const [loadingMonth, setLoadingMonth] = useState(true);
+
+	const [selectedDate, setSelectedDate] = useState<string | null>(null);
+	const [daySlots, setDaySlots] = useState<AvailabilitySlot[]>([]);
+	const [loadingDay, setLoadingDay] = useState(false);
+	const [savingTime, setSavingTime] = useState<string | null>(null);
+
+	const [bookings, setBookings] = useState<AvailabilitySlot[]>([]);
+	const [loadingBookings, setLoadingBookings] = useState(true);
+
+	async function fetchMonth(year: number, month: number) {
+		setLoadingMonth(true);
+		try {
+			const res = await fetch(`/api/admin/availability?month=${monthKeyOf(year, month)}`);
+			setMonthSummary(await res.json());
+		} catch {
+			setMonthSummary({});
+		}
+		setLoadingMonth(false);
+	}
+
+	async function fetchDay(date: string) {
+		setLoadingDay(true);
+		try {
+			const res = await fetch(`/api/admin/availability?date=${date}`);
+			setDaySlots(await res.json());
+		} catch {
+			setDaySlots([]);
+		}
+		setLoadingDay(false);
+	}
+
+	async function fetchBookings() {
+		setLoadingBookings(true);
+		try {
+			const res = await fetch(`/api/admin/availability?booked=true`);
+			setBookings(await res.json());
+		} catch {
+			setBookings([]);
+		}
+		setLoadingBookings(false);
+	}
+
+	useEffect(() => {
+		fetchMonth(viewYear, viewMonth);
+	}, [viewYear, viewMonth]);
+
+	useEffect(() => {
+		fetchBookings();
+	}, []);
+
+	useEffect(() => {
+		if (selectedDate) fetchDay(selectedDate);
+	}, [selectedDate]);
+
+	async function toggleSlot(date: string, time: string) {
+		const existing = daySlots.find((s) => s.time === time);
+		setSavingTime(time);
+		try {
+			if (existing) {
+				await fetch(`/api/admin/availability/${existing._id}`, { method: "DELETE" });
+			} else {
+				await fetch("/api/admin/availability", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ date, times: [time] }),
+				});
+			}
+			await fetchDay(date);
+			await fetchMonth(viewYear, viewMonth);
+		} finally {
+			setSavingTime(null);
+		}
+	}
+
+	async function cancelBooking(slot: AvailabilitySlot) {
+		if (!confirm(`Cancel the booking with ${slot.booking?.name} on ${slot.date} at ${formatTimeLabel(slot.time)}?`)) return;
+		await fetch(`/api/admin/availability/${slot._id}`, { method: "DELETE" });
+		await fetchBookings();
+		if (selectedDate === slot.date) await fetchDay(slot.date);
+		await fetchMonth(viewYear, viewMonth);
+	}
+
+	const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+	const rawFirstWeekday = new Date(viewYear, viewMonth, 1).getDay();
+	const firstWeekday = (rawFirstWeekday + 6) % 7; // Monday-first
+	const isViewingCurrentOrPastMonth = viewYear < now.getFullYear() || (viewYear === now.getFullYear() && viewMonth <= now.getMonth());
+
+	const goPrevMonth = () => {
+		setSelectedDate(null);
+		if (viewMonth === 0) {
+			setViewYear(viewYear - 1);
+			setViewMonth(11);
+		} else {
+			setViewMonth(viewMonth - 1);
+		}
+	};
+	const goNextMonth = () => {
+		setSelectedDate(null);
+		if (viewMonth === 11) {
+			setViewYear(viewYear + 1);
+			setViewMonth(0);
+		} else {
+			setViewMonth(viewMonth + 1);
+		}
+	};
+
+	const upcomingBookings = bookings.filter((b) => b.date >= todayStr);
+	const pastBookings = bookings.filter((b) => b.date < todayStr);
+
+	return (
+		<div className="space-y-6">
+			<div>
+				<h1 className="text-3xl font-bold text-gray-900">Bookings</h1>
+				<p className="text-gray-600 mt-1">Set which days and times are open for meetings, and manage confirmed bookings.</p>
+			</div>
+
+			<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+				{/* Availability calendar */}
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h2 className="text-lg font-semibold text-gray-900 mb-4">Manage Availability</h2>
+
+					<div className="flex items-center justify-between mb-4">
+						<button type="button" onClick={goPrevMonth} disabled={isViewingCurrentOrPastMonth} aria-label="Previous month" className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50 disabled:opacity-30 disabled:cursor-not-allowed">
+							<ChevronLeft className="w-4 h-4" />
+						</button>
+						<span className="font-medium text-gray-900">{new Date(viewYear, viewMonth, 1).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</span>
+						<button type="button" onClick={goNextMonth} aria-label="Next month" className="p-2 rounded-lg border border-gray-300 hover:bg-gray-50">
+							<ChevronRight className="w-4 h-4" />
+						</button>
+					</div>
+
+					<div className="grid grid-cols-7 gap-1 text-center text-xs font-medium text-gray-500 mb-2">
+						{["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
+							<div key={d}>{d}</div>
+						))}
+					</div>
+
+					{loadingMonth ? (
+						<div className="flex justify-center py-8">
+							<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+						</div>
+					) : (
+						<div className="grid grid-cols-7 gap-1">
+							{Array.from({ length: firstWeekday }).map((_, i) => (
+								<div key={`pad-${i}`} aria-hidden="true" />
+							))}
+							{Array.from({ length: daysInMonth }).map((_, i) => {
+								const day = i + 1;
+								const dateStr = dateStringOf(viewYear, viewMonth, day);
+								const isPast = dateStr < todayStr;
+								const summary = monthSummary[dateStr];
+								const isSelected = dateStr === selectedDate;
+								return (
+									<button
+										key={dateStr}
+										type="button"
+										disabled={isPast}
+										onClick={() => setSelectedDate(dateStr)}
+										className={`relative aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-150 ${
+											isSelected ? "bg-blue-600 text-white font-semibold" : isPast ? "text-gray-300 cursor-not-allowed" : "text-gray-700 hover:bg-gray-100 cursor-pointer"
+										}`}
+									>
+										{day}
+										{summary && (summary.available > 0 || summary.booked > 0) && (
+											<span className="absolute bottom-1 flex gap-0.5">
+												{summary.available > 0 && <span className="w-1 h-1 rounded-full bg-amber-500" aria-hidden="true" />}
+												{summary.booked > 0 && <span className="w-1 h-1 rounded-full bg-green-500" aria-hidden="true" />}
+											</span>
+										)}
+									</button>
+								);
+							})}
+						</div>
+					)}
+
+					<div className="flex items-center gap-4 mt-4 text-xs text-gray-500">
+						<span className="flex items-center gap-1.5">
+							<span className="w-2 h-2 rounded-full bg-amber-500" /> Open
+						</span>
+						<span className="flex items-center gap-1.5">
+							<span className="w-2 h-2 rounded-full bg-green-500" /> Booked
+						</span>
+					</div>
+
+					{selectedDate && (
+						<div className="mt-6 pt-6 border-t border-gray-200">
+							<h3 className="text-sm font-semibold text-gray-900 mb-3">
+								{new Date(`${selectedDate}T00:00:00`).toLocaleDateString("en-GB", { weekday: "long", month: "long", day: "numeric" })}
+							</h3>
+							{loadingDay ? (
+								<div className="flex justify-center py-4">
+									<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+								</div>
+							) : (
+								<div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+									{TIME_SLOTS.map((time) => {
+										const slot = daySlots.find((s) => s.time === time);
+										const isSaving = savingTime === time;
+										if (slot?.isBooked) {
+											return (
+												<div key={time} className="col-span-2 flex items-center justify-between px-3 py-2 rounded-lg border border-green-200 bg-green-50 text-xs">
+													<div>
+														<div className="font-semibold text-gray-900">{formatTimeLabel(time)}</div>
+														<div className="text-gray-600">{slot.booking?.name}</div>
+													</div>
+													<button type="button" onClick={() => cancelBooking(slot)} aria-label={`Cancel booking at ${formatTimeLabel(time)}`} className="p-1.5 rounded-lg hover:bg-red-100 text-red-600">
+														<Trash2 className="w-3.5 h-3.5" />
+													</button>
+												</div>
+											);
+										}
+										return (
+											<button
+												key={time}
+												type="button"
+												disabled={isSaving}
+												onClick={() => toggleSlot(selectedDate, time)}
+												className={`px-3 py-2 rounded-lg text-xs font-medium border transition-colors duration-150 disabled:opacity-50 ${
+													slot ? "bg-amber-100 border-amber-300 text-amber-800" : "border-gray-300 text-gray-500 hover:border-amber-400 hover:text-amber-700"
+												}`}
+											>
+												{formatTimeLabel(time)}
+											</button>
+										);
+									})}
+								</div>
+							)}
+							<p className="text-xs text-gray-500 mt-3">Click a time to make it available. Click an open time again to remove it. Booked times can only be cancelled.</p>
+						</div>
+					)}
+				</div>
+
+				{/* Bookings list */}
+				<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+					<h2 className="text-lg font-semibold text-gray-900 mb-4">Upcoming Bookings</h2>
+					{loadingBookings ? (
+						<div className="flex justify-center py-8">
+							<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900"></div>
+						</div>
+					) : upcomingBookings.length === 0 ? (
+						<p className="text-sm text-gray-500 py-4">No upcoming bookings yet.</p>
+					) : (
+						<ul className="space-y-3 max-h-125 overflow-y-auto">
+							{upcomingBookings.map((slot) => (
+								<li key={slot._id} className="border border-gray-200 rounded-lg p-4">
+									<div className="flex items-start justify-between gap-3">
+										<div>
+											<div className="font-semibold text-gray-900">
+												{new Date(`${slot.date}T00:00:00`).toLocaleDateString("en-GB", { weekday: "short", month: "short", day: "numeric" })} · {formatTimeLabel(slot.time)}
+											</div>
+											<div className="text-sm text-gray-700 mt-1">{slot.booking?.name}</div>
+											<div className="text-xs text-gray-500 flex items-center gap-1 mt-1">
+												<Mail className="w-3 h-3" /> {slot.booking?.email}
+											</div>
+											<div className="text-xs text-gray-500 flex items-center gap-1 mt-0.5">
+												<Phone className="w-3 h-3" /> {slot.booking?.phone}
+											</div>
+											{slot.booking?.message && <p className="text-xs text-gray-600 mt-2 italic">&ldquo;{slot.booking.message}&rdquo;</p>}
+										</div>
+										<button type="button" onClick={() => cancelBooking(slot)} aria-label={`Cancel booking with ${slot.booking?.name}`} className="shrink-0 p-2 rounded-lg hover:bg-red-50 text-red-600">
+											<Trash2 className="w-4 h-4" />
+										</button>
+									</div>
+								</li>
+							))}
+						</ul>
+					)}
+
+					{pastBookings.length > 0 && <p className="text-xs text-gray-400 mt-4">{pastBookings.length} past booking{pastBookings.length === 1 ? "" : "s"} not shown.</p>}
+				</div>
 			</div>
 		</div>
 	);

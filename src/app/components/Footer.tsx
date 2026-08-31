@@ -5,8 +5,10 @@ const quickLinks = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
     { href: "/services", label: "Services" },
+    { href: "/pricing", label: "Pricing" },
     { href: "/projects", label: "Projects" },
     { href: "/blog", label: "Blog" },
+    { href: "/booking", label: "Book a Meeting" },
     { href: "/contact", label: "Contact" },
     { href: "/cv-builder", label: "Free CV Builder" },
 ];

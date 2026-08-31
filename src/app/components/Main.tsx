@@ -45,18 +45,18 @@ export default function Main() {
 						web applications. Passionate about solving complex problems.
 					</p>
 					{/* Tech Stack Pills */}
-					<div className="flex flex-wrap justify-center lg:justify-start gap-2">
+					{/* <div className="flex flex-wrap justify-center lg:justify-start gap-2">
 						<span className="px-3 py-1 text-xs font-semibold bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-accent dark:text-[#eda40d] rounded-full border border-[#eda40d]/30">Next.js</span>
 						<span className="px-3 py-1 text-xs font-semibold bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-accent dark:text-[#eda40d] rounded-full border border-[#eda40d]/30">PostgreSQL</span>
 						<span className="px-3 py-1 text-xs font-semibold bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-accent dark:text-[#eda40d] rounded-full border border-[#eda40d]/30">NextAuth</span>
 						<span className="px-3 py-1 text-xs font-semibold bg-linear-to-r from-[#eda40d]/20 to-[#c17e0a]/20 text-accent dark:text-[#eda40d] rounded-full border border-[#eda40d]/30">AWS</span>
-					</div>
+					</div> */}
 					{/* CTA Buttons */}
 					<div className="flex flex-col sm:flex-row items-center gap-4 mt-2">
-						<GradientButton text="Our Projects" href="/projects" />
-						<a href="/services" className="px-6 md:px-8 py-2 md:py-3 border-2 rounded-full border-gray-300 dark:border-gray-600 flex items-center gap-2 bg-white dark:bg-gray-900 dark:text-white font-semibold hover:border-[#eda40d] hover:bg-linear-to-r hover:from-[#eda40d]/5 hover:to-[#c17e0a]/5 transition-all duration-300 shadow-md hover:shadow-lg">
+						<GradientButton text="Book Meeting" href="/booking" />
+						{/* <a href="/services" className="px-6 md:px-8 py-2 md:py-3 border-2 rounded-full border-gray-300 dark:border-gray-600 flex items-center gap-2 bg-white dark:bg-gray-900 dark:text-white font-semibold hover:border-[#eda40d] hover:bg-linear-to-r hover:from-[#eda40d]/5 hover:to-[#c17e0a]/5 transition-all duration-300 shadow-md hover:shadow-lg">
 							<span>Our Services</span>
-						</a>
+						</a> */}
 					</div>
 					{/* Credentials strip */}
 					<div className="flex flex-wrap items-center justify-center lg:justify-start gap-x-3 gap-y-2 text-sm text-gray-600 dark:text-gray-400">
