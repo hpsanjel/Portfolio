@@ -44,20 +44,10 @@ export default function HomeNavHeader() {
 
 	return (
 		<>
-			<nav
-				className={`w-full fixed top-8 sm:top-9 px-5 lg:px-8 xl:px-[8%] flex items-center justify-between z-50 bg-linear-to-br from-[#fdf6e8] via-white to-[#eaf1ff] dark:from-[#1c1305] dark:via-blue-950/90 dark:to-[#05070d] shadow-sm border-t border-gray-200 dark:border-purple-900/50 transition-all duration-300 ease-in-out ${
-					scrolled ? "py-3" : "py-8"
-				}`}
-			>
+			<nav className={`w-full fixed top-8 sm:top-9 px-5 lg:px-8 xl:px-[8%] flex items-center justify-between z-50 bg-linear-to-br from-[#fdf6e8] via-white to-[#eaf1ff] dark:from-[#1c1305] dark:via-blue-950/90 dark:to-[#05070d] shadow-sm border-t border-gray-200 dark:border-purple-900/50 transition-all duration-300 ease-in-out ${scrolled ? "py-3" : "py-8"}`}>
 				<div className="flex items-center">
 					<Link href="/">
-						<Image
-							src="/images/logo-sanjeltech-nav.png"
-							alt="SanjelTech logo"
-							width={1402}
-							height={881}
-							className={`cursor-pointer transition-all duration-300 ease-in-out dark:filter-[drop-shadow(1px_0_0_#fff)_drop-shadow(-1px_0_0_#fff)_drop-shadow(0_1px_0_#fff)_drop-shadow(0_-1px_0_#fff)] ${scrolled ? "w-16" : "w-24"}`}
-						/>
+						<Image src="/images/sanjeltechkologo.png" alt="SanjelTech logo" width={1402} height={881} className={`cursor-pointer transition-all duration-300 ease-in-out ${scrolled ? "w-16" : "w-24"}`} />
 					</Link>
 				</div>
 				<ul className="hidden md:flex items-center gap-6 lg:gap-8 font-Outfit dark:bg-transparent">
@@ -89,15 +79,7 @@ export default function HomeNavHeader() {
 						{isDark ? <Image src="/images/sun.svg" alt="" width={24} height={24} className="w-6" /> : <Image src="/images/moon.svg" alt="" width={20} height={20} className="w-5" />}
 					</button>
 
-					<button
-						ref={menuButtonRef}
-						type="button"
-						className="flex md:hidden items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-700 dark:text-gray-200 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200"
-						onClick={() => setSideMenuOpen(true)}
-						aria-label="Open menu"
-						aria-expanded={sideMenuOpen}
-						aria-controls="mobile-menu"
-					>
+					<button ref={menuButtonRef} type="button" className="flex md:hidden items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-700 dark:text-gray-200 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" onClick={() => setSideMenuOpen(true)} aria-label="Open menu" aria-expanded={sideMenuOpen} aria-controls="mobile-menu">
 						<Menu className="w-5 h-5" />
 					</button>
 				</div>
@@ -108,22 +90,10 @@ export default function HomeNavHeader() {
 						<div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onClick={() => setSideMenuOpen(false)} aria-hidden="true" />
 
 						{/* Menu Panel */}
-						<nav
-							id="mobile-menu"
-							role="dialog"
-							aria-modal="true"
-							aria-label="Mobile navigation"
-							className="flex md:hidden flex-col gap-2 fixed right-0 top-0 bottom-0 w-[85%] max-w-80 z-50 h-screen bg-white dark:bg-[#0a0d16] shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out overflow-y-auto"
-						>
+						<nav id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="flex md:hidden flex-col gap-2 fixed right-0 top-0 bottom-0 w-[85%] max-w-80 z-50 h-screen bg-white dark:bg-[#0a0d16] shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out overflow-y-auto">
 							{/* Header */}
 							<div className="flex items-center justify-between px-6 pt-8 pb-6 border-b border-gray-100 dark:border-white/10">
-								<Image
-									src="/images/logo-sanjeltech-nav.png"
-									alt="SanjelTech logo"
-									width={1402}
-									height={881}
-									className="w-16 dark:filter-[drop-shadow(1px_0_0_#fff)_drop-shadow(-1px_0_0_#fff)_drop-shadow(0_1px_0_#fff)_drop-shadow(0_-1px_0_#fff)]"
-								/>
+								<Image src="/images/sanjeltechkologo.png" alt="SanjelTech logo" width={1402} height={881} className="w-16" />
 								<button ref={closeButtonRef} type="button" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" aria-label="Close menu">
 									<X className="w-4.5 h-4.5 cursor-pointer text-gray-700 dark:text-gray-300" />
 								</button>
