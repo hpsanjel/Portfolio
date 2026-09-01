@@ -17,6 +17,7 @@ interface Project {
 	projectstory?: string;
 	status: 'draft' | 'published';
 	order: number;
+	translations?: { nb?: { title?: string; description?: string; projectstory?: string } };
 }
 
 interface SearchResultItem {
@@ -24,6 +25,38 @@ interface SearchResultItem {
 	title: string;
 	content: string;
 	[key: string]: unknown;
+}
+
+// Shared by every content section's edit form (Blogs, Projects, Services,
+// Testimonials, FAQs) to switch which language's fields are visible.
+function LocaleTabs({ tab, onChange }: { tab: "en" | "nb"; onChange: (tab: "en" | "nb") => void }) {
+	return (
+		<div className="flex gap-2 mb-4">
+			<button
+				type="button"
+				onClick={() => onChange("en")}
+				className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${tab === "en" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+			>
+				English
+			</button>
+			<button
+				type="button"
+				onClick={() => onChange("nb")}
+				className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${tab === "nb" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+			>
+				Norwegian
+			</button>
+		</div>
+	);
+}
+
+// Shown next to a list item whose Norwegian translation hasn't been filled in yet.
+function MissingTranslationBadge() {
+	return (
+		<span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800" title="Missing Norwegian translation">
+			NO missing
+		</span>
+	);
 }
 
 const MENU_ITEMS = [
@@ -559,6 +592,7 @@ interface Blog {
 	tags: string[];
 	status: 'draft' | 'published';
 	order: number;
+	translations?: { nb?: { title?: string; excerpt?: string; content?: string } };
 }
 
 // Utility function to strip HTML tags
@@ -886,7 +920,11 @@ function BlogsSection({
 		tags: [] as string[],
 		status: "published" as 'draft' | 'published',
 		order: 0,
+		nb_title: "",
+		nb_excerpt: "",
+		nb_content: "",
 	});
+	const [formLocaleTab, setFormLocaleTab] = useState<"en" | "nb">("en");
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -955,13 +993,18 @@ function BlogsSection({
 			tags: blog.tags || [],
 			status: blog.status || "published",
 			order: blog.order || 0,
+			nb_title: blog.translations?.nb?.title || "",
+			nb_excerpt: blog.translations?.nb?.excerpt || "",
+			nb_content: blog.translations?.nb?.content || "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", categories: [], tags: [], status: "published", order: 0 });
+		setForm({ _id: "", title: "", excerpt: "", content: "", image: "", date: "", categories: [], tags: [], status: "published", order: 0, nb_title: "", nb_excerpt: "", nb_content: "" });
+		setFormLocaleTab("en");
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -975,6 +1018,7 @@ function BlogsSection({
 			date: form.date,
 			categories: form.categories,
 			tags: form.tags,
+			translations: { nb: { title: form.nb_title, excerpt: form.nb_excerpt, content: form.nb_content } },
 			status: form.status,
 		};
 		const url = editMode ? `/api/blogs/${form._id}` : "/api/blogs";
@@ -1145,42 +1189,72 @@ function BlogsSection({
 					</div>
 					<form className="space-y-4" onSubmit={handleSubmit}>
 						<input type="hidden" name="editingBlogId" value={form._id} />
-						<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Blog Title</label>
-								<input
-									type="text"
-									name="title"
-									value={form.title}
-									onChange={handleChange}
-									required
-									className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-									placeholder="Enter blog title"
-								/>
-							</div>
-							<div>
-								<label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
-								<input
-									type="date"
-									name="date"
-									value={form.date}
-									onChange={handleChange}
-									required
-									className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								/>
-							</div>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Blog Excerpt</label>
-							<textarea
-								name="excerpt"
-								value={form.excerpt}
-								onChange={handleChange}
-								rows={2}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Enter a short excerpt or subtitle for this blog post..."
-							/>
-						</div>
+						<LocaleTabs tab={formLocaleTab} onChange={setFormLocaleTab} />
+						{formLocaleTab === "en" ? (
+							<>
+								<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">Blog Title</label>
+										<input
+											type="text"
+											name="title"
+											value={form.title}
+											onChange={handleChange}
+											required
+											className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+											placeholder="Enter blog title"
+										/>
+									</div>
+									<div>
+										<label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+										<input
+											type="date"
+											name="date"
+											value={form.date}
+											onChange={handleChange}
+											required
+											className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										/>
+									</div>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Blog Excerpt</label>
+									<textarea
+										name="excerpt"
+										value={form.excerpt}
+										onChange={handleChange}
+										rows={2}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Enter a short excerpt or subtitle for this blog post..."
+									/>
+								</div>
+							</>
+						) : (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Blog Title (Norwegian)</label>
+									<input
+										type="text"
+										name="nb_title"
+										value={form.nb_title}
+										onChange={handleChange}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Skriv inn bloggtittel"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Blog Excerpt (Norwegian)</label>
+									<textarea
+										name="nb_excerpt"
+										value={form.nb_excerpt}
+										onChange={handleChange}
+										rows={2}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Skriv inn et kort sammendrag..."
+									/>
+								</div>
+							</>
+						)}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Categories</label>
 							<div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
@@ -1256,12 +1330,20 @@ function BlogsSection({
 							</select>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
-							<WYSIWYGEditor
-								value={form.content}
-								onChange={(value) => setForm((prev) => ({ ...prev, content: value }))}
-								placeholder="Write your blog content here..."
-							/>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Content{formLocaleTab === "nb" ? " (Norwegian)" : ""}</label>
+							{formLocaleTab === "en" ? (
+								<WYSIWYGEditor
+									value={form.content}
+									onChange={(value) => setForm((prev) => ({ ...prev, content: value }))}
+									placeholder="Write your blog content here..."
+								/>
+							) : (
+								<WYSIWYGEditor
+									value={form.nb_content}
+									onChange={(value) => setForm((prev) => ({ ...prev, nb_content: value }))}
+									placeholder="Skriv bloggens innhold her..."
+								/>
+							)}
 						</div>
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
@@ -1428,6 +1510,7 @@ function BlogsSection({
 													>
 														{blog.title}
 													</a>
+													{!blog.translations?.nb?.title && <MissingTranslationBadge />}
 													<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">
 														{stripHtml(blog.excerpt || blog.content).substring(0, 100)}...
 													</div>
@@ -1944,7 +2027,11 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 		projectstory: "",
 		status: "published" as 'draft' | 'published',
 		order: 0,
+		nb_title: "",
+		nb_description: "",
+		nb_projectstory: "",
 	});
+	const [formLocaleTab, setFormLocaleTab] = useState<"en" | "nb">("en");
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -2011,24 +2098,32 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 			projectstory: project.projectstory || "",
 			status: project.status || "published",
 			order: project.order || 0,
+			nb_title: project.translations?.nb?.title || "",
+			nb_description: project.translations?.nb?.description || "",
+			nb_projectstory: project.translations?.nb?.projectstory || "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ 
-			_id: "", 
-			title: "", 
-			description: "", 
-			image: "", 
-			liveUrl: "", 
-			codeUrl: "", 
+		setForm({
+			_id: "",
+			title: "",
+			description: "",
+			image: "",
+			liveUrl: "",
+			codeUrl: "",
 			technologies: "",
 			projectstory: "",
 			status: "published",
 			order: 0,
+			nb_title: "",
+			nb_description: "",
+			nb_projectstory: "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -2048,6 +2143,7 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 			projectstory: form.projectstory,
 			status: form.status,
 			order: form.order,
+			translations: { nb: { title: form.nb_title, description: form.nb_description, projectstory: form.nb_projectstory } },
 		};
 		const url = editMode ? `/api/projects/${form._id}` : "/api/projects";
 		const method = editMode ? "PUT" : "POST";
@@ -2234,30 +2330,60 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 					</div>
 					<form className="space-y-4" onSubmit={handleSubmit}>
 						<input type="hidden" name="editingProjectId" value={form._id} />
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Project Title</label>
-							<input
-								type="text"
-								name="title"
-								value={form.title}
-								onChange={handleChange}
-								required
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Enter project title"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-							<textarea
-								name="description"
-								value={form.description}
-								onChange={handleChange}
-								required
-								rows={3}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Describe your project..."
-							/>
-						</div>
+						<LocaleTabs tab={formLocaleTab} onChange={setFormLocaleTab} />
+						{formLocaleTab === "en" ? (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Project Title</label>
+									<input
+										type="text"
+										name="title"
+										value={form.title}
+										onChange={handleChange}
+										required
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Enter project title"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+									<textarea
+										name="description"
+										value={form.description}
+										onChange={handleChange}
+										required
+										rows={3}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Describe your project..."
+									/>
+								</div>
+							</>
+						) : (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Project Title (Norwegian)</label>
+									<input
+										type="text"
+										name="nb_title"
+										value={form.nb_title}
+										onChange={handleChange}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Skriv inn prosjekttittel"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Description (Norwegian)</label>
+									<textarea
+										name="nb_description"
+										value={form.nb_description}
+										onChange={handleChange}
+										rows={3}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Beskriv prosjektet ditt..."
+									/>
+								</div>
+							</>
+						)}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Image</label>
 							<div className="space-y-3">
@@ -2332,12 +2458,20 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 							/>
 						</div>
 						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Project Story</label>
-							<WYSIWYGEditor
-								value={form.projectstory}
-								onChange={(value) => setForm({ ...form, projectstory: value })}
-								placeholder="Describe your project story, challenges, and learnings..."
-							/>
+							<label className="block text-sm font-medium text-gray-700 mb-2">Project Story{formLocaleTab === "nb" ? " (Norwegian)" : ""}</label>
+							{formLocaleTab === "en" ? (
+								<WYSIWYGEditor
+									value={form.projectstory}
+									onChange={(value) => setForm({ ...form, projectstory: value })}
+									placeholder="Describe your project story, challenges, and learnings..."
+								/>
+							) : (
+								<WYSIWYGEditor
+									value={form.nb_projectstory}
+									onChange={(value) => setForm({ ...form, nb_projectstory: value })}
+									placeholder="Beskriv prosjekthistorien, utfordringene og læringspunktene..."
+								/>
+							)}
 						</div>
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -2466,7 +2600,10 @@ function ProjectsSection({ setActiveTab, searchQuery, setSearchQuery }: { setAct
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/80x64")}
 												/>
 												<div>
-													<div className="text-sm font-medium text-gray-900">{project.title}</div>
+													<div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+														{project.title}
+														{!project.translations?.nb?.title && <MissingTranslationBadge />}
+													</div>
 													<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{project.description}</div>
 												</div>
 											</div>
@@ -2605,6 +2742,7 @@ interface Service {
 	title: string;
 	description: string;
 	icon: string;
+	translations?: { nb?: { title?: string; description?: string } };
 }
 
 function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
@@ -2617,7 +2755,10 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 		title: "",
 		description: "",
 		icon: "",
+		nb_title: "",
+		nb_description: "",
 	});
+	const [formLocaleTab, setFormLocaleTab] = useState<"en" | "nb">("en");
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -2675,13 +2816,17 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 			title: service.title,
 			description: service.description,
 			icon: service.icon,
+			nb_title: service.translations?.nb?.title || "",
+			nb_description: service.translations?.nb?.description || "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", title: "", description: "", icon: "" });
+		setForm({ _id: "", title: "", description: "", icon: "", nb_title: "", nb_description: "" });
+		setFormLocaleTab("en");
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -2692,6 +2837,7 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 			title: form.title,
 			description: form.description,
 			icon: form.icon,
+			translations: { nb: { title: form.nb_title, description: form.nb_description } },
 		};
 		const url = editMode ? `/api/services/${form._id}` : "/api/services";
 		const method = editMode ? "PUT" : "POST";
@@ -2756,30 +2902,60 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 					</div>
 					<form className="space-y-4" onSubmit={handleSubmit}>
 						<input type="hidden" name="editingServiceId" value={form._id} />
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Service Title</label>
-							<input
-								type="text"
-								name="title"
-								value={form.title}
-								onChange={handleChange}
-								required
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Enter service title"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
-							<textarea
-								name="description"
-								value={form.description}
-								onChange={handleChange}
-								required
-								rows={3}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Describe your service..."
-							/>
-						</div>
+						<LocaleTabs tab={formLocaleTab} onChange={setFormLocaleTab} />
+						{formLocaleTab === "en" ? (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Service Title</label>
+									<input
+										type="text"
+										name="title"
+										value={form.title}
+										onChange={handleChange}
+										required
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Enter service title"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Description</label>
+									<textarea
+										name="description"
+										value={form.description}
+										onChange={handleChange}
+										required
+										rows={3}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Describe your service..."
+									/>
+								</div>
+							</>
+						) : (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Service Title (Norwegian)</label>
+									<input
+										type="text"
+										name="nb_title"
+										value={form.nb_title}
+										onChange={handleChange}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Skriv inn tjenestetittel"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Description (Norwegian)</label>
+									<textarea
+										name="nb_description"
+										value={form.nb_description}
+										onChange={handleChange}
+										rows={3}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Beskriv tjenesten din..."
+									/>
+								</div>
+							</>
+						)}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Icon</label>
 							<div className="space-y-3">
@@ -2893,7 +3069,10 @@ function ServicesSection({ searchQuery, setSearchQuery }: { searchQuery: string;
 													className="w-12 h-12 object-contain rounded-lg"
 													onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/48")}
 												/>
-												<div className="text-sm font-medium text-gray-900">{service.title}</div>
+												<div className="text-sm font-medium text-gray-900 flex items-center gap-2">
+													{service.title}
+													{!service.translations?.nb?.title && <MissingTranslationBadge />}
+												</div>
 											</div>
 										</td>
 										<td className="px-6 py-4">
@@ -2981,6 +3160,7 @@ interface Testimonial {
 	quote: string;
 	rating: number;
 	avatar?: string;
+	translations?: { nb?: { quote?: string } };
 }
 
 function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
@@ -2995,7 +3175,9 @@ function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: str
 		quote: "",
 		rating: "5",
 		avatar: "",
+		nb_quote: "",
 	});
+	const [formLocaleTab, setFormLocaleTab] = useState<"en" | "nb">("en");
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -3050,13 +3232,16 @@ function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: str
 			quote: testimonial.quote,
 			rating: String(testimonial.rating),
 			avatar: testimonial.avatar || "",
+			nb_quote: testimonial.translations?.nb?.quote || "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", name: "", role: "", quote: "", rating: "5", avatar: "" });
+		setForm({ _id: "", name: "", role: "", quote: "", rating: "5", avatar: "", nb_quote: "" });
+		setFormLocaleTab("en");
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -3069,6 +3254,7 @@ function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: str
 			quote: form.quote,
 			rating: Number(form.rating),
 			avatar: form.avatar,
+			translations: { nb: { quote: form.nb_quote } },
 		};
 		const url = editMode ? `/api/testimonials/${form._id}` : "/api/testimonials";
 		const method = editMode ? "PUT" : "POST";
@@ -3147,18 +3333,33 @@ function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: str
 								/>
 							</div>
 						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Quote</label>
-							<textarea
-								name="quote"
-								value={form.quote}
-								onChange={handleChange}
-								required
-								rows={3}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="What did the client say about working with you?"
-							/>
-						</div>
+						<LocaleTabs tab={formLocaleTab} onChange={setFormLocaleTab} />
+						{formLocaleTab === "en" ? (
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">Quote</label>
+								<textarea
+									name="quote"
+									value={form.quote}
+									onChange={handleChange}
+									required
+									rows={3}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="What did the client say about working with you?"
+								/>
+							</div>
+						) : (
+							<div>
+								<label className="block text-sm font-medium text-gray-700 mb-2">Quote (Norwegian)</label>
+								<textarea
+									name="nb_quote"
+									value={form.nb_quote}
+									onChange={handleChange}
+									rows={3}
+									className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+									placeholder="Hva sa kunden om å jobbe med deg?"
+								/>
+							</div>
+						)}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Rating</label>
 							<select
@@ -3288,7 +3489,10 @@ function TestimonialsSection({ searchQuery, setSearchQuery }: { searchQuery: str
 											</div>
 										</td>
 										<td className="px-6 py-4">
-											<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{testimonial.quote}</div>
+											<div className="flex items-center gap-2">
+												<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{testimonial.quote}</div>
+												{!testimonial.translations?.nb?.quote && <MissingTranslationBadge />}
+											</div>
 										</td>
 										<td className="px-6 py-4">
 											<span className="text-sm text-gray-700">{"★".repeat(testimonial.rating)}{"☆".repeat(5 - testimonial.rating)}</span>
@@ -3357,6 +3561,7 @@ interface FAQItem {
 	question: string;
 	answer: string;
 	order: number;
+	translations?: { nb?: { question?: string; answer?: string } };
 }
 
 function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; setSearchQuery: (query: string) => void }) {
@@ -3367,7 +3572,10 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 		question: "",
 		answer: "",
 		order: "0",
+		nb_question: "",
+		nb_answer: "",
 	});
+	const [formLocaleTab, setFormLocaleTab] = useState<"en" | "nb">("en");
 	const [editMode, setEditMode] = useState(false);
 	const [showForm, setShowForm] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
@@ -3399,13 +3607,17 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 			question: faq.question,
 			answer: faq.answer,
 			order: String(faq.order),
+			nb_question: faq.translations?.nb?.question || "",
+			nb_answer: faq.translations?.nb?.answer || "",
 		});
+		setFormLocaleTab("en");
 		setEditMode(true);
 		setShowForm(true);
 	}
 
 	function handleCancel() {
-		setForm({ _id: "", question: "", answer: "", order: "0" });
+		setForm({ _id: "", question: "", answer: "", order: "0", nb_question: "", nb_answer: "" });
+		setFormLocaleTab("en");
 		setEditMode(false);
 		setShowForm(false);
 	}
@@ -3416,6 +3628,7 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 			question: form.question,
 			answer: form.answer,
 			order: Number(form.order),
+			translations: { nb: { question: form.nb_question, answer: form.nb_answer } },
 		};
 		const url = editMode ? `/api/faqs/${form._id}` : "/api/faqs";
 		const method = editMode ? "PUT" : "POST";
@@ -3468,30 +3681,60 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 					</div>
 					<form className="space-y-4" onSubmit={handleSubmit}>
 						<input type="hidden" name="editingFaqId" value={form._id} />
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Question</label>
-							<input
-								type="text"
-								name="question"
-								value={form.question}
-								onChange={handleChange}
-								required
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="e.g. How much does a project cost?"
-							/>
-						</div>
-						<div>
-							<label className="block text-sm font-medium text-gray-700 mb-2">Answer</label>
-							<textarea
-								name="answer"
-								value={form.answer}
-								onChange={handleChange}
-								required
-								rows={4}
-								className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-								placeholder="Write a clear, honest answer..."
-							/>
-						</div>
+						<LocaleTabs tab={formLocaleTab} onChange={setFormLocaleTab} />
+						{formLocaleTab === "en" ? (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Question</label>
+									<input
+										type="text"
+										name="question"
+										value={form.question}
+										onChange={handleChange}
+										required
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="e.g. How much does a project cost?"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Answer</label>
+									<textarea
+										name="answer"
+										value={form.answer}
+										onChange={handleChange}
+										required
+										rows={4}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Write a clear, honest answer..."
+									/>
+								</div>
+							</>
+						) : (
+							<>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Question (Norwegian)</label>
+									<input
+										type="text"
+										name="nb_question"
+										value={form.nb_question}
+										onChange={handleChange}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="f.eks. Hva koster et prosjekt?"
+									/>
+								</div>
+								<div>
+									<label className="block text-sm font-medium text-gray-700 mb-2">Answer (Norwegian)</label>
+									<textarea
+										name="nb_answer"
+										value={form.nb_answer}
+										onChange={handleChange}
+										rows={4}
+										className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+										placeholder="Skriv et tydelig, ærlig svar..."
+									/>
+								</div>
+							</>
+						)}
 						<div>
 							<label className="block text-sm font-medium text-gray-700 mb-2">Display Order</label>
 							<input
@@ -3564,7 +3807,10 @@ function FAQsSection({ searchQuery, setSearchQuery }: { searchQuery: string; set
 											<span className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-gray-100 text-sm font-medium text-gray-700">{faq.order}</span>
 										</td>
 										<td className="px-6 py-4">
-											<div className="text-sm font-medium text-gray-900 max-w-xs">{faq.question}</div>
+											<div className="text-sm font-medium text-gray-900 max-w-xs flex items-center gap-2">
+												{faq.question}
+												{!faq.translations?.nb?.question && <MissingTranslationBadge />}
+											</div>
 										</td>
 										<td className="px-6 py-4">
 											<div className="text-sm text-gray-500 line-clamp-2 max-w-xs">{faq.answer}</div>
