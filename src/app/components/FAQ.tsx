@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
 type FAQItem = { _id: string; question: string; answer: string; order: number };
 
 export default function FAQ() {
+	const t = useTranslations("Faq");
 	const [faqs, setFaqs] = useState<FAQItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -33,7 +35,7 @@ export default function FAQ() {
 
 	return (
 		<section id="faq" className="w-full px-[6%] lg:px-[12%] py-16">
-			<SectionHeader intro="Got Questions?" title="Frequently Asked Questions" description="Answers to the things people usually ask before reaching out." />
+			<SectionHeader intro={t("intro")} title={t("title")} description={t("description")} />
 
 			<div className="max-w-3xl mx-auto mt-6 space-y-3">
 				{loading ? (

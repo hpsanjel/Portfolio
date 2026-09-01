@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import SectionHeader from "../../components/SectionHeader";
 import GradientButton from "../../components/GradientButton";
 import BlogArchive from "../../components/BlogArchive";
@@ -14,6 +15,8 @@ const stripHtml = (html: string): string => {
 };
 
 function BlogsContent() {
+    const t = useTranslations("Blog");
+    const locale = useLocale();
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const isListingPage = pathname === "/blog";
@@ -99,16 +102,19 @@ function BlogsContent() {
         return matchesSearch && matchesCategory && matchesYearMonth;
     });
 
+    const dateLocale = locale === "nb" ? "nb-NO" : "en-US";
+    const monthName = monthParam ? new Date(0, parseInt(monthParam) - 1).toLocaleDateString(dateLocale, { month: "long" }) : "";
+
     return (
         <section id="blog" className="w-full px-[5%] md:px-[8%] py-10 scroll-mt-32">
             <SectionHeader
                 as={isListingPage ? "h1" : "h2"}
-                intro="Blogs"
-                title={yearParam || monthParam ? "Archived Blogs" : "Thoughts and Insights"}
+                intro={t("intro")}
+                title={yearParam || monthParam ? t("archivedTitle") : t("title")}
                 description={
-                    yearParam || monthParam 
-                        ? `Blogs from ${monthParam ? new Date(0, parseInt(monthParam) - 1).toLocaleDateString('en-US', { month: 'long' }) : ''} ${yearParam || ''}`.trim()
-                        : "Dive into our blog where we share our thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology."
+                    yearParam || monthParam
+                        ? t("blogsFrom", { month: monthName, year: yearParam || "" }).trim()
+                        : t("description")
                 }
             />
             
@@ -119,29 +125,28 @@ function BlogsContent() {
                     {(yearParam || monthParam) && (
                         <div className="mb-4 flex items-center justify-between">
                             <div className="text-sm text-gray-600 dark:text-gray-400">
-                                Showing blogs from {(monthParam ? new Date(0, parseInt(monthParam) - 1).toLocaleDateString('en-US', { month: 'long' }) : '') + ' ' + (yearParam || '')}
-                                {/* Showing blogs from {(monthParam ? new Date(0, parseInt(monthParam) - 1).toLocaleDateString('en-US', { month: 'long' }) : '') + ' ' + (yearParam || '')}.trim() */}
+                                {t("showingBlogsFrom", { month: monthName, year: yearParam || "" })}
                             </div>
                             <Link
                                 href="/blog"
                                 className="inline-flex items-center px-3 py-1 bg-red-100 text-red-800 text-sm rounded-full hover:bg-red-200 transition-colors"
                             >
-                                × Reset Date Filter
+                                × {t("resetDateFilter")}
                             </Link>
                         </div>
                     )}
-                    
+
                     <div className="flex flex-col gap-4">
                         <div className="flex-1">
                             <input
                                 type="text"
-                                placeholder="Search blogs by title or content..."
+                                placeholder={t("searchPlaceholder")}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                                 className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                             />
                         </div>
-                        
+
                         {/* Category Pills - Horizontal Scroll */}
                         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600">
                             {allCategories.map(category => (
@@ -154,8 +159,8 @@ function BlogsContent() {
                                             : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                                     }`}
                                 >
-                                    {category === "all" 
-                                        ? "All" 
+                                    {category === "all"
+                                        ? t("allCategories")
                                         : `${category} (${categoryCounts[category] || 0})`
                                     }
                                 </button>
@@ -167,7 +172,7 @@ function BlogsContent() {
                         <div className="mt-3 flex flex-wrap gap-2">
                             {searchQuery && (
                                 <span className="inline-flex items-center px-3 py-1 bg-blue-100 text-blue-800 text-sm rounded-full">
-                                    Search: {searchQuery}
+                                    {t("searchLabel")}: {searchQuery}
                                     <button
                                         onClick={() => setSearchQuery("")}
                                         className="ml-2 text-blue-600 hover:text-blue-800"
@@ -178,7 +183,7 @@ function BlogsContent() {
                             )}
                             {selectedCategory !== "all" && (
                                 <span className="inline-flex items-center px-3 py-1 bg-green-100 text-green-800 text-sm rounded-full">
-                                    Category: {selectedCategory}
+                                    {t("categoryLabel")}: {selectedCategory}
                                     <button
                                         onClick={() => setSelectedCategory("all")}
                                         className="ml-2 text-green-600 hover:text-green-800"
@@ -206,17 +211,17 @@ function BlogsContent() {
                                     ? (
                                         <div className="space-y-4 text-center">
                                             <p>
-                                                {`No blogs found${yearParam || monthParam ? ' for the selected time period' : ' matching your filters'}.`}
+                                                {yearParam || monthParam ? t("noBlogsFoundPeriod") : t("noBlogsFoundFilters")}
                                             </p>
                                             <Link
                                                 href="/blog"
                                                 className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"
                                             >
-                                                Show All Blogs
+                                                {t("showAllBlogs")}
                                             </Link>
                                         </div>
                                     ) 
-                                    : "No blogs published yet."}
+                                    : t("noBlogsPublished")}
                             </div>
                         ) : (
                             filteredBlogs.slice(0, isListingPage ? filteredBlogs.length : 3).map((blog, index) => (
@@ -248,7 +253,7 @@ function BlogsContent() {
                                         
                                         <div className="flex items-center justify-between">
                                             <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined} className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium group-hover:text-blue-800 dark:group-hover:text-blue-200 transition-colors duration-200">
-                                                Read more
+                                                {t("readMore")}
                                                 <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                                                 </svg>
@@ -287,17 +292,17 @@ function BlogsContent() {
                             ? (
                                 <div className="space-y-4">
                                     <p>
-                                        {`No blogs found${yearParam || monthParam ? ' for the selected time period' : ' matching your filters'}.`}
+                                        {yearParam || monthParam ? t("noBlogsFoundPeriod") : t("noBlogsFoundFilters")}
                                     </p>
                                     <Link
                                         href="/blog"
                                         className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 shadow-sm hover:shadow-md"
                                     >
-                                        Show All Blogs
+                                        {t("showAllBlogs")}
                                     </Link>
                                 </div>
                             ) 
-                            : "No blogs published yet."}
+                            : t("noBlogsPublished")}
                     </div>
                 ) : (
                     filteredBlogs.slice(0, isListingPage ? filteredBlogs.length : 3).map((blog, index) => (
@@ -325,8 +330,8 @@ function BlogsContent() {
                                     <h5 className="mb-2 text-2xl font-semi-bold tracking-tight text-gray-900 dark:text-white blog-title group-hover:text-accent dark:group-hover:text-yellow-400 transition-colors duration-300">{blog.title}</h5>
                                 </Link>
                                 <p className="mb-3 font-normal text-gray-700 dark:text-gray-300">{blog.excerpt || (blog.content ? stripHtml(blog.content).substring(0, 150) + '...' : "")}</p>
-                                <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined} className="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white group-hover:text-accent dark:group-hover:text-yellow-400 transition-colors duration-300" aria-label={`Read more about ${blog.title}`}>
-                                    Read more
+                                <Link href={blog._id ? `/blog/${blog._id}` : (blog.link || "#")} target={blog.link && !blog._id ? "_blank" : undefined} className="read-more-link inline-flex items-center px-3 py-2 text-sm font-medium text-center text-black/80 hover:text-black rounded-lg focus:ring-4 focus:outline-none dark:text-white/80 dark:hover:text-white group-hover:text-accent dark:group-hover:text-yellow-400 transition-colors duration-300" aria-label={t("readMoreAbout", { title: blog.title })}>
+                                    {t("readMore")}
                                     <svg className="rtl:rotate-180 w-3.5 h-3.5 ms-2 transition-transform duration-300 group-hover:translate-x-1.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
                                         <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M1 5h12m0 0L9 1m4 4L9 9" />
                                     </svg>
@@ -348,9 +353,9 @@ function BlogsContent() {
             )} */}
             
 			{!isListingPage && blogs.length > 3 && (
-				<GradientButton 
-					text="View All Blogs" 
-					href="/blog" 
+				<GradientButton
+					text={t("viewAllBlogs")}
+					href="/blog"
 					className="w-max mx-auto mt-8"
 				/>
 			)}

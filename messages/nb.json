@@ -16,6 +16,436 @@
 		"github": "GitHub",
 		"facebook": "Facebook"
 	},
+	"Home": {
+		"roleTitle": "Web- og programvareutvikler",
+		"heroTitle": "Laboratorium for web- og programvareutvikling",
+		"heroDescriptionPrefix": "Basert i Oslo, Norge med over",
+		"yearsExperience": "3+ år",
+		"heroDescriptionMiddle": "erfaring med å lage",
+		"responsive": "responsive",
+		"and": "og",
+		"userFriendly": "brukervennlige",
+		"heroDescriptionEnd": "webapplikasjoner. Brenner for å løse komplekse problemer.",
+		"bookMeeting": "Book møte",
+		"requestQuote": "Be om tilbud",
+		"requestQuoteSubtitle": "Del dine krav og motta et tilbud.",
+		"yearsExperienceBadge": "3+ års erfaring",
+		"projectsDeliveredBadge": "6+ leverte prosjekter",
+		"availableForNewProjects": "Ledig for nye prosjekter"
+	},
+	"StatsBar": {
+		"yearsOfExperience": "Års erfaring",
+		"projectsDelivered": "Leverte prosjekter",
+		"technologiesUsed": "Brukte teknologier",
+		"avgResponseTime": "Gj.snittlig svartid"
+	},
+	"HowWeWork": {
+		"intro": "Vår prosess",
+		"title": "Slik gjør vi det til virkelighet",
+		"description": "En transparent, trinnvis prosess — fra første hei til prosjektet ditt går live.",
+		"steps": {
+			"discoveryCall": {
+				"title": "Oppstartssamtale",
+				"description": "Vi tar en rask prat for å bli kjent med deg, din bedrift og hva du ønsker å oppnå på nett."
+			},
+			"understandingRequirements": {
+				"title": "Kartlegging av behov",
+				"description": "Vi går i dybden på mål, målgruppe og tekniske behov for å kartlegge nøyaktig hva som skal bygges."
+			},
+			"proposalSuggestions": {
+				"title": "Forslag og anbefalinger",
+				"description": "Du får et tydelig forslag som dekker fremgangsmåte, tidsplan og pris — pluss ideer vi tror kan gjøre produktet enda bedre."
+			},
+			"consultationPlanning": {
+				"title": "Konsultasjon og planlegging",
+				"description": "Vi går gjennom forslaget sammen, finpusser omfanget og låser veikartet før en eneste kodelinje skrives."
+			},
+			"designDevelopment": {
+				"title": "Design og utvikling",
+				"description": "Teamet vårt setter i gang og bygger og tester produktet sprint for sprint med jevn, synlig fremgang."
+			},
+			"feedbackIteration": {
+				"title": "Tilbakemelding og iterasjon",
+				"description": "Du følger fremgangen ved hver milepæl og gir tilbakemeldinger, som vi fletter rett inn i byggingen."
+			},
+			"finalizePolish": {
+				"title": "Ferdigstilling og finpuss",
+				"description": "Når alt er godkjent, tar vi hånd om siste kvalitetssikring, ytelsessjekker og den siste finpussen."
+			},
+			"launch": {
+				"title": "Lansering",
+				"description": "Prosjektet ditt går live — og vi blir værende for å støtte deg mens det vokser."
+			}
+		}
+	},
+	"Faq": {
+		"intro": "Har du spørsmål?",
+		"title": "Ofte stilte spørsmål",
+		"description": "Svar på det folk vanligvis lurer på før de tar kontakt."
+	},
+	"Testimonials": {
+		"intro": "Tilbakemeldinger",
+		"title": "Hva kundene sier",
+		"description": "Noen ord fra folk vi har hatt gleden av å bygge sammen med.",
+		"ratedOutOf": "Vurdert {rating} av 5 stjerner",
+		"clientTestimonials": "Kundeuttalelser",
+		"chooseTestimonial": "Velg en uttalelse",
+		"testimonialTabLabel": "{name}, uttalelse {index} av {total}",
+		"previousTestimonial": "Forrige uttalelse",
+		"nextTestimonial": "Neste uttalelse"
+	},
+	"About": {
+		"intro": "Introduksjon",
+		"title": "Om oss",
+		"introText": "Vi er SanjelTech, et enkeltpersonforetak innen web- og programvareutvikling basert i Oslo, Norge. Vi designer, bygger og leverer helstack-applikasjoner fra start til slutt, og kombinerer praktisk teknisk håndverk med den direkte oppmerksomheten bare et enkeltpersonforetak kan gi.",
+		"points": {
+			"fullStack": {
+				"title": "Helstack-utvikling",
+				"description": "React, Next.js, Node.js, MongoDB og mer — bygget fra start til slutt."
+			},
+			"soleProprietor": {
+				"title": "Enkeltpersonforetak",
+				"description": "Direkte samarbeid med personen som bygger produktet ditt. Ingen overleveringer."
+			},
+			"experience": {
+				"title": "3+ års erfaring",
+				"description": "Praktisk levering av virkelige prosjekter."
+			},
+			"userFocusedDesign": {
+				"title": "Brukerfokusert design",
+				"description": "Tilgjengelig, intuitivt og visuelt tiltalende."
+			},
+			"certifiedExpertise": {
+				"title": "Sertifisert ekspertise",
+				"description": "Genuin omtanke og teknisk grundighet i alt vi bygger."
+			},
+			"ideaToLaunch": {
+				"title": "Fra idé til lansering",
+				"description": "Fra oppstartssamtale gjennom bygging, tilbakemelding og support."
+			}
+		}
+	},
+	"Services": {
+		"intro": "Hva vi tilbyr",
+		"title": "Våre tjenester",
+		"description": "Fra responsivt webdesign til interaktiv UI/UX-utvikling tilbyr vi en rekke tjenester som hjelper deg å realisere dine digitale ideer. La oss samarbeide om å skape en nettilstedeværelse som ikke bare ser flott ut, men som også presterer eksepsjonelt.",
+		"noServices": "Ingen tjenester lagt til ennå."
+	},
+	"Pricing": {
+		"intro": "Priser",
+		"title": "Planer for ethvert prosjekt",
+		"description": "Transparente startpriser for de vanligste prosjekttypene. Hvert prosjekt kartlegges og prises individuelt — dette er et utgangspunkt for samtalen.",
+		"mostPopular": "Mest populær",
+		"tiers": {
+			"landingPage": {
+				"name": "Landingsside",
+				"price": "Fra kr 15 000",
+				"tagline": "En fokusert enkeltside for rask lansering.",
+				"ctaText": "Kom i gang",
+				"features": ["1 skreddersydd side", "Mobilresponsivt oppsett", "Kontaktskjema", "Grunnleggende SEO på siden", "1 revisjonsrunde"]
+			},
+			"businessWebsite": {
+				"name": "Bedriftsnettside",
+				"price": "Fra kr 30 000",
+				"tagline": "En komplett flersidenettside for din bedrift.",
+				"ctaText": "Kom i gang",
+				"features": ["Opptil 7 skreddersydde sider", "Innholdsstyring (CMS)", "Oppsett av blogg", "SEO-optimalisert struktur", "2 revisjonsrunder", "30 dager støtte etter lansering"]
+			},
+			"webAppEcommerce": {
+				"name": "Webapp / nettbutikk",
+				"price": "Fra kr 60 000",
+				"tagline": "Helstack-løsninger, nettbutikker og skreddersydde verktøy.",
+				"ctaText": "Be om tilbud",
+				"features": ["Skreddersydd helstack-utvikling", "E-handel- eller webapp-funksjonalitet", "Database og admin-dashbord", "Tredjepartsintegrasjoner", "Ytelses- og sikkerhetsgjennomgang", "Dedikert prosjektstøtte"]
+			}
+		},
+		"maintenanceTitle": "Løpende vedlikehold og support",
+		"maintenanceDescription": "Oppdateringer, overvåking og mindre endringer etter lansering — fra kr 990/måned.",
+		"learnMore": "Les mer",
+		"vatNote": "Prisene er utgangspunkter og eksklusiv mva. Endelig omfang og pris bekreftes etter en kort oppstartssamtale.",
+		"customNeed": "Trenger du noe som ikke passer i disse boksene?",
+		"talkAboutProject": "La oss snakke om prosjektet ditt"
+	},
+	"Contact": {
+		"intro": "La oss komme i kontakt",
+		"title": "Ta kontakt",
+		"description": "Enten du har et prosjekt i tankene, et spørsmål, eller bare vil si hei, hører vi gjerne fra deg. Ta kontakt via kontaktskjemaet eller på sosiale medier. La oss starte en samtale!",
+		"bookLiveMeeting": "Book et møte"
+	},
+	"ContactForm": {
+		"nameLabel": "Ditt navn",
+		"namePlaceholder": "Skriv inn navnet ditt",
+		"emailLabel": "Din e-post",
+		"emailPlaceholder": "Skriv inn e-posten din",
+		"messageLabel": "Din melding",
+		"messagePlaceholder": "Skriv inn meldingen din",
+		"sending": "Sender...",
+		"submitNow": "Send nå",
+		"successMessage": "E-posten ble sendt!",
+		"failureMessage": "Kunne ikke sende e-post"
+	},
+	"Terms": {
+		"intro": "Juridisk informasjon",
+		"title": "Vilkår for bruk",
+		"description": "Vennligst les disse vilkårene nøye",
+		"acceptance": {
+			"heading": "Aksept av vilkår",
+			"body": "Ved å bruke vår portefølje-nettside godtar du å være bundet av disse bruksvilkårene."
+		},
+		"useOfServices": {
+			"heading": "Bruk av tjenester",
+			"body1": "Vår portefølje-nettside er ment for informasjonsformål for å vise frem vårt arbeid og våre tjenester. Du kan kun bruke tjenestene våre til legitime formål.",
+			"body2": "Du samtykker i å ikke bruke tjenestene våre til ulovlige, skadelige eller uautoriserte formål."
+		},
+		"intellectualProperty": {
+			"heading": "Immaterielle rettigheter",
+			"body1": "Alt innhold på denne nettsiden, inkludert men ikke begrenset til tekst, grafikk, logoer og bilder, tilhører SanjelTech eller i noen grad respektive innholdseiere.",
+			"body2": "Du kan ikke gjengi, distribuere eller lage avledede verk uten eksplisitt skriftlig tillatelse."
+		},
+		"userContent": {
+			"heading": "Brukerinnhold",
+			"body": "Hvis du sender inn innhold gjennom våre kontaktskjemaer eller på andre måter, gir du oss en ikke-eksklusiv, verdensomspennende, royaltyfri lisens til å bruke, gjengi og vise dette innholdet."
+		},
+		"privacyDataProtection": {
+			"heading": "Personvern og databeskyttelse",
+			"body": "Ditt personvern er viktig for oss. Vennligst les vår <link>personvernerklæring</link>, som også gjelder for bruken av nettsiden vår."
+		},
+		"limitationOfLiability": {
+			"heading": "Ansvarsbegrensning",
+			"body": "Nettsiden og tjenestene våre leveres \"som de er\" uten noen garantier, verken uttrykte eller underforståtte. Vi er ikke ansvarlige for indirekte skader, følgeskader eller tilfeldige skader."
+		},
+		"termination": {
+			"heading": "Oppsigelse",
+			"body": "Vi kan avslutte eller suspendere din tilgang til tjenestene våre umiddelbart, uten forvarsel eller ansvar, av enhver grunn."
+		},
+		"changesToTerms": {
+			"heading": "Endringer i vilkårene",
+			"body": "Vi forbeholder oss retten til å endre disse vilkårene når som helst. Endringer trer i kraft umiddelbart ved publisering."
+		},
+		"contactInformation": {
+			"heading": "Kontaktinformasjon",
+			"body": "Hvis du har spørsmål om disse bruksvilkårene, vennligst kontakt oss via vårt <link>kontaktskjema</link>."
+		},
+		"governingLaw": {
+			"heading": "Lovvalg",
+			"body": "Disse vilkårene skal reguleres av og tolkes i samsvar med lovene i jurisdiksjonen der nettsiden vår opererer."
+		},
+		"lastUpdated": "Sist oppdatert"
+	},
+	"Privacy": {
+		"intro": "Juridisk informasjon",
+		"title": "Personvernerklæring",
+		"description": "Ditt personvern er viktig for oss",
+		"whoWeAre": {
+			"heading": "Hvem vi er",
+			"body": "Denne nettsiden drives av Hari Prasad Sanjel, som driver virksomhet under navnet SanjelTech, basert i Oslo, Norge. Hari Prasad Sanjel er behandlingsansvarlig for de personopplysningene som er beskrevet i denne erklæringen. Du kan nå oss via <link>kontaktsiden</link>."
+		},
+		"informationWeCollect": {
+			"heading": "Informasjon vi samler inn",
+			"contactForm": "<b>Kontaktskjema:</b> navnet, e-postadressen og meldingen du sender inn, blir e-postet direkte til oss slik at vi kan svare.",
+			"blogComments": "<b>Blogg-kommentarer:</b> navnet, e-postadressen og kommentarteksten du sender inn, holdes for moderering før en kommentar publiseres.",
+			"usageAnalytics": "<b>Grunnleggende bruksanalyse:</b> sidebanen du besøker og en tilfeldig generert identifikator lagret i nettleserens lokale lagring (ikke en cookie), slik at vi kan se hvilke sider som er populære. Vi registrerer ikke IP-adressen eller lokasjonen din som en del av dette.",
+			"aggregateAnalytics": "<b>Aggregert, cookiefri analyse</b> levert av Vercel Web Analytics, som ikke bruker cookies eller vedvarende identifikatorer for å spore individuelle besøkende.",
+			"cvBuilder": "<b>CV-bygger:</b> hvis du bruker CV-byggverktøyet, brukes detaljene du fyller inn kun i nettleseren din for å generere dokumentet, og sendes ikke til eller lagres på våre servere."
+		},
+		"howWeUse": {
+			"heading": "Hvordan vi bruker denne informasjonen, og hvorfor vi har lov til det",
+			"item1": "For å svare på meldinger sendt via kontaktskjemaet (berettiget interesse i å drive virksomheten, og for å ta skritt du ber om før en avtale inngås).",
+			"item2": "For å moderere og vise blogg-kommentarer du velger å sende inn (ditt samtykke, gitt ved å sende inn kommentaren).",
+			"item3": "For å forstå hvilke sider som er nyttige og forbedre nettsiden (berettiget interesse i å drive og forbedre nettsiden), ved bruk av data som ikke er knyttet til din identitet.",
+			"noSelling": "Vi selger ikke personopplysninger, og vi bruker dem ikke til reklame eller profilering."
+		},
+		"thirdParty": {
+			"heading": "Tredjepartstjenester vi bruker",
+			"intro": "Vi er avhengige av følgende databehandlere for å drive denne nettsiden. Noen befinner seg utenfor Norge/EØS (for eksempel i USA); i så fall stoler vi på de garantiene disse leverandørene tilbyr, som standard personvernbestemmelser (Standard Contractual Clauses).",
+			"mongodb": "<b>MongoDB Atlas</b> — lagrer blogg-, prosjekt-, kommentar- og grunnleggende analysedata.",
+			"cloudinary": "<b>Cloudinary</b> — er vert for bilder brukt på nettsiden.",
+			"google": "<b>Google (Gmail/Nodemailer)</b> — leverer kontaktskjema-meldinger til innboksen vår.",
+			"vercel": "<b>Vercel</b> — er vert for vår cookiefrie webanalyse."
+		},
+		"cookiesLocalStorage": {
+			"heading": "Cookies og lokal lagring",
+			"body": "Denne nettsiden bruker ikke reklame- eller sporingscookies. Den lagrer en tilfeldig generert identifikator i nettleserens lokale lagring utelukkende for å unngå dobbelttelling av sidevisninger i vår egen analyse; denne identifikatoren er ikke knyttet til navnet, e-posten eller andre personopplysninger, og deles ikke med annonsører. Du kan når som helst fjerne den ved å slette nettleserens nettstedsdata."
+		},
+		"dataRetention": {
+			"heading": "Lagringstid",
+			"body": "Vi oppbevarer kontaktskjema-meldinger og blogg-kommentarer så lenge det er nødvendig for å svare deg eller vise kommentaren, og sletter dem når de ikke lenger er nødvendige eller på forespørsel. Grunnleggende analysedata lagres i aggregert form og brukes ikke til å identifisere enkeltpersoner."
+		},
+		"dataSecurity": {
+			"heading": "Datasikkerhet",
+			"body": "Vi bruker bransjestandardtiltak, inkludert krypterte forbindelser (HTTPS) og tilgangskontroller på våre administrative verktøy, for å beskytte dataene beskrevet ovenfor mot uautorisert tilgang, endring eller utlevering."
+		},
+		"yourRights": {
+			"heading": "Dine rettigheter",
+			"intro": "I henhold til GDPR har du rett til å:",
+			"item1": "Få innsyn i personopplysningene vi har om deg",
+			"item2": "Be om retting av unøyaktige data",
+			"item3": "Be om sletting av dataene dine",
+			"item4": "Protestere mot eller begrense visse former for behandling",
+			"item5": "Be om en kopi av dataene dine i et portabelt format",
+			"outro": "For å utøve noen av disse rettighetene, kontakt oss via <link>kontaktsiden</link>. Du har også rett til å klage til Datatilsynet på <datatilsynet>datatilsynet.no</datatilsynet>."
+		},
+		"changesToPolicy": {
+			"heading": "Endringer i denne erklæringen",
+			"body": "Vi kan oppdatere denne personvernerklæringen fra tid til annen. Endringer publiseres på denne siden sammen med en oppdatert \"Sist oppdatert\"-dato."
+		},
+		"contactUs": {
+			"heading": "Kontakt oss",
+			"body": "Hvis du har spørsmål om denne personvernerklæringen eller ønsker å utøve dine rettigheter, ta gjerne kontakt via vår <link>kontaktside</link>."
+		},
+		"lastUpdated": "Sist oppdatert",
+		"lastUpdatedDate": "30. august 2026"
+	},
+	"Blog": {
+		"intro": "Blogg",
+		"title": "Tanker og innsikt",
+		"archivedTitle": "Arkiverte blogginnlegg",
+		"description": "Utforsk bloggen vår der vi deler tanker om webutvikling, designtrender og teknologibransjen. Enten du er en fellow-utvikler eller bare nysgjerrig, er det noe her for alle interessert i webteknologiens verden.",
+		"blogsFrom": "Blogginnlegg fra {month} {year}",
+		"showingBlogsFrom": "Viser blogginnlegg fra {month} {year}",
+		"resetDateFilter": "Nullstill datofilter",
+		"searchPlaceholder": "Søk i blogginnlegg etter tittel eller innhold...",
+		"allCategories": "Alle",
+		"searchLabel": "Søk",
+		"categoryLabel": "Kategori",
+		"noBlogsFoundPeriod": "Ingen blogginnlegg funnet for den valgte perioden.",
+		"noBlogsFoundFilters": "Ingen blogginnlegg samsvarer med filtrene dine.",
+		"showAllBlogs": "Vis alle blogginnlegg",
+		"noBlogsPublished": "Ingen blogginnlegg publisert ennå.",
+		"readMore": "Les mer",
+		"readMoreAbout": "Les mer om {title}",
+		"viewAllBlogs": "Vis alle blogginnlegg"
+	},
+	"BlogDetail": {
+		"notFound": "Blogginnlegget ble ikke funnet",
+		"backToBlogs": "Tilbake til blogg",
+		"backToAllBlogs": "Tilbake til alle blogginnlegg",
+		"byAuthor": "Av",
+		"minRead": "{minutes} min lesetid",
+		"shareFacebook": "Facebook",
+		"shareTwitter": "Twitter",
+		"copyLink": "Kopier lenke",
+		"linkCopied": "Lenken ble kopiert!",
+		"originallyPublished": "Dette innlegget ble opprinnelig publisert på en ekstern plattform:",
+		"readOriginalPost": "Les originalinnlegget"
+	},
+	"Projects": {
+		"intro": "Portefølje",
+		"title": "Våre siste arbeider",
+		"description": "Ta en titt på noen av prosjektene vi har hatt gleden av å jobbe med. Porteføljen vår viser et bredt spekter av webapplikasjoner og design som fremhever våre ferdigheter, kreativitet og sans for detaljer.",
+		"noProjects": "Ingen prosjekter lagt til ennå.",
+		"liveDemo": "Live-demo",
+		"liveDemoOf": "Live-demo av {title}",
+		"viewProject": "Se prosjekt",
+		"featuredProject": "Utvalgt prosjekt",
+		"viewAllProjects": "Se alle prosjekter"
+	},
+	"ProjectDetail": {
+		"notFound": "Prosjektet ble ikke funnet",
+		"backToProjects": "Tilbake til prosjekter",
+		"backToAllProjects": "Tilbake til alle prosjekter",
+		"projectStory": "Prosjekthistorie",
+		"liveDemo": "Live-demo",
+		"liveDemoOf": "Live-demo av {title}",
+		"relatedProjects": "Relaterte prosjekter",
+		"noRelatedProjects": "Ingen relaterte prosjekter funnet.",
+		"viewAllProjects": "Se alle prosjekter"
+	},
+	"Booking": {
+		"weekdays": ["Man", "Tir", "Ons", "Tor", "Fre", "Lør", "Søn"],
+		"youreBooked": "Du er booket!",
+		"meetingConfirmed": "Møtet ditt er bekreftet for <date></date> kl. <time></time>. En bekreftelse er sendt — vi tar kontakt snart.",
+		"previousMonth": "Forrige måned",
+		"nextMonth": "Neste måned",
+		"dateStatusPast": "{date}, i fortiden",
+		"dateStatusAvailable": "{date}, har ledige tider",
+		"dateStatusUnavailable": "{date}, ingen ledige tider",
+		"noOpenTimesThisMonth": "Ingen ledige tider denne måneden ennå — prøv en annen måned eller ta kontakt direkte.",
+		"availableTimes": "Ledige tider",
+		"noTimesLeft": "Ingen ledige tider denne datoen.",
+		"yourDetails": "Dine opplysninger",
+		"bookingFor": "Booker for <date></date> kl. <time></time>",
+		"pickDateTimeFirst": "Velg en dato og et tidspunkt først.",
+		"nameLabel": "Ditt navn",
+		"namePlaceholder": "Ditt navn",
+		"emailLabel": "Din e-post",
+		"emailPlaceholder": "Din e-post",
+		"phoneLabel": "Ditt telefonnummer",
+		"phonePlaceholder": "Ditt telefonnummer",
+		"messageLabel": "Hva ønsker du å snakke om? (valgfritt)",
+		"messagePlaceholder": "Hva ønsker du å snakke om? (valgfritt)",
+		"bookingInProgress": "Booker...",
+		"confirmBooking": "Bekreft booking",
+		"slotTaken": "Den tiden ble nettopp tatt. Velg et annet tidspunkt.",
+		"somethingWentWrong": "Noe gikk galt. Prøv igjen."
+	},
+	"BookingPage": {
+		"intro": "La oss snakke",
+		"title": "Book et møte",
+		"description": "Velg en dato og et tidspunkt som passer for deg. Velg en ledig time nedenfor, så sender jeg en bekreftelse med det samme."
+	},
+	"CvBuilder": {
+		"confirmClear": "Dette vil slette alt du har fylt inn. Er du sikker?",
+		"formCleared": "Skjemaet ble tømt.",
+		"pdfDownloaded": "PDF-en ble lastet ned!",
+		"pdfFailed": "Kunne ikke generere PDF, prøv igjen.",
+		"loading": "Laster...",
+		"intro": "Gratis verktøy — ingenting lagres på noen server",
+		"title": "Bygg din CV",
+		"description": "Fyll inn detaljene dine nedenfor og last ned en ren, utskriftsklar CV som PDF. Alt forblir i nettleseren din — dataene dine sendes eller lagres aldri i en database. Oppdater fritt; utkastet lagres lokalt til du tømmer det.",
+		"personalDetails": "Personlige opplysninger",
+		"fullName": "Fullt navn",
+		"fullNamePlaceholder": "Kari Nordmann",
+		"professionalTitle": "Yrkestittel",
+		"professionalTitlePlaceholder": "Frontend-utvikler",
+		"address": "Adresse",
+		"addressPlaceholder": "By, land",
+		"phone": "Telefon",
+		"email": "E-post",
+		"linkedinUrl": "LinkedIn-URL",
+		"githubUrl": "GitHub-URL",
+		"portfolioUrl": "Portefølje-URL",
+		"summary": "Sammendrag",
+		"summaryPlaceholder": "Et kort sammendrag om din yrkeserfaring og dine mål.",
+		"keyCompetencies": "Nøkkelkompetanse",
+		"addCompetency": "Legg til kompetanse",
+		"categoryPlaceholder": "Kategori (f.eks. Frontend)",
+		"skillsPlaceholder": "Ferdigheter (f.eks. React, TypeScript)",
+		"professionalExperience": "Yrkeserfaring",
+		"addExperience": "Legg til erfaring",
+		"jobTitle": "Stillingstittel",
+		"company": "Bedrift",
+		"location": "Sted",
+		"experienceDatePlaceholder": "Dato (f.eks. 2021 - nå)",
+		"responsibilitiesPlaceholder": "Ansvarsområder (ett per linje)",
+		"selectedProjects": "Utvalgte prosjekter",
+		"addProject": "Legg til prosjekt",
+		"titleField": "Tittel",
+		"techStack": "Teknologistack",
+		"descriptionField": "Beskrivelse",
+		"livePreviewUrl": "URL til live-forhåndsvisning",
+		"education": "Utdanning",
+		"addEducation": "Legg til utdanning",
+		"degree": "Grad",
+		"institution": "Institusjon",
+		"dateField": "Dato",
+		"detailsOptional": "Detaljer (valgfritt)",
+		"certifications": "Sertifiseringer",
+		"addCertification": "Legg til sertifisering",
+		"issuer": "Utsteder",
+		"languages": "Språk",
+		"addLanguage": "Legg til språk",
+		"language": "Språk",
+		"levelPlaceholder": "Nivå (f.eks. Flytende)",
+		"references": "Referanser",
+		"addReference": "Legg til referanse",
+		"name": "Navn",
+		"position": "Stilling",
+		"generating": "Genererer...",
+		"downloadPdf": "Last ned PDF",
+		"startOver": "Start på nytt",
+		"removeEntry": "Fjern oppføring under {section}"
+	},
 	"Footer": {
 		"tagline": "Skaper digitale opplevelser med lidenskap og presisjon. La oss bygge noe fantastisk sammen.",
 		"quickLinks": "Hurtiglenker",

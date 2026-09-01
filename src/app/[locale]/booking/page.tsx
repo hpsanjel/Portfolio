@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { useTranslations } from "next-intl";
 import SectionHeader from "../../components/SectionHeader";
 import BookingWidget from "./BookingWidget";
 
@@ -16,9 +17,10 @@ export const metadata: Metadata = {
 };
 
 export default function BookingPage() {
+	const t = useTranslations("BookingPage");
 	return (
 		<section className="w-full px-[6%] lg:px-[12%] py-16">
-			<SectionHeader as="h1" intro="Let's Talk" title="Book a Meeting" description="Pick a date and time that works for you. Choose an open slot below and I'll send a confirmation right away." />
+			<SectionHeader as="h1" intro={t("intro")} title={t("title")} description={t("description")} />
 			<div className="mt-10">
 				<BookingWidget />
 			</div>

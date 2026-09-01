@@ -1,6 +1,35 @@
 import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
 import type { CvBuilderData } from "@/types/cvBuilder";
 
+// This document is rendered by @react-pdf's own reconciler outside the Next.js
+// React tree (via `pdf(<CvBuilderDocument .../>).toBlob()`), so it has no access
+// to next-intl's React context — labels are resolved from this local dictionary
+// keyed by the `locale` prop instead of via useTranslations().
+const LABELS = {
+	en: {
+		yourName: "Your Name",
+		summary: "Summary",
+		keyCompetencies: "Key Competencies",
+		professionalExperience: "Professional Experience",
+		selectedProjects: "Selected Projects",
+		education: "Education",
+		certifications: "Certifications",
+		languages: "Languages",
+		references: "References",
+	},
+	nb: {
+		yourName: "Ditt navn",
+		summary: "Sammendrag",
+		keyCompetencies: "Nøkkelkompetanse",
+		professionalExperience: "Yrkeserfaring",
+		selectedProjects: "Utvalgte prosjekter",
+		education: "Utdanning",
+		certifications: "Sertifiseringer",
+		languages: "Språk",
+		references: "Referanser",
+	},
+} as const;
+
 const ACCENT = "#334155";
 const MUTED = "#64748b";
 const RULE = "#cbd5e1";
@@ -56,12 +85,13 @@ function joinNonEmpty(parts: (string | undefined)[], sep = "  ·  ") {
 	return parts.filter(Boolean).join(sep);
 }
 
-export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
+export default function CvBuilderDocument({ data, locale = "en" }: { data: CvBuilderData; locale?: "en" | "nb" }) {
+	const L = LABELS[locale];
 	return (
 		<Document>
 			<Page size="A4" style={styles.page}>
 				{/* Header */}
-				<Text style={styles.name}>{data.header.name || "Your Name"}</Text>
+				<Text style={styles.name}>{data.header.name || L.yourName}</Text>
 				{data.header.title ? <Text style={styles.title}>{data.header.title}</Text> : null}
 
 				<View style={styles.contactBlock}>
@@ -76,7 +106,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Summary */}
 				{data.summary ? (
 					<View>
-						<Text style={styles.sectionHeading}>Summary</Text>
+						<Text style={styles.sectionHeading}>{L.summary}</Text>
 						<Text style={styles.summaryText}>{data.summary}</Text>
 					</View>
 				) : null}
@@ -84,7 +114,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Competencies */}
 				{data.competencies.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Key Competencies</Text>
+						<Text style={styles.sectionHeading}>{L.keyCompetencies}</Text>
 						{data.competencies.map((c, i) => (
 							<View key={i} style={styles.competencyRow}>
 								<Text style={styles.competencyCategory}>{c.category}</Text>
@@ -97,7 +127,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Experience */}
 				{data.experience.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Professional Experience</Text>
+						<Text style={styles.sectionHeading}>{L.professionalExperience}</Text>
 						{data.experience.map((exp, i) => (
 							<View key={i} style={styles.experienceBlock}>
 								<View style={styles.row}>
@@ -125,7 +155,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Projects */}
 				{data.projects.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Selected Projects</Text>
+						<Text style={styles.sectionHeading}>{L.selectedProjects}</Text>
 						{data.projects.map((proj, i) => (
 							<View key={i} style={styles.entryBlock}>
 								<View style={styles.row}>
@@ -142,7 +172,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Education */}
 				{data.education.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Education</Text>
+						<Text style={styles.sectionHeading}>{L.education}</Text>
 						<View style={styles.gridTwoCol}>
 							{data.education.map((edu, i) => (
 								<View key={i} style={styles.gridItem}>
@@ -161,7 +191,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Certifications */}
 				{data.certifications.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Certifications</Text>
+						<Text style={styles.sectionHeading}>{L.certifications}</Text>
 						<View style={styles.gridTwoCol}>
 							{data.certifications.map((cert, i) => (
 								<View key={i} style={styles.gridItem}>
@@ -179,7 +209,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* Languages */}
 				{data.languages.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>Languages</Text>
+						<Text style={styles.sectionHeading}>{L.languages}</Text>
 						<Text style={styles.languagesText}>{data.languages.map((l) => `${l.language} — ${l.level}`).join("   ·   ")}</Text>
 					</View>
 				)}
@@ -187,7 +217,7 @@ export default function CvBuilderDocument({ data }: { data: CvBuilderData }) {
 				{/* References */}
 				{data.references.length > 0 && (
 					<View>
-						<Text style={styles.sectionHeading}>References</Text>
+						<Text style={styles.sectionHeading}>{L.references}</Text>
 						<View style={styles.gridTwoCol}>
 							{data.references.map((ref, i) => (
 								<View key={i} style={styles.gridItem}>

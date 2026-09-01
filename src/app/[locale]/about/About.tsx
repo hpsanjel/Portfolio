@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Code2, User, Calendar, Palette, Award, Rocket, type LucideIcon } from "lucide-react";
 import SectionHeader from "../../components/SectionHeader";
 
@@ -8,13 +9,13 @@ interface Point {
 	description: string;
 }
 
-const points: Point[] = [
-	{ icon: Code2, title: "Full-Stack Development", description: "React, Next.js, Node.js, MongoDB & more — built end to end." },
-	{ icon: User, title: "Sole Proprietor", description: "Direct work with the person building your product. No hand-offs." },
-	{ icon: Calendar, title: "3+ Years Experience", description: "Hands-on, real-world project delivery." },
-	{ icon: Palette, title: "User-Focused Design", description: "Accessible, intuitive, and visually compelling." },
-	{ icon: Award, title: "Certified Expertise", description: "Genuine care and technical rigor in every build." },
-	{ icon: Rocket, title: "Idea to Launch", description: "From discovery call through build, feedback, and support." },
+const pointDefs: { icon: LucideIcon; key: string }[] = [
+	{ icon: Code2, key: "fullStack" },
+	{ icon: User, key: "soleProprietor" },
+	{ icon: Calendar, key: "experience" },
+	{ icon: Palette, key: "userFocusedDesign" },
+	{ icon: Award, key: "certifiedExpertise" },
+	{ icon: Rocket, key: "ideaToLaunch" },
 ];
 
 // Positions on a circle (radius 38% of the container), evenly spaced starting at the top.
@@ -26,8 +27,6 @@ const ORBIT_POSITIONS = [
 	{ top: "69%", left: "17.1%" },
 	{ top: "31%", left: "17.1%" },
 ];
-
-const introText = "We're SanjelTech, a one-person web and software development studio based in Oslo, Norway. We design, build, and ship full-stack applications end to end, pairing hands-on technical craft with the kind of direct attention only a sole proprietor can give.";
 
 const techStack = [
 	{ src: "/images/html5.svg", alt: "HTML5" },
@@ -61,6 +60,13 @@ function PointCard({ point, className = "" }: { point: Point; className?: string
 }
 
 export default function About({ standalone = false }: { standalone?: boolean } = {}) {
+	const t = useTranslations("About");
+	const introText = t("introText");
+	const points: Point[] = pointDefs.map(({ icon, key }) => ({
+		icon,
+		title: t(`points.${key}.title`),
+		description: t(`points.${key}.description`),
+	}));
 	return (
 		<>
 			<style>{`
@@ -89,7 +95,7 @@ export default function About({ standalone = false }: { standalone?: boolean } =
                 }
             `}</style>
 			<section id="about" className="w-full px-6 sm:px-8 md:px-12 lg:px-[15%] py-16">
-				<SectionHeader as={standalone ? "h1" : "h2"} intro="Introduction" title="About Us" description="" />
+				<SectionHeader as={standalone ? "h1" : "h2"} intro={t("intro")} title={t("title")} description="" />
 
 				{/* Sunburst layout — desktop */}
 				<div className="hidden lg:flex items-center gap-10 xl:gap-16 max-w-6xl mx-auto mt-16 mb-10">

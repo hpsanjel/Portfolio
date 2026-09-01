@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { RotateCcw } from "lucide-react";
 import SectionHeader from "../../components/SectionHeader";
 import GradientButton from "../../components/GradientButton";
@@ -23,9 +24,12 @@ const inputClass =
 const labelClass = "block text-sm font-medium mb-1";
 
 export default function CvBuilderForm() {
+	const t = useTranslations("CvBuilder");
+	const locale = useLocale();
 	const { state: draft, setState: setDraft, clear, hydrated } = useLocalStorageState<CvBuilderData>("cv-builder-draft", emptyCvBuilderData);
 	const [isGenerating, setIsGenerating] = useState(false);
 	const [statusMessage, setStatusMessage] = useState("");
+	const [statusIsError, setStatusIsError] = useState(false);
 
 	useEffect(() => {
 		if (statusMessage) {
@@ -39,9 +43,10 @@ export default function CvBuilderForm() {
 	};
 
 	const handleStartOver = () => {
-		if (window.confirm("This will clear everything you've entered. Are you sure?")) {
+		if (window.confirm(t("confirmClear"))) {
 			clear();
-			setStatusMessage("Form cleared.");
+			setStatusIsError(false);
+			setStatusMessage(t("formCleared"));
 		}
 	};
 
@@ -51,7 +56,7 @@ export default function CvBuilderForm() {
 		try {
 			const { pdf } = await import("@react-pdf/renderer");
 			const { default: CvBuilderDocument } = await import("./CvBuilderDocument");
-			const blob = await pdf(<CvBuilderDocument data={draft} />).toBlob();
+			const blob = await pdf(<CvBuilderDocument data={draft} locale={locale === "nb" ? "nb" : "en"} />).toBlob();
 			const url = URL.createObjectURL(blob);
 			const a = document.createElement("a");
 			a.href = url;
@@ -60,77 +65,79 @@ export default function CvBuilderForm() {
 			a.click();
 			a.remove();
 			URL.revokeObjectURL(url);
-			setStatusMessage("PDF downloaded successfully!");
+			setStatusIsError(false);
+			setStatusMessage(t("pdfDownloaded"));
 		} catch (error) {
-			setStatusMessage("Failed to generate PDF, please try again.");
+			setStatusIsError(true);
+			setStatusMessage(t("pdfFailed"));
 		} finally {
 			setIsGenerating(false);
 		}
 	};
 
 	if (!hydrated) {
-		return <div className="text-center py-12 text-gray-400">Loading...</div>;
+		return <div className="text-center py-12 text-gray-400">{t("loading")}</div>;
 	}
 
 	return (
 		<section className="w-full px-[6%] md:px-[12%] py-10">
 			<SectionHeader
 				as="h1"
-				intro="Free Tool — Nothing Is Saved to Any Server"
-				title="Build Your CV / Resume"
-				description="Fill in your details below and download a clean, ready-to-print PDF resume. Everything stays in your browser — your data is never sent anywhere or stored in a database. Refresh freely; your draft is kept locally until you clear it."
+				intro={t("intro")}
+				title={t("title")}
+				description={t("description")}
 			/>
 
 			<div className="max-w-4xl mx-auto">
 				{/* Header */}
 				<section className="mb-10">
-					<h2 className="text-lg font-semibold mb-4">Personal Details</h2>
+					<h2 className="text-lg font-semibold mb-4">{t("personalDetails")}</h2>
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 						<div>
 							<label className={labelClass}>
-								Full Name
-								<input className={inputClass} value={draft.header.name} onChange={(e) => updateHeader({ name: e.target.value })} placeholder="Jane Doe" />
+								{t("fullName")}
+								<input className={inputClass} value={draft.header.name} onChange={(e) => updateHeader({ name: e.target.value })} placeholder={t("fullNamePlaceholder")} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								Professional Title
-								<input className={inputClass} value={draft.header.title} onChange={(e) => updateHeader({ title: e.target.value })} placeholder="Frontend Developer" />
+								{t("professionalTitle")}
+								<input className={inputClass} value={draft.header.title} onChange={(e) => updateHeader({ title: e.target.value })} placeholder={t("professionalTitlePlaceholder")} />
 							</label>
 						</div>
 						<div className="md:col-span-2">
 							<label className={labelClass}>
-								Address
-								<input className={inputClass} value={draft.header.address} onChange={(e) => updateHeader({ address: e.target.value })} placeholder="City, Country" />
+								{t("address")}
+								<input className={inputClass} value={draft.header.address} onChange={(e) => updateHeader({ address: e.target.value })} placeholder={t("addressPlaceholder")} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								Phone
+								{t("phone")}
 								<input className={inputClass} value={draft.header.phone} onChange={(e) => updateHeader({ phone: e.target.value })} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								Email
+								{t("email")}
 								<input className={inputClass} value={draft.header.email} onChange={(e) => updateHeader({ email: e.target.value })} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								LinkedIn URL
+								{t("linkedinUrl")}
 								<input className={inputClass} value={draft.header.linkedin} onChange={(e) => updateHeader({ linkedin: e.target.value })} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								GitHub URL
+								{t("githubUrl")}
 								<input className={inputClass} value={draft.header.github} onChange={(e) => updateHeader({ github: e.target.value })} />
 							</label>
 						</div>
 						<div>
 							<label className={labelClass}>
-								Portfolio URL
+								{t("portfolioUrl")}
 								<input className={inputClass} value={draft.header.portfolio} onChange={(e) => updateHeader({ portfolio: e.target.value })} />
 							</label>
 						</div>
@@ -139,53 +146,53 @@ export default function CvBuilderForm() {
 
 				{/* Summary */}
 				<section className="mb-10">
-					<h2 className="text-lg font-semibold mb-4">Summary</h2>
+					<h2 className="text-lg font-semibold mb-4">{t("summary")}</h2>
 					<label className={labelClass}>
-						Summary
+						{t("summary")}
 						<textarea
 							rows={4}
 							className={inputClass}
 							value={draft.summary}
 							onChange={(e) => setDraft((prev) => ({ ...prev, summary: e.target.value }))}
-							placeholder="A short summary about your professional background and goals."
+							placeholder={t("summaryPlaceholder")}
 						/>
 					</label>
 				</section>
 
 				{/* Competencies */}
 				<DynamicListSection
-					title="Key Competencies"
+					title={t("keyCompetencies")}
 					items={draft.competencies}
 					emptyItem={emptyCvBuilderCompetency}
-					addLabel="Add Competency"
+					addLabel={t("addCompetency")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, competencies: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Category (e.g. Frontend)" value={item.category} onChange={(e) => update({ category: e.target.value })} />
-							<input className={inputClass} placeholder="Skills (e.g. React, TypeScript)" value={item.skills} onChange={(e) => update({ skills: e.target.value })} />
+							<input className={inputClass} placeholder={t("categoryPlaceholder")} value={item.category} onChange={(e) => update({ category: e.target.value })} />
+							<input className={inputClass} placeholder={t("skillsPlaceholder")} value={item.skills} onChange={(e) => update({ skills: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* Experience */}
 				<DynamicListSection
-					title="Professional Experience"
+					title={t("professionalExperience")}
 					items={draft.experience}
 					emptyItem={emptyCvBuilderExperience}
-					addLabel="Add Experience"
+					addLabel={t("addExperience")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, experience: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="space-y-3">
 							<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-								<input className={inputClass} placeholder="Job Title" value={item.title} onChange={(e) => update({ title: e.target.value })} />
-								<input className={inputClass} placeholder="Company" value={item.company} onChange={(e) => update({ company: e.target.value })} />
-								<input className={inputClass} placeholder="Location" value={item.location} onChange={(e) => update({ location: e.target.value })} />
-								<input className={inputClass} placeholder="Date (e.g. 2021 - Present)" value={item.date} onChange={(e) => update({ date: e.target.value })} />
+								<input className={inputClass} placeholder={t("jobTitle")} value={item.title} onChange={(e) => update({ title: e.target.value })} />
+								<input className={inputClass} placeholder={t("company")} value={item.company} onChange={(e) => update({ company: e.target.value })} />
+								<input className={inputClass} placeholder={t("location")} value={item.location} onChange={(e) => update({ location: e.target.value })} />
+								<input className={inputClass} placeholder={t("experienceDatePlaceholder")} value={item.date} onChange={(e) => update({ date: e.target.value })} />
 							</div>
 							<textarea
 								rows={3}
 								className={inputClass}
-								placeholder="Responsibilities (one per line)"
+								placeholder={t("responsibilitiesPlaceholder")}
 								value={item.responsibilities.join("\n")}
 								onChange={(e) => update({ responsibilities: e.target.value.split("\n") })}
 							/>
@@ -195,105 +202,105 @@ export default function CvBuilderForm() {
 
 				{/* Projects */}
 				<DynamicListSection
-					title="Selected Projects"
+					title={t("selectedProjects")}
 					items={draft.projects}
 					emptyItem={emptyCvBuilderProject}
-					addLabel="Add Project"
+					addLabel={t("addProject")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, projects: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Title" value={item.title} onChange={(e) => update({ title: e.target.value })} />
-							<input className={inputClass} placeholder="Tech Stack" value={item.tech} onChange={(e) => update({ tech: e.target.value })} />
-							<input className={`${inputClass} md:col-span-2`} placeholder="Description" value={item.description} onChange={(e) => update({ description: e.target.value })} />
-							<input className={inputClass} placeholder="GitHub URL" value={item.github} onChange={(e) => update({ github: e.target.value })} />
-							<input className={inputClass} placeholder="Live Preview URL" value={item.preview} onChange={(e) => update({ preview: e.target.value })} />
+							<input className={inputClass} placeholder={t("titleField")} value={item.title} onChange={(e) => update({ title: e.target.value })} />
+							<input className={inputClass} placeholder={t("techStack")} value={item.tech} onChange={(e) => update({ tech: e.target.value })} />
+							<input className={`${inputClass} md:col-span-2`} placeholder={t("descriptionField")} value={item.description} onChange={(e) => update({ description: e.target.value })} />
+							<input className={inputClass} placeholder={t("githubUrl")} value={item.github} onChange={(e) => update({ github: e.target.value })} />
+							<input className={inputClass} placeholder={t("livePreviewUrl")} value={item.preview} onChange={(e) => update({ preview: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* Education */}
 				<DynamicListSection
-					title="Education"
+					title={t("education")}
 					items={draft.education}
 					emptyItem={emptyCvBuilderEducation}
-					addLabel="Add Education"
+					addLabel={t("addEducation")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, education: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Degree" value={item.degree} onChange={(e) => update({ degree: e.target.value })} />
-							<input className={inputClass} placeholder="Institution" value={item.institution} onChange={(e) => update({ institution: e.target.value })} />
-							<input className={inputClass} placeholder="Date" value={item.date} onChange={(e) => update({ date: e.target.value })} />
-							<input className={inputClass} placeholder="Details (optional)" value={item.details} onChange={(e) => update({ details: e.target.value })} />
+							<input className={inputClass} placeholder={t("degree")} value={item.degree} onChange={(e) => update({ degree: e.target.value })} />
+							<input className={inputClass} placeholder={t("institution")} value={item.institution} onChange={(e) => update({ institution: e.target.value })} />
+							<input className={inputClass} placeholder={t("dateField")} value={item.date} onChange={(e) => update({ date: e.target.value })} />
+							<input className={inputClass} placeholder={t("detailsOptional")} value={item.details} onChange={(e) => update({ details: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* Certifications */}
 				<DynamicListSection
-					title="Certifications"
+					title={t("certifications")}
 					items={draft.certifications}
 					emptyItem={emptyCvBuilderCertification}
-					addLabel="Add Certification"
+					addLabel={t("addCertification")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, certifications: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Title" value={item.title} onChange={(e) => update({ title: e.target.value })} />
-							<input className={inputClass} placeholder="Issuer" value={item.issuer} onChange={(e) => update({ issuer: e.target.value })} />
-							<input className={inputClass} placeholder="Date" value={item.date} onChange={(e) => update({ date: e.target.value })} />
+							<input className={inputClass} placeholder={t("titleField")} value={item.title} onChange={(e) => update({ title: e.target.value })} />
+							<input className={inputClass} placeholder={t("issuer")} value={item.issuer} onChange={(e) => update({ issuer: e.target.value })} />
+							<input className={inputClass} placeholder={t("dateField")} value={item.date} onChange={(e) => update({ date: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* Languages */}
 				<DynamicListSection
-					title="Languages"
+					title={t("languages")}
 					items={draft.languages}
 					emptyItem={emptyCvBuilderLanguage}
-					addLabel="Add Language"
+					addLabel={t("addLanguage")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, languages: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Language" value={item.language} onChange={(e) => update({ language: e.target.value })} />
-							<input className={inputClass} placeholder="Level (e.g. Fluent)" value={item.level} onChange={(e) => update({ level: e.target.value })} />
+							<input className={inputClass} placeholder={t("language")} value={item.language} onChange={(e) => update({ language: e.target.value })} />
+							<input className={inputClass} placeholder={t("levelPlaceholder")} value={item.level} onChange={(e) => update({ level: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* References */}
 				<DynamicListSection
-					title="References"
+					title={t("references")}
 					items={draft.references}
 					emptyItem={emptyCvBuilderReference}
-					addLabel="Add Reference"
+					addLabel={t("addReference")}
 					onChange={(items) => setDraft((prev) => ({ ...prev, references: items }))}
 					renderRow={(item, _i, update) => (
 						<div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-							<input className={inputClass} placeholder="Name" value={item.name} onChange={(e) => update({ name: e.target.value })} />
-							<input className={inputClass} placeholder="Position" value={item.position} onChange={(e) => update({ position: e.target.value })} />
-							<input className={inputClass} placeholder="Company" value={item.company} onChange={(e) => update({ company: e.target.value })} />
-							<input className={inputClass} placeholder="Location" value={item.location} onChange={(e) => update({ location: e.target.value })} />
-							<input className={inputClass} placeholder="Phone" value={item.phone} onChange={(e) => update({ phone: e.target.value })} />
-							<input className={inputClass} placeholder="Email" value={item.email} onChange={(e) => update({ email: e.target.value })} />
+							<input className={inputClass} placeholder={t("name")} value={item.name} onChange={(e) => update({ name: e.target.value })} />
+							<input className={inputClass} placeholder={t("position")} value={item.position} onChange={(e) => update({ position: e.target.value })} />
+							<input className={inputClass} placeholder={t("company")} value={item.company} onChange={(e) => update({ company: e.target.value })} />
+							<input className={inputClass} placeholder={t("location")} value={item.location} onChange={(e) => update({ location: e.target.value })} />
+							<input className={inputClass} placeholder={t("phone")} value={item.phone} onChange={(e) => update({ phone: e.target.value })} />
+							<input className={inputClass} placeholder={t("email")} value={item.email} onChange={(e) => update({ email: e.target.value })} />
 						</div>
 					)}
 				/>
 
 				{/* Actions */}
 				<div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-					<GradientButton text={isGenerating ? "Generating..." : "Download PDF"} type="button" disabled={isGenerating} onClick={handleDownload} showArrow={false} />
+					<GradientButton text={isGenerating ? t("generating") : t("downloadPdf")} type="button" disabled={isGenerating} onClick={handleDownload} showArrow={false} />
 					<button
 						type="button"
 						onClick={handleStartOver}
 						className="flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-red-600 transition-colors"
 					>
-						<RotateCcw className="w-4 h-4" /> Start Over
+						<RotateCcw className="w-4 h-4" /> {t("startOver")}
 					</button>
 				</div>
 
 				{statusMessage && (
 					<div
 						className={`max-w-md mx-auto text-center my-4 p-3 rounded-md ${
-							statusMessage.toLowerCase().includes("fail")
+							statusIsError
 								? "bg-red-100 text-red-700 border border-red-400"
 								: "bg-green-100 text-green-700 border border-green-400"
 						}`}

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import SectionHeader from "../../components/SectionHeader";
 import Image from "next/image";
 
@@ -32,6 +33,7 @@ function ServiceCard({ service, className = "" }: { service: Service; className?
 }
 
 export default function Services({ standalone = false }: { standalone?: boolean } = {}) {
+	const t = useTranslations("Services");
 	const [services, setServices] = useState<Service[]>([]);
 	const [servicesLoading, setServicesLoading] = useState(true);
 
@@ -57,7 +59,7 @@ export default function Services({ standalone = false }: { standalone?: boolean 
 	if (servicesLoading) {
 		return (
 			<section id="services" className="w-full px-[6%] lg:px-[12%] py-16 scroll-mt-20">
-				<SectionHeader as={standalone ? "h1" : "h2"} intro="What We Offer" title="Our Services" description="From responsive web design to interactive UI/UX development, we provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally." />
+				<SectionHeader as={standalone ? "h1" : "h2"} intro={t("intro")} title={t("title")} description={t("description")} />
 				<div className="flex justify-center items-center py-12">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
 				</div>
@@ -68,8 +70,8 @@ export default function Services({ standalone = false }: { standalone?: boolean 
 	if (services.length === 0) {
 		return (
 			<section id="services" className="w-full px-[6%] lg:px-[12%] py-16 scroll-mt-20">
-				<SectionHeader as={standalone ? "h1" : "h2"} intro="What We Offer" title="Our Services" description="From responsive web design to interactive UI/UX development, we provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally." />
-				<div className="text-center text-gray-600 dark:text-gray-300 py-12">No services added yet.</div>
+				<SectionHeader as={standalone ? "h1" : "h2"} intro={t("intro")} title={t("title")} description={t("description")} />
+				<div className="text-center text-gray-600 dark:text-gray-300 py-12">{t("noServices")}</div>
 			</section>
 		);
 	}
@@ -78,7 +80,7 @@ export default function Services({ standalone = false }: { standalone?: boolean 
 
 	return (
 		<section id="services" className="w-full px-[6%] lg:px-[12%] py-16 scroll-mt-20">
-			<SectionHeader intro="What We Offer" title="Our Services" description="From responsive web design to interactive UI/UX development, we provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally." />
+			<SectionHeader intro={t("intro")} title={t("title")} description={t("description")} />
 
 			{/* Mobile / tablet: swipeable row / 2-col grid */}
 			<div className="flex lg:hidden md:grid md:grid-cols-2 gap-6 my-10 overflow-x-auto md:overflow-visible snap-x snap-mandatory md:snap-none -mx-[6%] px-[6%] md:mx-0 md:px-0 pb-4 md:pb-0 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">

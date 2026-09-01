@@ -1,10 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Clock, CheckCircle2 } from "lucide-react";
 import { formatTimeLabel, todayDateString } from "@/lib/booking";
-
-const WEEKDAY_LABELS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-const DATE_LOCALE = "en-GB";
 
 function toDateString(year: number, monthIndex: number, day: number): string {
 	return `${year}-${String(monthIndex + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
@@ -15,6 +13,10 @@ function monthKey(year: number, monthIndex: number): string {
 }
 
 export default function BookingWidget() {
+	const t = useTranslations("Booking");
+	const locale = useLocale();
+	const DATE_LOCALE = locale === "nb" ? "nb-NO" : "en-GB";
+	const WEEKDAY_LABELS = t.raw("weekdays") as string[];
 	const today = todayDateString();
 	const now = new Date();
 
@@ -116,15 +118,15 @@ export default function BookingWidget() {
 			if (res.ok) {
 				setConfirmed({ date: selectedDate, time: selectedTime });
 			} else if (res.status === 409) {
-				setError(result.message || "That slot was just taken. Please choose another time.");
+				setError(result.message || t("slotTaken"));
 				setSelectedTime(null);
 				const timesRes = await fetch(`/api/booking?date=${selectedDate}`);
 				setAvailableTimes(await timesRes.json());
 			} else {
-				setError(result.message || "Something went wrong. Please try again.");
+				setError(result.message || t("somethingWentWrong"));
 			}
 		} catch {
-			setError("Something went wrong. Please try again.");
+			setError(t("somethingWentWrong"));
 		} finally {
 			setSubmitting(false);
 		}
@@ -134,13 +136,12 @@ export default function BookingWidget() {
 		return (
 			<div className="max-w-lg mx-auto text-center bg-white/80 dark:bg-darkHover/40 border border-gray-200/70 dark:border-white/10 rounded-3xl p-10">
 				<CheckCircle2 className="w-14 h-14 text-green-500 mx-auto mb-4" aria-hidden="true" />
-				<h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">You&apos;re booked!</h3>
+				<h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">{t("youreBooked")}</h3>
 				<p className="text-gray-600 dark:text-gray-300">
-					Your meeting is confirmed for{" "}
-					<strong>
-						{new Date(`${confirmed.date}T00:00:00`).toLocaleDateString(DATE_LOCALE, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
-					</strong>{" "}
-					at <strong>{formatTimeLabel(confirmed.time)}</strong>. A confirmation has been sent — we&apos;ll be in touch shortly.
+					{t.rich("meetingConfirmed", {
+						date: () => <strong>{new Date(`${confirmed.date}T00:00:00`).toLocaleDateString(DATE_LOCALE, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</strong>,
+						time: () => <strong>{formatTimeLabel(confirmed.time)}</strong>,
+					})}
 				</p>
 			</div>
 		);
@@ -155,7 +156,7 @@ export default function BookingWidget() {
 						type="button"
 						onClick={goPrevMonth}
 						disabled={isViewingCurrentOrPastMonth}
-						aria-label="Previous month"
+						aria-label={t("previousMonth")}
 						className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] disabled:opacity-30 disabled:hover:border-gray-300 dark:disabled:hover:border-white/15 disabled:cursor-not-allowed transition-colors duration-200"
 					>
 						<ChevronLeft className="w-4.5 h-4.5" />
@@ -164,7 +165,7 @@ export default function BookingWidget() {
 					<button
 						type="button"
 						onClick={goNextMonth}
-						aria-label="Next month"
+						aria-label={t("nextMonth")}
 						className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200"
 					>
 						<ChevronRight className="w-4.5 h-4.5" />
@@ -199,7 +200,7 @@ export default function BookingWidget() {
 									disabled={isPast || !isAvailable}
 									onClick={() => setSelectedDate(dateStr)}
 									aria-pressed={isSelected}
-									aria-label={`${dateStr}${isPast ? ", in the past" : isAvailable ? ", has available times" : ", no available times"}`}
+									aria-label={isPast ? t("dateStatusPast", { date: dateStr }) : isAvailable ? t("dateStatusAvailable", { date: dateStr }) : t("dateStatusUnavailable", { date: dateStr })}
 									className={`aspect-square rounded-lg text-sm flex items-center justify-center transition-colors duration-150 ${
 										isSelected
 											? "bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 font-semibold"
@@ -215,20 +216,20 @@ export default function BookingWidget() {
 					</div>
 				)}
 
-				{!loadingMonth && availableDates.size === 0 && <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">No open times this month yet — try another month or reach out directly.</p>}
+				{!loadingMonth && availableDates.size === 0 && <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">{t("noOpenTimesThisMonth")}</p>}
 
 				{selectedDate && (
 					<div className="mt-6 pt-6 border-t border-gray-200 dark:border-white/10">
 						<h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 flex items-center gap-2">
 							<Clock className="w-4 h-4" aria-hidden="true" />
-							Available times
+							{t("availableTimes")}
 						</h4>
 						{loadingTimes ? (
 							<div className="flex justify-center py-4">
 								<div className="animate-spin rounded-full h-6 w-6 border-b-2 border-gray-900 dark:border-white"></div>
 							</div>
 						) : availableTimes.length === 0 ? (
-							<p className="text-sm text-gray-500 dark:text-gray-400">No times left on this date.</p>
+							<p className="text-sm text-gray-500 dark:text-gray-400">{t("noTimesLeft")}</p>
 						) : (
 							<div className="grid grid-cols-3 gap-2">
 								{availableTimes.map((time) => (
@@ -253,42 +254,42 @@ export default function BookingWidget() {
 			{/* Form */}
 			<form onSubmit={handleSubmit} className={`bg-white/80 dark:bg-darkHover/40 border border-gray-200/70 dark:border-white/10 rounded-2xl p-6 h-max transition-opacity duration-200 ${!selectedTime ? "opacity-50" : ""}`}>
 				<fieldset disabled={!selectedTime} className="contents">
-					<h4 className="font-semibold text-gray-900 dark:text-white mb-1">Your details</h4>
+					<h4 className="font-semibold text-gray-900 dark:text-white mb-1">{t("yourDetails")}</h4>
 					<p className="text-sm text-gray-500 dark:text-gray-400 mb-5">
 						{selectedDate && selectedTime ? (
-							<>
-								Booking for{" "}
-								<strong>{new Date(`${selectedDate}T00:00:00`).toLocaleDateString(DATE_LOCALE, { weekday: "long", month: "long", day: "numeric" })}</strong> at <strong>{formatTimeLabel(selectedTime)}</strong>
-							</>
+							t.rich("bookingFor", {
+								date: () => <strong>{new Date(`${selectedDate}T00:00:00`).toLocaleDateString(DATE_LOCALE, { weekday: "long", month: "long", day: "numeric" })}</strong>,
+								time: () => <strong>{formatTimeLabel(selectedTime)}</strong>,
+							})
 						) : (
-							"Pick a date and time first."
+							t("pickDateTimeFirst")
 						)}
 					</p>
 
 					<div className="space-y-4">
 						<div>
 							<label htmlFor="booking-name" className="sr-only">
-								Your name
+								{t("nameLabel")}
 							</label>
-							<input id="booking-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder="Your name" className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
+							<input id="booking-name" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} placeholder={t("namePlaceholder")} className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
 						</div>
 						<div>
 							<label htmlFor="booking-email" className="sr-only">
-								Your email
+								{t("emailLabel")}
 							</label>
-							<input id="booking-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder="Your email" className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
+							<input id="booking-email" type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} placeholder={t("emailPlaceholder")} className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
 						</div>
 						<div>
 							<label htmlFor="booking-phone" className="sr-only">
-								Your phone number
+								{t("phoneLabel")}
 							</label>
-							<input id="booking-phone" type="tel" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder="Your phone number" className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
+							<input id="booking-phone" type="tel" required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder={t("phonePlaceholder")} className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
 						</div>
 						<div>
 							<label htmlFor="booking-message" className="sr-only">
-								What would you like to discuss? (optional)
+								{t("messageLabel")}
 							</label>
-							<textarea id="booking-message" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder="What would you like to discuss? (optional)" className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
+							<textarea id="booking-message" rows={3} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} placeholder={t("messagePlaceholder")} className="w-full p-3 outline-none border-[0.5px] border-gray-400 rounded-md bg-white dark:bg-darkHover/30 dark:border-white/90" />
 						</div>
 					</div>
 
@@ -299,7 +300,7 @@ export default function BookingWidget() {
 					)}
 
 					<button type="submit" disabled={submitting || !selectedTime} className="w-full mt-5 px-6 py-3 rounded-full bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 font-semibold shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300">
-						{submitting ? "Booking..." : "Confirm Booking"}
+						{submitting ? t("bookingInProgress") : t("confirmBooking")}
 					</button>
 				</fieldset>
 			</form>

@@ -16,6 +16,436 @@
 		"github": "GitHub",
 		"facebook": "Facebook"
 	},
+	"Home": {
+		"roleTitle": "Web & Software Developer",
+		"heroTitle": "Web and Software Development Lab",
+		"heroDescriptionPrefix": "Based in Oslo, Norway with over",
+		"yearsExperience": "3+ years",
+		"heroDescriptionMiddle": "of experience crafting",
+		"responsive": "responsive",
+		"and": "and",
+		"userFriendly": "user-friendly",
+		"heroDescriptionEnd": "web applications. Passionate about solving complex problems.",
+		"bookMeeting": "Book Meeting",
+		"requestQuote": "Request a Quote",
+		"requestQuoteSubtitle": "Share your requirements and receive a quote.",
+		"yearsExperienceBadge": "3+ Years Experience",
+		"projectsDeliveredBadge": "6+ Projects Delivered",
+		"availableForNewProjects": "Available for New Projects"
+	},
+	"StatsBar": {
+		"yearsOfExperience": "Years of Experience",
+		"projectsDelivered": "Projects Delivered",
+		"technologiesUsed": "Technologies Used",
+		"avgResponseTime": "Avg. Response Time"
+	},
+	"HowWeWork": {
+		"intro": "Our Process",
+		"title": "How We Bring It to Life",
+		"description": "A transparent, step-by-step process — from the first hello to the moment your project goes live.",
+		"steps": {
+			"discoveryCall": {
+				"title": "Discovery Call",
+				"description": "We hop on a quick call to learn about you, your business, and what you're hoping to achieve online."
+			},
+			"understandingRequirements": {
+				"title": "Understanding Requirements",
+				"description": "We dig into your goals, audience, and technical needs to map out exactly what needs to be built."
+			},
+			"proposalSuggestions": {
+				"title": "Proposal & Suggestions",
+				"description": "You get a clear proposal covering approach, timeline, and cost — plus ideas we think could make the product even better."
+			},
+			"consultationPlanning": {
+				"title": "Consultation & Planning",
+				"description": "We walk through the proposal together, refine the scope, and lock in the roadmap before a single line of code is written."
+			},
+			"designDevelopment": {
+				"title": "Design & Development",
+				"description": "Our team gets to work, building and testing the product sprint by sprint with steady, visible progress."
+			},
+			"feedbackIteration": {
+				"title": "Feedback & Iteration",
+				"description": "You review progress at every milestone and share feedback, which we fold straight back into the build."
+			},
+			"finalizePolish": {
+				"title": "Finalize & Polish",
+				"description": "Once everything's approved, we handle final QA, performance checks, and the last mile of polish."
+			},
+			"launch": {
+				"title": "Launch",
+				"description": "Your project goes live — and we stick around to support you as it grows."
+			}
+		}
+	},
+	"Faq": {
+		"intro": "Got Questions?",
+		"title": "Frequently Asked Questions",
+		"description": "Answers to the things people usually ask before reaching out."
+	},
+	"Testimonials": {
+		"intro": "Client Feedback",
+		"title": "What Clients Say",
+		"description": "A few words from people we've had the pleasure of building with.",
+		"ratedOutOf": "Rated {rating} out of 5 stars",
+		"clientTestimonials": "Client testimonials",
+		"chooseTestimonial": "Choose a testimonial",
+		"testimonialTabLabel": "{name}, testimonial {index} of {total}",
+		"previousTestimonial": "Previous testimonial",
+		"nextTestimonial": "Next testimonial"
+	},
+	"About": {
+		"intro": "Introduction",
+		"title": "About Us",
+		"introText": "We're SanjelTech, a one-person web and software development studio based in Oslo, Norway. We design, build, and ship full-stack applications end to end, pairing hands-on technical craft with the kind of direct attention only a sole proprietor can give.",
+		"points": {
+			"fullStack": {
+				"title": "Full-Stack Development",
+				"description": "React, Next.js, Node.js, MongoDB & more — built end to end."
+			},
+			"soleProprietor": {
+				"title": "Sole Proprietor",
+				"description": "Direct work with the person building your product. No hand-offs."
+			},
+			"experience": {
+				"title": "3+ Years Experience",
+				"description": "Hands-on, real-world project delivery."
+			},
+			"userFocusedDesign": {
+				"title": "User-Focused Design",
+				"description": "Accessible, intuitive, and visually compelling."
+			},
+			"certifiedExpertise": {
+				"title": "Certified Expertise",
+				"description": "Genuine care and technical rigor in every build."
+			},
+			"ideaToLaunch": {
+				"title": "Idea to Launch",
+				"description": "From discovery call through build, feedback, and support."
+			}
+		}
+	},
+	"Services": {
+		"intro": "What We Offer",
+		"title": "Our Services",
+		"description": "From responsive web design to interactive UI/UX development, we provide a range of services to help bring your digital ideas to life. Let's collaborate to create a web presence that not only looks great but also performs exceptionally.",
+		"noServices": "No services added yet."
+	},
+	"Pricing": {
+		"intro": "Pricing",
+		"title": "Plans for Every Project",
+		"description": "Transparent starting prices for the most common project types. Every project is scoped and quoted individually — these are a starting point for the conversation.",
+		"mostPopular": "Most Popular",
+		"tiers": {
+			"landingPage": {
+				"name": "Landing Page",
+				"price": "From kr 15,000",
+				"tagline": "A focused single page to launch fast.",
+				"ctaText": "Get Started",
+				"features": ["1 custom-designed page", "Mobile-responsive layout", "Contact form", "Basic on-page SEO", "1 round of revisions"]
+			},
+			"businessWebsite": {
+				"name": "Business Website",
+				"price": "From kr 30,000",
+				"tagline": "A complete multi-page site for your business.",
+				"ctaText": "Get Started",
+				"features": ["Up to 7 custom pages", "Content management (CMS)", "Blog setup", "SEO-optimized structure", "2 rounds of revisions", "30 days of post-launch support"]
+			},
+			"webAppEcommerce": {
+				"name": "Web App / E-commerce",
+				"price": "From kr 60,000",
+				"tagline": "Full-stack builds, online stores, and custom tools.",
+				"ctaText": "Request a Quote",
+				"features": ["Custom full-stack development", "E-commerce or web app functionality", "Database & admin dashboard", "Third-party integrations", "Performance & security review", "Dedicated project support"]
+			}
+		},
+		"maintenanceTitle": "Ongoing Maintenance & Support",
+		"maintenanceDescription": "Updates, monitoring, and small changes after launch — from kr 990/month.",
+		"learnMore": "Learn More",
+		"vatNote": "Prices are starting points and exclude VAT (mva). Final scope and pricing are confirmed after a short discovery call.",
+		"customNeed": "Need something that doesn't fit these boxes?",
+		"talkAboutProject": "Let's Talk About Your Project"
+	},
+	"Contact": {
+		"intro": "Let's Get Connected",
+		"title": "Get in Touch",
+		"description": "Whether you have a project in mind, a question, or just want to say hello, we'd love to hear from you. Reach out through the contact form or connect with us on social media. Let's start a conversation!",
+		"bookLiveMeeting": "Book for live meeting"
+	},
+	"ContactForm": {
+		"nameLabel": "Your name",
+		"namePlaceholder": "Enter your name",
+		"emailLabel": "Your email",
+		"emailPlaceholder": "Enter your email",
+		"messageLabel": "Your message",
+		"messagePlaceholder": "Enter your message",
+		"sending": "Sending...",
+		"submitNow": "Submit Now",
+		"successMessage": "Email sent successfully!",
+		"failureMessage": "Failed to send email"
+	},
+	"Terms": {
+		"intro": "Legal Information",
+		"title": "Terms of Service",
+		"description": "Please read these terms carefully",
+		"acceptance": {
+			"heading": "Acceptance of Terms",
+			"body": "By accessing and using our portfolio website, you accept and agree to be bound by these Terms of Service."
+		},
+		"useOfServices": {
+			"heading": "Use of Services",
+			"body1": "Our portfolio website is provided for informational purposes to showcase our work and services. You may use our services for legitimate purposes only.",
+			"body2": "You agree not to use our services for any illegal, harmful, or unauthorized purposes."
+		},
+		"intellectualProperty": {
+			"heading": "Intellectual Property",
+			"body1": "All content, including but not limited to text, graphics, logos, and images, on this website is the property of SanjelTech or to some extent of respective content owners.",
+			"body2": "You may not reproduce, distribute, or create derivative works without explicit written permission."
+		},
+		"userContent": {
+			"heading": "User Content",
+			"body": "If you submit any content through our contact forms or other means, you grant us a non-exclusive, worldwide, royalty-free license to use, reproduce, and display such content."
+		},
+		"privacyDataProtection": {
+			"heading": "Privacy and Data Protection",
+			"body": "Your privacy is important to us. Please review our <link>Privacy Policy</link>, which also governs your use of our website."
+		},
+		"limitationOfLiability": {
+			"heading": "Limitation of Liability",
+			"body": "Our website and services are provided \"as is\" without any warranties, express or implied. We shall not be liable for any indirect, incidental, or consequential damages."
+		},
+		"termination": {
+			"heading": "Termination",
+			"body": "We may terminate or suspend your access to our services immediately, without prior notice or liability, for any reason."
+		},
+		"changesToTerms": {
+			"heading": "Changes to Terms",
+			"body": "We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting."
+		},
+		"contactInformation": {
+			"heading": "Contact Information",
+			"body": "If you have any questions about these Terms of Service, please contact us through our <link>contact form</link>."
+		},
+		"governingLaw": {
+			"heading": "Governing Law",
+			"body": "These terms shall be governed by and construed in accordance with the laws of the jurisdiction where our website operates."
+		},
+		"lastUpdated": "Last updated"
+	},
+	"Privacy": {
+		"intro": "Legal Information",
+		"title": "Privacy Policy",
+		"description": "Your privacy is important to us",
+		"whoWeAre": {
+			"heading": "Who We Are",
+			"body": "This website is operated by Hari Prasad Sanjel, trading as SanjelTech, based in Oslo, Norway. Hari Prasad Sanjel is the data controller responsible for the personal data described in this policy. You can reach us through the <link>contact page</link>."
+		},
+		"informationWeCollect": {
+			"heading": "Information We Collect",
+			"contactForm": "<b>Contact form:</b> the name, email address, and message you submit are emailed directly to us so we can respond.",
+			"blogComments": "<b>Blog comments:</b> the name, email address, and comment text you submit, held for moderation before a comment is published.",
+			"usageAnalytics": "<b>Basic usage analytics:</b> the page path you visit and a randomly generated identifier stored in your browser's local storage (not a cookie), so we can see which pages are popular. We do not record your IP address or location as part of this.",
+			"aggregateAnalytics": "<b>Aggregate, cookie-free analytics</b> provided by Vercel Web Analytics, which does not use cookies or persistent identifiers to track individual visitors.",
+			"cvBuilder": "<b>CV Builder:</b> if you use the CV builder tool, the details you enter are used only in your browser to generate your document and are not sent to or stored on our servers."
+		},
+		"howWeUse": {
+			"heading": "How We Use This Information, and Why We're Allowed To",
+			"item1": "To respond to messages sent through the contact form (legitimate interest in running the business, and to take steps you request before entering into an agreement).",
+			"item2": "To moderate and display blog comments you choose to submit (your consent, given by submitting the comment).",
+			"item3": "To understand which pages are useful and improve the site (legitimate interest in operating and improving the website), using data that is not tied to your identity.",
+			"noSelling": "We do not sell personal data, and we do not use it for advertising or profiling."
+		},
+		"thirdParty": {
+			"heading": "Third-Party Services We Use",
+			"intro": "We rely on the following processors to run this website. Some are located outside Norway/the EEA (for example, in the United States); where that is the case, we rely on the safeguards those providers offer, such as Standard Contractual Clauses.",
+			"mongodb": "<b>MongoDB Atlas</b> — stores blog, project, comment, and basic analytics data.",
+			"cloudinary": "<b>Cloudinary</b> — hosts images used on the site.",
+			"google": "<b>Google (Gmail/Nodemailer)</b> — delivers contact-form messages to our inbox.",
+			"vercel": "<b>Vercel</b> — hosts our cookie-free web analytics."
+		},
+		"cookiesLocalStorage": {
+			"heading": "Cookies and Local Storage",
+			"body": "This site does not use advertising or tracking cookies. It stores a randomly generated identifier in your browser's local storage solely to avoid double-counting page views in our own analytics; this identifier is not linked to your name, email, or any other personal detail, and is not shared with advertisers. You can clear it at any time by clearing your browser's site data."
+		},
+		"dataRetention": {
+			"heading": "Data Retention",
+			"body": "We keep contact-form messages and blog comments for as long as needed to respond to you or display the comment, and delete them when no longer needed or on request. Basic analytics data is kept in aggregate form and is not used to identify individuals."
+		},
+		"dataSecurity": {
+			"heading": "Data Security",
+			"body": "We use industry-standard measures, including encrypted connections (HTTPS) and access controls on our administrative tools, to protect the data described above against unauthorized access, alteration, or disclosure."
+		},
+		"yourRights": {
+			"heading": "Your Rights",
+			"intro": "Under the GDPR, you have the right to:",
+			"item1": "Access the personal data we hold about you",
+			"item2": "Request correction of inaccurate data",
+			"item3": "Request deletion of your data",
+			"item4": "Object to or restrict certain processing",
+			"item5": "Request a copy of your data in a portable format",
+			"outro": "To exercise any of these rights, contact us through the <link>contact page</link>. You also have the right to lodge a complaint with the Norwegian Data Protection Authority (Datatilsynet) at <datatilsynet>datatilsynet.no</datatilsynet>."
+		},
+		"changesToPolicy": {
+			"heading": "Changes to This Policy",
+			"body": "We may update this privacy policy from time to time. Changes will be posted on this page along with an updated \"Last updated\" date."
+		},
+		"contactUs": {
+			"heading": "Contact Us",
+			"body": "If you have any questions about this Privacy Policy or want to exercise your rights, please reach out through our <link>contact page</link>."
+		},
+		"lastUpdated": "Last updated",
+		"lastUpdatedDate": "August 30, 2026"
+	},
+	"Blog": {
+		"intro": "Blogs",
+		"title": "Thoughts and Insights",
+		"archivedTitle": "Archived Blogs",
+		"description": "Dive into our blog where we share our thoughts on web development, design trends, and the tech industry. Whether you're a fellow developer or just curious, there's something here for everyone interested in the world of web technology.",
+		"blogsFrom": "Blogs from {month} {year}",
+		"showingBlogsFrom": "Showing blogs from {month} {year}",
+		"resetDateFilter": "Reset Date Filter",
+		"searchPlaceholder": "Search blogs by title or content...",
+		"allCategories": "All",
+		"searchLabel": "Search",
+		"categoryLabel": "Category",
+		"noBlogsFoundPeriod": "No blogs found for the selected time period.",
+		"noBlogsFoundFilters": "No blogs found matching your filters.",
+		"showAllBlogs": "Show All Blogs",
+		"noBlogsPublished": "No blogs published yet.",
+		"readMore": "Read more",
+		"readMoreAbout": "Read more about {title}",
+		"viewAllBlogs": "View All Blogs"
+	},
+	"BlogDetail": {
+		"notFound": "Blog post not found",
+		"backToBlogs": "Back to blogs",
+		"backToAllBlogs": "Back to all blogs",
+		"byAuthor": "By",
+		"minRead": "{minutes} min read",
+		"shareFacebook": "Facebook",
+		"shareTwitter": "Twitter",
+		"copyLink": "Copy Link",
+		"linkCopied": "Link copied to clipboard!",
+		"originallyPublished": "This post was originally published on an external platform:",
+		"readOriginalPost": "Read original post"
+	},
+	"Projects": {
+		"intro": "Portfolio",
+		"title": "Our Recent Works",
+		"description": "Take a look at some of the projects we've had the pleasure of working on. Our portfolio showcases a diverse range of web applications and designs that highlight our skills, creativity, and attention to detail.",
+		"noProjects": "No projects added yet.",
+		"liveDemo": "Live Demo",
+		"liveDemoOf": "Live Demo of {title}",
+		"viewProject": "View Project",
+		"featuredProject": "Featured Project",
+		"viewAllProjects": "View All Projects"
+	},
+	"ProjectDetail": {
+		"notFound": "Project not found",
+		"backToProjects": "Back to projects",
+		"backToAllProjects": "Back to all projects",
+		"projectStory": "Project Story",
+		"liveDemo": "Live Demo",
+		"liveDemoOf": "Live Demo of {title}",
+		"relatedProjects": "Related Projects",
+		"noRelatedProjects": "No related projects found.",
+		"viewAllProjects": "View All Projects"
+	},
+	"Booking": {
+		"weekdays": ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+		"youreBooked": "You're booked!",
+		"meetingConfirmed": "Your meeting is confirmed for <date></date> at <time></time>. A confirmation has been sent — we'll be in touch shortly.",
+		"previousMonth": "Previous month",
+		"nextMonth": "Next month",
+		"dateStatusPast": "{date}, in the past",
+		"dateStatusAvailable": "{date}, has available times",
+		"dateStatusUnavailable": "{date}, no available times",
+		"noOpenTimesThisMonth": "No open times this month yet — try another month or reach out directly.",
+		"availableTimes": "Available times",
+		"noTimesLeft": "No times left on this date.",
+		"yourDetails": "Your details",
+		"bookingFor": "Booking for <date></date> at <time></time>",
+		"pickDateTimeFirst": "Pick a date and time first.",
+		"nameLabel": "Your name",
+		"namePlaceholder": "Your name",
+		"emailLabel": "Your email",
+		"emailPlaceholder": "Your email",
+		"phoneLabel": "Your phone number",
+		"phonePlaceholder": "Your phone number",
+		"messageLabel": "What would you like to discuss? (optional)",
+		"messagePlaceholder": "What would you like to discuss? (optional)",
+		"bookingInProgress": "Booking...",
+		"confirmBooking": "Confirm Booking",
+		"slotTaken": "That slot was just taken. Please choose another time.",
+		"somethingWentWrong": "Something went wrong. Please try again."
+	},
+	"BookingPage": {
+		"intro": "Let's Talk",
+		"title": "Book a Meeting",
+		"description": "Pick a date and time that works for you. Choose an open slot below and I'll send a confirmation right away."
+	},
+	"CvBuilder": {
+		"confirmClear": "This will clear everything you've entered. Are you sure?",
+		"formCleared": "Form cleared.",
+		"pdfDownloaded": "PDF downloaded successfully!",
+		"pdfFailed": "Failed to generate PDF, please try again.",
+		"loading": "Loading...",
+		"intro": "Free Tool — Nothing Is Saved to Any Server",
+		"title": "Build Your CV / Resume",
+		"description": "Fill in your details below and download a clean, ready-to-print PDF resume. Everything stays in your browser — your data is never sent anywhere or stored in a database. Refresh freely; your draft is kept locally until you clear it.",
+		"personalDetails": "Personal Details",
+		"fullName": "Full Name",
+		"fullNamePlaceholder": "Jane Doe",
+		"professionalTitle": "Professional Title",
+		"professionalTitlePlaceholder": "Frontend Developer",
+		"address": "Address",
+		"addressPlaceholder": "City, Country",
+		"phone": "Phone",
+		"email": "Email",
+		"linkedinUrl": "LinkedIn URL",
+		"githubUrl": "GitHub URL",
+		"portfolioUrl": "Portfolio URL",
+		"summary": "Summary",
+		"summaryPlaceholder": "A short summary about your professional background and goals.",
+		"keyCompetencies": "Key Competencies",
+		"addCompetency": "Add Competency",
+		"categoryPlaceholder": "Category (e.g. Frontend)",
+		"skillsPlaceholder": "Skills (e.g. React, TypeScript)",
+		"professionalExperience": "Professional Experience",
+		"addExperience": "Add Experience",
+		"jobTitle": "Job Title",
+		"company": "Company",
+		"location": "Location",
+		"experienceDatePlaceholder": "Date (e.g. 2021 - Present)",
+		"responsibilitiesPlaceholder": "Responsibilities (one per line)",
+		"selectedProjects": "Selected Projects",
+		"addProject": "Add Project",
+		"titleField": "Title",
+		"techStack": "Tech Stack",
+		"descriptionField": "Description",
+		"livePreviewUrl": "Live Preview URL",
+		"education": "Education",
+		"addEducation": "Add Education",
+		"degree": "Degree",
+		"institution": "Institution",
+		"dateField": "Date",
+		"detailsOptional": "Details (optional)",
+		"certifications": "Certifications",
+		"addCertification": "Add Certification",
+		"issuer": "Issuer",
+		"languages": "Languages",
+		"addLanguage": "Add Language",
+		"language": "Language",
+		"levelPlaceholder": "Level (e.g. Fluent)",
+		"references": "References",
+		"addReference": "Add Reference",
+		"name": "Name",
+		"position": "Position",
+		"generating": "Generating...",
+		"downloadPdf": "Download PDF",
+		"startOver": "Start Over",
+		"removeEntry": "Remove {section} entry"
+	},
 	"Footer": {
 		"tagline": "Crafting digital experiences with passion and precision. Let's build something amazing together.",
 		"quickLinks": "Quick Links",

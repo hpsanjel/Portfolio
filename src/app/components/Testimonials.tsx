@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
@@ -21,8 +22,9 @@ function Avatar({ testimonial, className }: { testimonial: Testimonial; classNam
 }
 
 function StarRating({ rating, className = "w-4 h-4" }: { rating: number; className?: string }) {
+	const t = useTranslations("Testimonials");
 	return (
-		<div className="flex gap-1" role="img" aria-label={`Rated ${rating} out of 5 stars`}>
+		<div className="flex gap-1" role="img" aria-label={t("ratedOutOf", { rating })}>
 			{Array.from({ length: 5 }).map((_, i) => (
 				<Star key={i} aria-hidden="true" className={`${className} ${i < rating ? "fill-accent text-accent dark:fill-[#eda40d] dark:text-[#eda40d]" : "text-gray-300 dark:text-gray-600"}`} />
 			))}
@@ -31,6 +33,7 @@ function StarRating({ rating, className = "w-4 h-4" }: { rating: number; classNa
 }
 
 function TestimonialSpotlight({ testimonials }: { testimonials: Testimonial[] }) {
+	const t = useTranslations("Testimonials");
 	const [index, setIndex] = useState(0);
 	const [pausedByUser, setPausedByUser] = useState(false);
 	const [pausedByVisibility, setPausedByVisibility] = useState(false);
@@ -49,11 +52,11 @@ function TestimonialSpotlight({ testimonials }: { testimonials: Testimonial[] })
 	const current = testimonials[index];
 
 	return (
-		<div role="region" aria-roledescription="carousel" aria-label="Client testimonials">
+		<div role="region" aria-roledescription="carousel" aria-label={t("clientTestimonials")}>
 			{testimonials.length > 1 && (
-				<div role="tablist" aria-label="Choose a testimonial" className="flex gap-1.5 mb-5">
-					{testimonials.map((t, i) => (
-						<button key={t._id} type="button" role="tab" aria-selected={i === index} aria-label={`${t.name}, testimonial ${i + 1} of ${testimonials.length}`} onClick={() => goTo(i)} className="relative flex-1 h-1 rounded-full bg-gray-900/10 dark:bg-white/15 overflow-hidden cursor-pointer">
+				<div role="tablist" aria-label={t("chooseTestimonial")} className="flex gap-1.5 mb-5">
+					{testimonials.map((item, i) => (
+						<button key={item._id} type="button" role="tab" aria-selected={i === index} aria-label={t("testimonialTabLabel", { name: item.name, index: i + 1, total: testimonials.length })} onClick={() => goTo(i)} className="relative flex-1 h-1 rounded-full bg-gray-900/10 dark:bg-white/15 overflow-hidden cursor-pointer">
 							{i < index && <span className="absolute inset-0 bg-accent dark:bg-[#eda40d]" />}
 							{i === index && (canAutoplay ? <span key={index} onAnimationEnd={() => goTo(index + 1)} className="absolute inset-0 origin-left bg-accent dark:bg-[#eda40d] animate-story-progress" style={{ animationPlayState: paused ? "paused" : "running" }} /> : <span className="absolute inset-0 bg-accent dark:bg-[#eda40d]" />)}
 						</button>
@@ -77,10 +80,10 @@ function TestimonialSpotlight({ testimonials }: { testimonials: Testimonial[] })
 
 			{testimonials.length > 1 && (
 				<div className="flex items-center justify-center gap-3 mt-5">
-					<button type="button" onClick={() => goTo(index - 1)} aria-label="Previous testimonial" className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200">
+					<button type="button" onClick={() => goTo(index - 1)} aria-label={t("previousTestimonial")} className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200">
 						<ChevronLeft className="w-5 h-5" />
 					</button>
-					<button type="button" onClick={() => goTo(index + 1)} aria-label="Next testimonial" className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200">
+					<button type="button" onClick={() => goTo(index + 1)} aria-label={t("nextTestimonial")} className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-600 dark:text-gray-300 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200">
 						<ChevronRight className="w-5 h-5" />
 					</button>
 				</div>
@@ -90,6 +93,7 @@ function TestimonialSpotlight({ testimonials }: { testimonials: Testimonial[] })
 }
 
 export default function Testimonials() {
+	const t = useTranslations("Testimonials");
 	const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -116,7 +120,7 @@ export default function Testimonials() {
 
 	return (
 		<section id="testimonials" className="w-full px-[6%] lg:px-[12%] py-16">
-			<SectionHeader intro="Client Feedback" title="What Clients Say" description="A few words from people we've had the pleasure of building with." />
+			<SectionHeader intro={t("intro")} title={t("title")} description={t("description")} />
 
 			{loading ? (
 				<div className="flex justify-center items-center py-12">

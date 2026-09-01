@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { Building2, Check, Rocket, ShoppingCart, Sparkles } from "lucide-react";
 import SectionHeader from "../../components/SectionHeader";
 import GradientButton from "../../components/GradientButton";
@@ -13,35 +14,14 @@ type Tier = {
 	ctaText: string;
 };
 
-const TIERS: Tier[] = [
-	{
-		name: "Landing Page",
-		icon: Rocket,
-		price: "From kr 15,000",
-		tagline: "A focused single page to launch fast.",
-		features: ["1 custom-designed page", "Mobile-responsive layout", "Contact form", "Basic on-page SEO", "1 round of revisions"],
-		ctaText: "Get Started",
-	},
-	{
-		name: "Business Website",
-		icon: Building2,
-		price: "From kr 30,000",
-		tagline: "A complete multi-page site for your business.",
-		features: ["Up to 7 custom pages", "Content management (CMS)", "Blog setup", "SEO-optimized structure", "2 rounds of revisions", "30 days of post-launch support"],
-		featured: true,
-		ctaText: "Get Started",
-	},
-	{
-		name: "Web App / E-commerce",
-		icon: ShoppingCart,
-		price: "From kr 60,000",
-		tagline: "Full-stack builds, online stores, and custom tools.",
-		features: ["Custom full-stack development", "E-commerce or web app functionality", "Database & admin dashboard", "Third-party integrations", "Performance & security review", "Dedicated project support"],
-		ctaText: "Request a Quote",
-	},
+const TIER_DEFS: { key: string; icon: typeof Rocket; featured?: boolean }[] = [
+	{ key: "landingPage", icon: Rocket },
+	{ key: "businessWebsite", icon: Building2, featured: true },
+	{ key: "webAppEcommerce", icon: ShoppingCart },
 ];
 
 function PricingCard({ tier }: { tier: Tier }) {
+	const t = useTranslations("Pricing");
 	const Icon = tier.icon;
 	return (
 		<div
@@ -54,7 +34,7 @@ function PricingCard({ tier }: { tier: Tier }) {
 			{tier.featured && (
 				<span className="absolute -top-4 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 shadow-md">
 					<Sparkles className="w-3.5 h-3.5" aria-hidden="true" />
-					Most Popular
+					{t("mostPopular")}
 				</span>
 			)}
 
@@ -90,14 +70,20 @@ function PricingCard({ tier }: { tier: Tier }) {
 }
 
 export default function Pricing({ standalone = false }: { standalone?: boolean } = {}) {
+	const t = useTranslations("Pricing");
+	const TIERS: Tier[] = TIER_DEFS.map(({ key, icon, featured }) => ({
+		icon,
+		featured,
+		name: t(`tiers.${key}.name`),
+		price: t(`tiers.${key}.price`),
+		tagline: t(`tiers.${key}.tagline`),
+		ctaText: t(`tiers.${key}.ctaText`),
+		features: t.raw(`tiers.${key}.features`) as string[],
+	}));
+
 	return (
 		<section id="pricing" className="w-full px-[6%] lg:px-[12%] py-16 scroll-mt-20">
-			<SectionHeader
-				as={standalone ? "h1" : "h2"}
-				intro="Pricing"
-				title="Plans for Every Project"
-				description="Transparent starting prices for the most common project types. Every project is scoped and quoted individually — these are a starting point for the conversation."
-			/>
+			<SectionHeader as={standalone ? "h1" : "h2"} intro={t("intro")} title={t("title")} description={t("description")} />
 
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto mt-10 lg:mt-14">
 				{TIERS.map((tier) => (
@@ -108,19 +94,19 @@ export default function Pricing({ standalone = false }: { standalone?: boolean }
 			{/* Maintenance retainer */}
 			<div className="max-w-6xl mx-auto mt-8 rounded-2xl bg-white/60 dark:bg-darkHover/30 border border-gray-200/70 dark:border-white/10 p-6 flex flex-col sm:flex-row items-center justify-between gap-4">
 				<div className="text-center sm:text-left">
-					<h3 className="font-semibold text-gray-900 dark:text-white">Ongoing Maintenance &amp; Support</h3>
-					<p className="text-sm text-gray-600 dark:text-gray-400">Updates, monitoring, and small changes after launch — from kr 990/month.</p>
+					<h3 className="font-semibold text-gray-900 dark:text-white">{t("maintenanceTitle")}</h3>
+					<p className="text-sm text-gray-600 dark:text-gray-400">{t("maintenanceDescription")}</p>
 				</div>
 				<Link href="/contact" className="shrink-0 px-5 py-2.5 rounded-full border-2 border-gray-300 dark:border-white/15 font-semibold text-sm text-gray-800 dark:text-white hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-300">
-					Learn More
+					{t("learnMore")}
 				</Link>
 			</div>
 
-			<p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">Prices are starting points and exclude VAT (mva). Final scope and pricing are confirmed after a short discovery call.</p>
+			<p className="text-center text-xs text-gray-500 dark:text-gray-500 mt-6">{t("vatNote")}</p>
 
 			<div className="text-center mt-8">
-				<p className="text-gray-700 dark:text-gray-300 mb-4">Need something that doesn&apos;t fit these boxes?</p>
-				<GradientButton text="Let's Talk About Your Project" href="/contact" className="w-max mx-auto" />
+				<p className="text-gray-700 dark:text-gray-300 mb-4">{t("customNeed")}</p>
+				<GradientButton text={t("talkAboutProject")} href="/contact" className="w-max mx-auto" />
 			</div>
 		</section>
 	);

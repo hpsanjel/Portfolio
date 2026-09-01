@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { Calendar, FolderCheck, Layers, Clock, type LucideIcon } from "lucide-react";
 
 interface Stat {
@@ -9,11 +10,11 @@ interface Stat {
 	label: string;
 }
 
-const stats: Stat[] = [
-	{ icon: Calendar, value: 3, suffix: "+", label: "Years of Experience" },
-	{ icon: FolderCheck, value: 6, suffix: "+", label: "Projects Delivered" },
-	{ icon: Layers, value: 15, suffix: "+", label: "Technologies Used" },
-	{ icon: Clock, value: 24, suffix: "h", label: "Avg. Response Time" },
+const statDefs: { icon: LucideIcon; value: number; suffix: string; labelKey: string }[] = [
+	{ icon: Calendar, value: 3, suffix: "+", labelKey: "yearsOfExperience" },
+	{ icon: FolderCheck, value: 6, suffix: "+", labelKey: "projectsDelivered" },
+	{ icon: Layers, value: 15, suffix: "+", labelKey: "technologiesUsed" },
+	{ icon: Clock, value: 24, suffix: "h", labelKey: "avgResponseTime" },
 ];
 
 function useCountUp(target: number, active: boolean, duration = 1500) {
@@ -54,8 +55,10 @@ function StatItem({ icon: Icon, value, suffix, label, active, index }: Stat & { 
 }
 
 export default function StatsBar() {
+	const t = useTranslations("StatsBar");
 	const ref = useRef<HTMLDivElement>(null);
 	const [active, setActive] = useState(false);
+	const stats: Stat[] = statDefs.map(({ labelKey, ...rest }) => ({ ...rest, label: t(labelKey) }));
 
 	useEffect(() => {
 		const el = ref.current;

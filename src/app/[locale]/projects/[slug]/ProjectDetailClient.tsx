@@ -1,7 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 interface Project {
   id: string;
@@ -18,6 +19,7 @@ interface Project {
 }
 
 export default function ProjectDetailClient({ slug }: { slug: string }) {
+  const t = useTranslations("ProjectDetail");
   const [project, setProject] = useState<Project | null>(null);
   const [relatedProjects, setRelatedProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -63,9 +65,9 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Project not found</h1>
+          <h1 className="text-2xl font-bold mb-4">{t("notFound")}</h1>
           <Link href="/projects" className="text-blue-600 hover:text-blue-800">
-            ← Back to projects
+            ← {t("backToProjects")}
           </Link>
         </div>
       </div>
@@ -84,7 +86,7 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
                     href="/projects"
                     className="text-accent hover:text-[#8a5a08] dark:text-yellow-400 dark:hover:text-yellow-300 text-sm font-medium mb-4 inline-block"
                   >
-                    ← Back to all projects
+                    ← {t("backToAllProjects")}
                   </Link>
 
                   <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
@@ -122,7 +124,7 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
               {project.projectstory && (
                 <div className="p-8">
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                    Project Story
+                    {t("projectStory")}
                   </h2>
                   <div className="prose prose-lg dark:prose-invert max-w-none">
                     <div
@@ -146,9 +148,9 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center px-4 py-2 bg-yellow-600 text-gray-900 rounded-lg hover:bg-yellow-500 transition-colors"
-                    aria-label={`Live Demo of ${project.title}`}
+                    aria-label={t("liveDemoOf", { title: project.title })}
                   >
-                    Live Demo
+                    {t("liveDemo")}
                     <svg className="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
@@ -162,13 +164,13 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-6">
-                Related Projects
+                {t("relatedProjects")}
               </h3>
 
               <div className="space-y-4">
                 {relatedProjects.length === 0 ? (
                   <p className="text-gray-600 dark:text-gray-400 text-sm">
-                    No related projects found.
+                    {t("noRelatedProjects")}
                   </p>
                 ) : (
                   relatedProjects.map((relatedProject) => (
@@ -212,7 +214,7 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
                   href="/projects"
                   className="block w-full text-center px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
                 >
-                  View All Projects
+                  {t("viewAllProjects")}
                 </Link>
               </div>
             </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { useTranslations } from "next-intl";
 import { Plus, Trash2 } from "lucide-react";
 
 interface DynamicListSectionProps<T> {
@@ -13,6 +14,7 @@ interface DynamicListSectionProps<T> {
 }
 
 export default function DynamicListSection<T>({ title, items, emptyItem, onChange, renderRow, addLabel }: DynamicListSectionProps<T>) {
+	const t = useTranslations("CvBuilder");
 	const update = (index: number, patch: Partial<T>) => {
 		const next = items.slice();
 		next[index] = { ...next[index], ...patch };
@@ -36,7 +38,7 @@ export default function DynamicListSection<T>({ title, items, emptyItem, onChang
 						<button
 							type="button"
 							onClick={() => removeRow(index)}
-							aria-label={`Remove ${title.toLowerCase()} entry`}
+							aria-label={t("removeEntry", { section: title })}
 							className="absolute top-3 right-3 text-red-500 hover:text-red-700 transition-colors"
 						>
 							<Trash2 className="w-4 h-4" />

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { PhoneCall, ClipboardList, Lightbulb, Users, Code2, RefreshCcw, CheckCircle2, Rocket, type LucideIcon } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
@@ -9,54 +10,22 @@ interface Step {
 	description: string;
 }
 
-const steps: Step[] = [
-	{
-		icon: PhoneCall,
-		title: "Discovery Call",
-		description: "We hop on a quick call to learn about you, your business, and what you're hoping to achieve online.",
-	},
-	{
-		icon: ClipboardList,
-		title: "Understanding Requirements",
-		description: "We dig into your goals, audience, and technical needs to map out exactly what needs to be built.",
-	},
-	{
-		icon: Lightbulb,
-		title: "Proposal & Suggestions",
-		description: "You get a clear proposal covering approach, timeline, and cost — plus ideas we think could make the product even better.",
-	},
-	{
-		icon: Users,
-		title: "Consultation & Planning",
-		description: "We walk through the proposal together, refine the scope, and lock in the roadmap before a single line of code is written.",
-	},
-	{
-		icon: Code2,
-		title: "Design & Development",
-		description: "Our team gets to work, building and testing the product sprint by sprint with steady, visible progress.",
-	},
-	{
-		icon: RefreshCcw,
-		title: "Feedback & Iteration",
-		description: "You review progress at every milestone and share feedback, which we fold straight back into the build.",
-	},
-	{
-		icon: CheckCircle2,
-		title: "Finalize & Polish",
-		description: "Once everything's approved, we handle final QA, performance checks, and the last mile of polish.",
-	},
-	{
-		icon: Rocket,
-		title: "Launch",
-		description: "Your project goes live — and we stick around to support you as it grows.",
-	},
+const stepDefs: { icon: LucideIcon; key: string }[] = [
+	{ icon: PhoneCall, key: "discoveryCall" },
+	{ icon: ClipboardList, key: "understandingRequirements" },
+	{ icon: Lightbulb, key: "proposalSuggestions" },
+	{ icon: Users, key: "consultationPlanning" },
+	{ icon: Code2, key: "designDevelopment" },
+	{ icon: RefreshCcw, key: "feedbackIteration" },
+	{ icon: CheckCircle2, key: "finalizePolish" },
+	{ icon: Rocket, key: "launch" },
 ];
 
 // Nodes alternate between the left and right edge of the rail, connected by a smooth S-curve.
-const CURVE_X = steps.map((_, i) => (i % 2 === 0 ? 7 : 93));
+const CURVE_X = stepDefs.map((_, i) => (i % 2 === 0 ? 7 : 93));
 const CURVE_PATH = (() => {
 	let d = `M ${CURVE_X[0]} 50`;
-	for (let i = 1; i < steps.length; i++) {
+	for (let i = 1; i < stepDefs.length; i++) {
 		const y0 = (i - 1) * 100 + 50;
 		const y1 = i * 100 + 50;
 		const x0 = CURVE_X[i - 1];
@@ -67,6 +36,12 @@ const CURVE_PATH = (() => {
 })();
 
 export default function HowWeWork() {
+	const t = useTranslations("HowWeWork");
+	const steps: Step[] = stepDefs.map(({ icon, key }) => ({
+		icon,
+		title: t(`steps.${key}.title`),
+		description: t(`steps.${key}.description`),
+	}));
 	const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
 	const [visible, setVisible] = useState<Set<number>>(new Set());
 
@@ -92,7 +67,7 @@ export default function HowWeWork() {
 			<div className="absolute top-10 left-0 w-64 h-64 bg-linear-to-r from-[#eda40d]/15 to-[#c17e0a]/15 rounded-full blur-3xl pointer-events-none"></div>
 			<div className="absolute bottom-10 right-0 w-72 h-72 bg-linear-to-r from-purple-500/10 to-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
 
-			<SectionHeader intro="Our Process" title="How We Bring It to Life" description="A transparent, step-by-step process — from the first hello to the moment your project goes live." />
+			<SectionHeader intro={t("intro")} title={t("title")} description={t("description")} />
 
 			<div className="relative max-w-2xl mx-auto mt-4">
 				{/* Curved rail */}

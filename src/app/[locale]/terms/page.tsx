@@ -1,4 +1,6 @@
 import { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import SectionHeader from "../../components/SectionHeader";
 
 export const metadata: Metadata = {
@@ -15,96 +17,89 @@ export const metadata: Metadata = {
 };
 
 export default function TermsOfService() {
+  const t = useTranslations("Terms");
   return (
     <section className="w-full px-6 sm:px-8 md:px-12 lg:px-[15%] py-10">
       <SectionHeader
         as="h1"
-        intro="Legal Information"
-        title="Terms of Service"
-        description="Please read these terms carefully"
+        intro={t("intro")}
+        title={t("title")}
+        description={t("description")}
       />
-      
+
       <div className="max-w-4xl mx-auto prose prose-gray dark:prose-invert">
         <div className="space-y-8">
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Acceptance of Terms</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("acceptance.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("acceptance.body")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("useOfServices.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("useOfServices.body1")}</p>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("useOfServices.body2")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("intellectualProperty.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("intellectualProperty.body1")}</p>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("intellectualProperty.body2")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("userContent.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("userContent.body")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("privacyDataProtection.heading")}</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              By accessing and using our portfolio website, you accept and agree to be bound by these Terms of Service.
+              {t.rich("privacyDataProtection.body", {
+                link: (chunks) => (
+                  <Link href="/privacy" className="text-accent dark:text-yellow-400 hover:underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Use of Services</h2>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("limitationOfLiability.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("limitationOfLiability.body")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("termination.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("termination.body")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("changesToTerms.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("changesToTerms.body")}</p>
+          </div>
+
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("contactInformation.heading")}</h2>
             <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              Our portfolio website is provided for informational purposes to showcase our work and services. You may use our services for legitimate purposes only.
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              You agree not to use our services for any illegal, harmful, or unauthorized purposes.
+              {t.rich("contactInformation.body", {
+                link: (chunks) => (
+                  <Link href="/contact" className="text-accent dark:text-yellow-400 hover:underline">
+                    {chunks}
+                  </Link>
+                ),
+              })}
             </p>
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Intellectual Property</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              All content, including but not limited to text, graphics, logos, and images, on this website is the property of SanjelTech or to some extent of respective content owners.
-            </p>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              You may not reproduce, distribute, or create derivative works without explicit written permission.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">User Content</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              If you submit any content through our contact forms or other means, you grant us a non-exclusive, worldwide, royalty-free license to use, reproduce, and display such content.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Privacy and Data Protection</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              Your privacy is important to us. Please review our <a href="/privacy" className="text-accent dark:text-yellow-400 hover:underline">Privacy Policy</a>, which also governs your use of our website.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Limitation of Liability</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              Our website and services are provided &ldquo;as is&rdquo; without any warranties, express or implied. We shall not be liable for any indirect, incidental, or consequential damages.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Termination</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              We may terminate or suspend your access to our services immediately, without prior notice or liability, for any reason.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Changes to Terms</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              We reserve the right to modify these terms at any time. Changes will be effective immediately upon posting.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Contact Information</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              If you have any questions about these Terms of Service, please contact us through our <a href="/contact" className="text-accent dark:text-yellow-400 hover:underline">contact form</a>.
-            </p>
-          </div>
-
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">Governing Law</h2>
-            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
-              These terms shall be governed by and construed in accordance with the laws of the jurisdiction where our website operates.
-            </p>
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">{t("governingLaw.heading")}</h2>
+            <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{t("governingLaw.body")}</p>
           </div>
 
           <div className="border-t border-gray-200 dark:border-gray-700 pt-8 mt-8">
             <p className="text-sm text-gray-600 dark:text-gray-400">
-              <strong>Last updated:</strong> {new Date().toLocaleDateString()}
+              <strong>{t("lastUpdated")}:</strong> {new Date().toLocaleDateString()}
             </p>
           </div>
         </div>

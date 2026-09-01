@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import SectionHeader from "../../components/SectionHeader";
 import GradientButton from "../../components/GradientButton";
@@ -10,6 +10,7 @@ import GradientButton from "../../components/GradientButton";
 type Project = { id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[]; slug: string };
 
 export default function Projects() {
+	const t = useTranslations("Projects");
 	const pathname = usePathname();
 	const isListingPage = pathname === "/projects";
 	const [projects, setProjects] = useState<Project[]>([]);
@@ -37,14 +38,14 @@ export default function Projects() {
 
 	return (
 		<section id="work" className="w-full px-[6%] lg:px-[12%] py-16">
-			<SectionHeader as={isListingPage ? "h1" : "h2"} intro="Portfolio" title="Our Recent Works" description="Take a look at some of the projects we've had the pleasure of working on. Our portfolio showcases a diverse range of web applications and designs that highlight our skills, creativity, and attention to detail." />
+			<SectionHeader as={isListingPage ? "h1" : "h2"} intro={t("intro")} title={t("title")} description={t("description")} />
 
 			{projectsLoading ? (
 				<div className="flex justify-center items-center py-20">
 					<div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
 				</div>
 			) : projects.length === 0 ? (
-				<div className="text-center text-gray-600 dark:text-gray-300 py-20">No projects added yet.</div>
+				<div className="text-center text-gray-600 dark:text-gray-300 py-20">{t("noProjects")}</div>
 			) : (
 				<>
 					{/* Mobile / tablet: swipeable row of compact cards */}
@@ -55,8 +56,8 @@ export default function Projects() {
 									<Image src={project.image} alt={project.title} width={200} height={200} className="w-full h-full object-cover object-top-left group-hover:scale-110 transition-transform duration-700 ease-out" />
 									<div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 									<span className="absolute top-3 left-3 text-white text-xs font-bold bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded-full tracking-widest">{String(index + 1).padStart(2, "0")}</span>
-									<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 right-3 flex items-center gap-1 bg-white/95 dark:bg-darkTheme/95 text-accent dark:text-[#c17e0a] text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" aria-label={`Live Demo of ${project.title}`}>
-										Live Demo <ArrowUpRight className="w-3.5 h-3.5" />
+									<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="absolute bottom-3 right-3 flex items-center gap-1 bg-white/95 dark:bg-darkTheme/95 text-accent dark:text-[#c17e0a] text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300" aria-label={t("liveDemoOf", { title: project.title })}>
+										{t("liveDemo")} <ArrowUpRight className="w-3.5 h-3.5" />
 									</a>
 								</div>
 								<div className="relative p-3 md:p-6 overflow-hidden">
@@ -73,7 +74,7 @@ export default function Projects() {
 										))}
 									</div>
 									<Link href={`/projects/${project.slug}`} className="relative inline-flex items-center gap-1.5 text-sm font-semibold text-accent dark:text-[#c17e0a] group/link">
-										View Project
+										{t("viewProject")}
 										<ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
 									</Link>
 								</div>
@@ -96,7 +97,7 @@ export default function Projects() {
 									{/* Content */}
 									<div className={`relative w-1/2 flex flex-col justify-center p-12 xl:p-16 overflow-hidden ${isEven ? "" : "items-end text-right"}`}>
 										<span className={`pointer-events-none select-none absolute top-0 text-[10rem] leading-none font-bold text-gray-900/4 dark:text-white/6 ${isEven ? "-right-4" : "-left-4"}`}>{String(index + 1).padStart(2, "0")}</span>
-										<span className="relative text-xs font-bold tracking-[0.2em] text-accent dark:text-[#c17e0a] uppercase mb-3">Featured Project</span>
+										<span className="relative text-xs font-bold tracking-[0.2em] text-accent dark:text-[#c17e0a] uppercase mb-3">{t("featuredProject")}</span>
 										<Link href={`/projects/${project.slug}`}>
 											<h3 className="relative text-3xl xl:text-4xl font-bold mb-4 text-gray-900 dark:text-white group-hover:text-[#c17e0a] transition-colors duration-300 cursor-pointer">{project.title}</h3>
 										</Link>
@@ -110,11 +111,11 @@ export default function Projects() {
 										</div>
 										<div className={`relative flex flex-wrap items-center gap-4 ${isEven ? "" : "justify-end"}`}>
 											<Link href={`/projects/${project.slug}`} className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 bg-linear-to-r from-[#eda40d] to-[#c17e0a] px-6 py-3 rounded-full shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 w-max group/link">
-												View Project
+												{t("viewProject")}
 												<ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform duration-300" />
 											</Link>
-											<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-white/20 px-6 py-3 rounded-full hover:border-accent dark:hover:border-[#eda40d] hover:text-accent dark:hover:text-[#c17e0a] transition-all duration-300 w-max group/link" aria-label={`Live Demo of ${project.title}`}>
-												Live Demo
+											<a href={project.liveUrl} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-gray-900 dark:text-white border border-gray-300 dark:border-white/20 px-6 py-3 rounded-full hover:border-accent dark:hover:border-[#eda40d] hover:text-accent dark:hover:text-[#c17e0a] transition-all duration-300 w-max group/link" aria-label={t("liveDemoOf", { title: project.title })}>
+												{t("liveDemo")}
 												<ArrowUpRight className="w-4 h-4 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform duration-300" />
 											</a>
 										</div>
@@ -128,7 +129,7 @@ export default function Projects() {
 
 			{!isListingPage && projects.length > 3 && (
 				<div className="text-center mt-8">
-					<GradientButton text="View All Projects" href="/projects" className="w-max mx-auto mt-8" />
+					<GradientButton text={t("viewAllProjects")} href="/projects" className="w-max mx-auto mt-8" />
 				</div>
 			)}
 		</section>
