@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Code2, User, Calendar, Palette, Award, Rocket, type LucideIcon } from "lucide-react";
-import SectionHeader from "../components/SectionHeader";
+import SectionHeader from "../../components/SectionHeader";
 
 interface Point {
 	icon: LucideIcon;

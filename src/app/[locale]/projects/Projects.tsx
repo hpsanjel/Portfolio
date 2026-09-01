@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import SectionHeader from "../components/SectionHeader";
-import GradientButton from "../components/GradientButton";
+import SectionHeader from "../../components/SectionHeader";
+import GradientButton from "../../components/GradientButton";
 
 type Project = { id: number; title: string; description: string; image: string; liveUrl: string; codeUrl: string; technologies: string[]; slug: string };
 

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import SectionHeader from "../components/SectionHeader";
+import SectionHeader from "../../components/SectionHeader";
 import Image from "next/image";
 
 type Service = { id: number; title: string; description: string; icon: string };

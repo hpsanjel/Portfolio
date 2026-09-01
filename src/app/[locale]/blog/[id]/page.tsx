@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { cache } from "react";
-import BlogDetailClient from "@/app/blog/[id]/BlogDetailClient"
+import BlogDetailClient from "./BlogDetailClient"
 import connectDB from "@/lib/mongoose";
 import { Blog as BlogModel } from "@/models";
 import { SITE_URL, SITE_NAME, getJpgOpenGraphImageUrl } from "@/lib/seo";

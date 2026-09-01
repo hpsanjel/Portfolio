@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
-import SectionHeader from "../components/SectionHeader";
-import ContactForm from "../components/ContactForm";
+import SectionHeader from "../../components/SectionHeader";
+import ContactForm from "../../components/ContactForm";
 import { CalendarDays, Mail, Phone } from "lucide-react";
 
 export default function Contact({ standalone = false }: { standalone?: boolean } = {}) {

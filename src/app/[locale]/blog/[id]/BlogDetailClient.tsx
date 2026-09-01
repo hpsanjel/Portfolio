@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import BlogArchive from "../../components/BlogArchive";
-import Comments from "../../components/Comments";
+import BlogArchive from "../../../components/BlogArchive";
+import Comments from "../../../components/Comments";
 import Image from "next/image";
 import Link from "next/link";
 

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import BlogArchive from "../../components/BlogArchive";
+import BlogArchive from "../../../components/BlogArchive";
 
 export default function BlogDetailLayout({ children }: { children: React.ReactNode }) {
   return (

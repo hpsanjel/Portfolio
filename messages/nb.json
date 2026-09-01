@@ -1,0 +1,37 @@
+{
+	"Nav": {
+		"home": "Hjem",
+		"about": "Om oss",
+		"services": "Tjenester",
+		"pricing": "Priser",
+		"projects": "Prosjekter",
+		"contactCta": "Kontakt oss",
+		"availableStrip": "Ledig for nye prosjekter",
+		"toggleTheme": "Bytt tema",
+		"switchLanguage": "Bytt språk",
+		"openMenu": "Åpne meny",
+		"closeMenu": "Lukk meny",
+		"mobileNavLabel": "Mobilnavigasjon",
+		"linkedin": "LinkedIn",
+		"github": "GitHub",
+		"facebook": "Facebook"
+	},
+	"Footer": {
+		"tagline": "Skaper digitale opplevelser med lidenskap og presisjon. La oss bygge noe fantastisk sammen.",
+		"quickLinks": "Hurtiglenker",
+		"connect": "Følg oss",
+		"home": "Hjem",
+		"about": "Om oss",
+		"services": "Tjenester",
+		"pricing": "Priser",
+		"projects": "Prosjekter",
+		"blog": "Blogg",
+		"booking": "Bestill møte",
+		"contact": "Kontakt",
+		"cvBuilder": "Gratis CV-bygger",
+		"rightsReserved": "Alle rettigheter forbeholdt.",
+		"privacyPolicy": "Personvernerklæring",
+		"termsOfService": "Vilkår for bruk",
+		"opensInNewTab": "(åpnes i ny fane)"
+	}
+}

@@ -3,10 +3,10 @@ import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useSearchParams } from "next/navigation";
-import SectionHeader from "../components/SectionHeader";
-import GradientButton from "../components/GradientButton";
-import BlogArchive from "../components/BlogArchive";
-import { BLOG_CATEGORIES } from "../../lib/blogCategories";
+import SectionHeader from "../../components/SectionHeader";
+import GradientButton from "../../components/GradientButton";
+import BlogArchive from "../../components/BlogArchive";
+import { BLOG_CATEGORIES } from "../../../lib/blogCategories";
 
 // Function to strip HTML tags
 const stripHtml = (html: string): string => {

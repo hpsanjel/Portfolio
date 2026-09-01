@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Building2, Check, Rocket, ShoppingCart, Sparkles } from "lucide-react";
-import SectionHeader from "../components/SectionHeader";
-import GradientButton from "../components/GradientButton";
+import SectionHeader from "../../components/SectionHeader";
+import GradientButton from "../../components/GradientButton";
 
 type Tier = {
 	name: string;

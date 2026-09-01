@@ -1,12 +1,14 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import useThemeToggle from "../hooks/useThemeToggle";
-import Link from "next/link";
+import LanguageSwitcher from "./LanguageSwitcher";
 import { Home, User, Briefcase, FolderOpen, Tag, Mail, Menu, X } from "lucide-react";
 
 export default function HomeNavHeader() {
+	const t = useTranslations("Nav");
 	const [sideMenuOpen, setSideMenuOpen] = useState(false);
 	const [scrolled, setScrolled] = useState(false);
 	const { isDark, toggleTheme } = useThemeToggle();
@@ -35,11 +37,11 @@ export default function HomeNavHeader() {
 	}, [sideMenuOpen]);
 
 	const navItems = [
-		{ href: "/", label: "Home", icon: Home },
-		{ href: "/about", label: "About", icon: User },
-		{ href: "/services", label: "Services", icon: Briefcase },
-		{ href: "/pricing", label: "Pricing", icon: Tag },
-		{ href: "/projects", label: "Projects", icon: FolderOpen },
+		{ href: "/", label: t("home"), icon: Home },
+		{ href: "/about", label: t("about"), icon: User },
+		{ href: "/services", label: t("services"), icon: Briefcase },
+		{ href: "/pricing", label: t("pricing"), icon: Tag },
+		{ href: "/projects", label: t("projects"), icon: FolderOpen },
 	];
 
 	return (
@@ -75,11 +77,13 @@ export default function HomeNavHeader() {
 					})}
 				</ul>
 				<div className="flex items-center gap-4 ">
-					<button type="button" onClick={toggleTheme} aria-label="Toggle theme" aria-pressed={isDark} className="cursor-pointer p-2">
+					<button type="button" onClick={toggleTheme} aria-label={t("toggleTheme")} aria-pressed={isDark} className="cursor-pointer p-2">
 						{isDark ? <Image src="/images/sun.svg" alt="" width={24} height={24} className="w-6" /> : <Image src="/images/moon.svg" alt="" width={20} height={20} className="w-5" />}
 					</button>
 
-					<button ref={menuButtonRef} type="button" className="flex md:hidden items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-700 dark:text-gray-200 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" onClick={() => setSideMenuOpen(true)} aria-label="Open menu" aria-expanded={sideMenuOpen} aria-controls="mobile-menu">
+					<LanguageSwitcher />
+
+					<button ref={menuButtonRef} type="button" className="flex md:hidden items-center justify-center w-10 h-10 rounded-full border border-gray-300 dark:border-white/15 text-gray-700 dark:text-gray-200 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" onClick={() => setSideMenuOpen(true)} aria-label={t("openMenu")} aria-expanded={sideMenuOpen} aria-controls="mobile-menu">
 						<Menu className="w-5 h-5" />
 					</button>
 				</div>
@@ -90,11 +94,11 @@ export default function HomeNavHeader() {
 						<div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 md:hidden" onClick={() => setSideMenuOpen(false)} aria-hidden="true" />
 
 						{/* Menu Panel */}
-						<nav id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation" className="flex md:hidden flex-col gap-2 fixed right-0 top-0 bottom-0 w-[85%] max-w-80 z-50 h-screen bg-white dark:bg-[#0a0d16] shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out overflow-y-auto">
+						<nav id="mobile-menu" role="dialog" aria-modal="true" aria-label={t("mobileNavLabel")} className="flex md:hidden flex-col gap-2 fixed right-0 top-0 bottom-0 w-[85%] max-w-80 z-50 h-screen bg-white dark:bg-[#0a0d16] shadow-2xl font-Outfit dark:text-white transition-transform duration-300 ease-in-out overflow-y-auto">
 							{/* Header */}
 							<div className="flex items-center justify-between px-6 pt-8 pb-6 border-b border-gray-100 dark:border-white/10">
 								<Image src="/images/sanjeltechkologo.png" alt="SanjelTech logo" width={1402} height={881} className="w-16" />
-								<button ref={closeButtonRef} type="button" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" aria-label="Close menu">
+								<button ref={closeButtonRef} type="button" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:text-accent dark:hover:text-[#eda40d] transition-colors duration-200" aria-label={t("closeMenu")}>
 									<X className="w-4.5 h-4.5 cursor-pointer text-gray-700 dark:text-gray-300" />
 								</button>
 							</div>
@@ -127,7 +131,7 @@ export default function HomeNavHeader() {
 								<div className="w-full px-8 mt-6">
 									<div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
 										<span className="w-2 h-2 rounded-full bg-green-500"></span>
-										Available for new projects
+										{t("availableStrip")}
 									</div>
 								</div>
 
@@ -135,7 +139,7 @@ export default function HomeNavHeader() {
 								<div className="w-full px-4 mt-6">
 									<Link href="/contact" onClick={() => setSideMenuOpen(false)} className="flex items-center justify-center gap-2 w-full px-6 py-3.5 text-base font-semibold rounded-xl bg-linear-to-r from-[#eda40d] to-[#c17e0a] text-gray-900 hover:shadow-lg hover:shadow-[#c17e0a]/25 transition-shadow duration-200 ease-in-out">
 										<Mail className="w-5 h-5" />
-										Contact Us
+										{t("contactCta")}
 									</Link>
 								</div>
 							</div>
@@ -143,13 +147,13 @@ export default function HomeNavHeader() {
 							{/* Footer */}
 							<div className="w-full px-8 py-6 border-t border-gray-100 dark:border-white/10">
 								<div className="flex items-center justify-center gap-3">
-									<a href="https://www.linkedin.com/in/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="LinkedIn">
+									<a href="https://www.linkedin.com/in/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label={t("linkedin")}>
 										<Image src="/images/linkedin.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
-									<a href="https://github.com/hpsanjel" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="GitHub">
+									<a href="https://github.com/hpsanjel" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label={t("github")}>
 										<Image src="/images/github.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
-									<a href="https://www.facebook.com/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label="Facebook">
+									<a href="https://www.facebook.com/hpsanjel/" className="flex items-center justify-center w-9 h-9 rounded-full border border-gray-200 dark:border-white/15 hover:border-[#eda40d] hover:bg-[#eda40d]/10 transition-colors duration-200" aria-label={t("facebook")}>
 										<Image src="/images/facebook.png" alt="" width={16} height={16} className="w-4 h-4 dark:invert" />
 									</a>
 								</div>

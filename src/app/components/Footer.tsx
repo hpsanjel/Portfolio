@@ -1,17 +1,6 @@
 import Image from "next/image";
-import Link from "next/link";
-
-const quickLinks = [
-	{ href: "/", label: "Home" },
-	{ href: "/about", label: "About" },
-	{ href: "/services", label: "Services" },
-	{ href: "/pricing", label: "Pricing" },
-	{ href: "/projects", label: "Projects" },
-	{ href: "/blog", label: "Blog" },
-	{ href: "/booking", label: "Book a Meeting" },
-	{ href: "/contact", label: "Contact" },
-	{ href: "/cv-builder", label: "Free CV Builder" },
-];
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 const socialLinks = [
 	{ href: "https://www.linkedin.com/in/hpsanjel/", icon: "/images/linkedin.png", label: "LinkedIn" },
@@ -20,6 +9,20 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+	const t = useTranslations("Footer");
+
+	const quickLinks = [
+		{ href: "/", label: t("home") },
+		{ href: "/about", label: t("about") },
+		{ href: "/services", label: t("services") },
+		{ href: "/pricing", label: t("pricing") },
+		{ href: "/projects", label: t("projects") },
+		{ href: "/blog", label: t("blog") },
+		{ href: "/booking", label: t("booking") },
+		{ href: "/contact", label: t("contact") },
+		{ href: "/cv-builder", label: t("cvBuilder") },
+	];
+
 	return (
 		<footer className="relative md:mt-6 bg-linear-to-br from-[#fdf6e8] via-white to-[#eaf1ff] dark:from-[#1c1305] dark:via-blue-950/90 dark:to-[#05070d] border-t border-gray-200 dark:border-purple-900/50">
 			{/* Background Pattern */}
@@ -35,12 +38,12 @@ export default function Footer() {
 						<Link href="/" className="group inline-flex items-center gap-3 mb-4">
 							<Image src="/images/sanjeltechkologo.png" alt="SanjelTech logo" width={1402} height={881} className="w-20 transition-transform duration-300 group-hover:scale-105" />
 						</Link>
-						<p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm mx-auto sm:mx-0 leading-relaxed">Crafting digital experiences with passion and precision. Let&apos;s build something amazing together.</p>
+						<p className="text-sm text-gray-600 dark:text-gray-400 max-w-sm mx-auto sm:mx-0 leading-relaxed">{t("tagline")}</p>
 					</div>
 
 					{/* Quick Links */}
 					<div className="text-center sm:text-left">
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t("quickLinks")}</h3>
 						<ul className="text-sm space-y-2">
 							{quickLinks.map((link) => (
 								<li key={link.href}>
@@ -54,10 +57,10 @@ export default function Footer() {
 
 					{/* Social Links */}
 					<div className="text-center sm:text-left">
-						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Connect</h3>
+						<h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t("connect")}</h3>
 						<div className="flex justify-center sm:justify-start gap-3">
 							{socialLinks.map((social) => (
-								<a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-gray-100 dark:bg-white p-2 hover:bg-yellow-100 dark:hover:bg-gray-200 transition-all duration-300 hover:scale-110" aria-label={`${social.label} (opens in new tab)`}>
+								<a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-gray-100 dark:bg-white p-2 hover:bg-yellow-100 dark:hover:bg-gray-200 transition-all duration-300 hover:scale-110" aria-label={`${social.label} ${t("opensInNewTab")}`}>
 									<Image src={social.icon} alt={social.label} width={20} height={20} className="w-5 h-5" />
 								</a>
 							))}
@@ -68,13 +71,13 @@ export default function Footer() {
 				{/* Bottom Bar */}
 				<div className="border-t border-gray-200 dark:border-gray-700 pt-8">
 					<div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-						<p className="text-sm text-gray-600 dark:text-gray-400 text-center">© {new Date().getFullYear()} SanjelTech. All rights reserved.</p>
+						<p className="text-sm text-gray-600 dark:text-gray-400 text-center">© {new Date().getFullYear()} SanjelTech. {t("rightsReserved")}</p>
 						<div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
 							<Link href="/privacy" className="hover:text-accent dark:hover:text-yellow-400 transition-colors duration-300">
-								Privacy Policy
+								{t("privacyPolicy")}
 							</Link>
 							<Link href="/terms" className="hover:text-accent dark:hover:text-yellow-400 transition-colors duration-300">
-								Terms of Service
+								{t("termsOfService")}
 							</Link>
 						</div>
 					</div>

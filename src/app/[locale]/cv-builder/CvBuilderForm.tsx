@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { RotateCcw } from "lucide-react";
-import SectionHeader from "../components/SectionHeader";
-import GradientButton from "../components/GradientButton";
-import useLocalStorageState from "../hooks/useLocalStorageState";
+import SectionHeader from "../../components/SectionHeader";
+import GradientButton from "../../components/GradientButton";
+import useLocalStorageState from "../../hooks/useLocalStorageState";
 import DynamicListSection from "./DynamicListSection";
 import {
 	type CvBuilderData,

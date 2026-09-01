@@ -1,0 +1,37 @@
+{
+	"Nav": {
+		"home": "Home",
+		"about": "About",
+		"services": "Services",
+		"pricing": "Pricing",
+		"projects": "Projects",
+		"contactCta": "Contact Us",
+		"availableStrip": "Available for new projects",
+		"toggleTheme": "Toggle theme",
+		"switchLanguage": "Switch language",
+		"openMenu": "Open menu",
+		"closeMenu": "Close menu",
+		"mobileNavLabel": "Mobile navigation",
+		"linkedin": "LinkedIn",
+		"github": "GitHub",
+		"facebook": "Facebook"
+	},
+	"Footer": {
+		"tagline": "Crafting digital experiences with passion and precision. Let's build something amazing together.",
+		"quickLinks": "Quick Links",
+		"connect": "Connect",
+		"home": "Home",
+		"about": "About",
+		"services": "Services",
+		"pricing": "Pricing",
+		"projects": "Projects",
+		"blog": "Blog",
+		"booking": "Book a Meeting",
+		"contact": "Contact",
+		"cvBuilder": "Free CV Builder",
+		"rightsReserved": "All rights reserved.",
+		"privacyPolicy": "Privacy Policy",
+		"termsOfService": "Terms of Service",
+		"opensInNewTab": "(opens in new tab)"
+	}
+}

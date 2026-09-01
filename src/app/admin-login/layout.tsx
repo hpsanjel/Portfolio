@@ -1,6 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { baseMetadata, baseViewport } from "@/lib/seo";
+import RootShell from "../components/RootShell";
 
 export const metadata: Metadata = {
+	...baseMetadata,
 	title: "Admin Login",
 	description: "Sign in to the SanjelTech admin panel.",
 	robots: {
@@ -10,6 +13,8 @@ export const metadata: Metadata = {
 	},
 };
 
+export const viewport: Viewport = baseViewport;
+
 export default function AdminLoginLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-	return children;
+	return <RootShell lang="en">{children}</RootShell>;
 }

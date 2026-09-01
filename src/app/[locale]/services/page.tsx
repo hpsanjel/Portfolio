@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Services from "./Services";
-import HowWeWork from "../components/HowWeWork";
+import HowWeWork from "../../components/HowWeWork";
 
 export const metadata: Metadata = {
 	title: "Services",

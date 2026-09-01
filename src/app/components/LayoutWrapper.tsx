@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname } from "@/i18n/navigation";
 import HomeNavHeader from "./HomeNavHeader";
 import TopInfoBar from "./TopInfoBar";
 import Footer from "./Footer";
@@ -17,22 +17,17 @@ function getSessionId(): string {
 
 export default function LayoutWrapper({ children }: { children: React.ReactNode }) {
 	const pathname = usePathname();
-	const isAdmin = pathname?.startsWith('/admin');
 
 	useEffect(() => {
-		if (isAdmin || !pathname) return;
+		if (!pathname) return;
 		const sessionId = getSessionId();
 		fetch("/api/analytics", {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ path: pathname, sessionId }),
 		}).catch(() => {});
-	}, [pathname, isAdmin]);
+	}, [pathname]);
 
-	if (isAdmin) {
-		return <main>{children}</main>;
-	}
-	
 	return (
 		<>
 			<a href="#main-content" className="skip-link">
