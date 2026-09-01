@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import SectionHeader from "../../components/SectionHeader";
@@ -11,6 +11,7 @@ type Project = { id: number; title: string; description: string; image: string; 
 
 export default function Projects() {
 	const t = useTranslations("Projects");
+	const locale = useLocale();
 	const pathname = usePathname();
 	const isListingPage = pathname === "/projects";
 	const [projects, setProjects] = useState<Project[]>([]);
@@ -19,7 +20,7 @@ export default function Projects() {
 		let cancelled = false;
 		async function loadProjects() {
 			try {
-				const res = await fetch("/api/projects?status=published");
+				const res = await fetch(`/api/projects?status=published&locale=${locale}`);
 				const data = await res.json();
 				if (!cancelled) setProjects(Array.isArray(data) ? data : []);
 			} catch {
@@ -32,7 +33,7 @@ export default function Projects() {
 		return () => {
 			cancelled = true;
 		};
-	}, []);
+	}, [locale]);
 
 	const visibleProjects = projects.slice(0, isListingPage ? projects.length : 3);
 

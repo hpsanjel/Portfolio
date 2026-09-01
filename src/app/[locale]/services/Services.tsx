@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import SectionHeader from "../../components/SectionHeader";
 import Image from "next/image";
 
@@ -34,6 +34,7 @@ function ServiceCard({ service, className = "" }: { service: Service; className?
 
 export default function Services({ standalone = false }: { standalone?: boolean } = {}) {
 	const t = useTranslations("Services");
+	const locale = useLocale();
 	const [services, setServices] = useState<Service[]>([]);
 	const [servicesLoading, setServicesLoading] = useState(true);
 
@@ -41,7 +42,7 @@ export default function Services({ standalone = false }: { standalone?: boolean 
 		let cancelled = false;
 		async function loadServices() {
 			try {
-				const res = await fetch("/api/services");
+				const res = await fetch(`/api/services?locale=${locale}`);
 				const data = await res.json();
 				if (!cancelled) setServices(Array.isArray(data) ? data : []);
 			} catch {
@@ -54,7 +55,7 @@ export default function Services({ standalone = false }: { standalone?: boolean 
 		return () => {
 			cancelled = true;
 		};
-	}, []);
+	}, [locale]);
 
 	if (servicesLoading) {
 		return (

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 import BlogArchive from "../../../components/BlogArchive";
@@ -69,6 +69,7 @@ interface BlogDetailClientProps {
 
 export default function BlogDetailClient({ id }: BlogDetailClientProps) {
   const t = useTranslations("BlogDetail");
+  const locale = useLocale();
   const [blog, setBlog] = useState<Blog | null>(null);
   const [relatedBlogs, setRelatedBlogs] = useState<Blog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +88,7 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
         let blogData: Blog | null = null;
         
         // Fetch current blog
-        const blogRes = await fetch(`/api/blogs/${id}`);
+        const blogRes = await fetch(`/api/blogs/${id}?locale=${locale}`);
         if (blogRes.ok) {
           blogData = await blogRes.json() as Blog;
           // Check if blog is published
@@ -99,7 +100,7 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
         }
 
         // Fetch all published blogs for sidebar
-        const allBlogsRes = await fetch("/api/blogs?status=published");
+        const allBlogsRes = await fetch(`/api/blogs?status=published&locale=${locale}`);
         if (allBlogsRes.ok && blogData) {
           const allBlogs = await allBlogsRes.json();
           const currentBlog = blogData;
@@ -142,7 +143,7 @@ export default function BlogDetailClient({ id }: BlogDetailClientProps) {
     }
 
     fetchBlogData();
-  }, [id]);
+  }, [id, locale]);
 
   // Helper function to format date consistently
   const formatDate = (dateString: string) => {

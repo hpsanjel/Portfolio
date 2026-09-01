@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
-import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import Image from "next/image";
 
 interface ArchiveItem {
@@ -25,26 +26,25 @@ interface BlogArchiveProps {
   className?: string;
 }
 
-const monthNames = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
-
 // Function to strip HTML tags
 const stripHtml = (html: string): string => {
   return html.replace(/<[^>]*>/g, '').replace(/&nbsp;/g, ' ').trim();
 };
 
+let cachedLocale: string | null = null;
 let cachedArchives: ArchiveItem[] | null = null;
 let cachedRecentBlogs: Blog[] | null = null;
 
 export default function BlogArchive({ className = "" }: BlogArchiveProps) {
-  const [archives, setArchives] = useState<ArchiveItem[]>(cachedArchives || []);
-  const [recentBlogs, setRecentBlogs] = useState<Blog[]>(cachedRecentBlogs || []);
-  const [loading, setLoading] = useState(!cachedArchives || !cachedRecentBlogs);
+  const t = useTranslations("BlogArchive");
+  const locale = useLocale();
+  const isCacheValid = cachedLocale === locale;
+  const [archives, setArchives] = useState<ArchiveItem[]>(isCacheValid ? cachedArchives || [] : []);
+  const [recentBlogs, setRecentBlogs] = useState<Blog[]>(isCacheValid ? cachedRecentBlogs || [] : []);
+  const [loading, setLoading] = useState(!isCacheValid || !cachedArchives || !cachedRecentBlogs);
 
   useEffect(() => {
-    if (cachedArchives && cachedRecentBlogs) {
+    if (isCacheValid && cachedArchives && cachedRecentBlogs) {
       return;
     }
 
@@ -53,15 +53,16 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
     async function fetchData() {
       try {
         // Fetch archives
-        const archivesRes = await fetch("/api/blogs/archives");
+        const archivesRes = await fetch(`/api/blogs/archives?locale=${locale}`);
         if (archivesRes.ok) {
           const archivesData = await archivesRes.json();
+          cachedLocale = locale;
           cachedArchives = archivesData;
           if (!cancelled) setArchives(archivesData);
         }
 
         // Fetch recent blogs
-        const blogsRes = await fetch("/api/blogs?status=published");
+        const blogsRes = await fetch(`/api/blogs?status=published&locale=${locale}`);
         if (blogsRes.ok) {
           const blogsData = await blogsRes.json();
           // Sort by date ascending (oldest first) and take 10
@@ -83,12 +84,12 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [locale, isCacheValid]);
 
   if (loading) {
     return (
       <div className={`bg-white dark:bg-gray-800 rounded-lg shadow-sm p-4 ${className}`}>
-        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">Blog Archive</h3>
+        <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">{t("blogArchive")}</h3>
         <div className="animate-pulse space-y-2">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
@@ -112,7 +113,7 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
           {/* Recent Blogs Section */}
           {recentBlogs.length > 0 && (
             <div className="mb-6 h-[600px] overflow-y-auto">
-              <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">Recent posts</h4>
+              <h4 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">{t("recentPosts")}</h4>
               <div className="space-y-3">
                 {recentBlogs.map((blog, index) => (
                   <div key={blog._id || index} className="group">
@@ -139,10 +140,10 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
                           {blog.excerpt || stripHtml(blog.content || '').substring(0, 80) + '...'}
                         </p>
                         <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                          {new Date(blog.date).toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric', 
-                            year: 'numeric' 
+                          {new Date(blog.date).toLocaleDateString(locale === 'nb' ? 'nb-NO' : 'en-US', {
+                            month: 'short',
+                            day: 'numeric',
+                            year: 'numeric'
                           })}
                         </div>
                       </div>
@@ -154,7 +155,7 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
               {/* Divider */}
               <div className="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
-                  Showing 10 most recent posts
+                  {t("showingRecentPosts")}
                 </p>
               </div>
             </div>
@@ -162,10 +163,10 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
           
           {/* Traditional Archive Section */}
           {archives.length === 0 ? (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">No archived posts yet.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">{t("noArchivedPosts")}</p>
           ) : (
             <div className="space-y-4">
-              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">Browse by Date</h4>
+              <h4 className="text-sm font-semibold text-gray-700 dark:text-gray-300">{t("browseByDate")}</h4>
               {archives.map((archive) => (
                 <div key={archive.year} className="border-b border-gray-200 dark:border-gray-700 last:border-b-0 pb-3 last:pb-0">
                   <button
@@ -181,7 +182,7 @@ export default function BlogArchive({ className = "" }: BlogArchiveProps) {
                       {archive.year}
                     </span>
                     <span className="text-sm text-gray-500 dark:text-gray-400">
-                      ({archive.months.reduce((sum, month) => sum + month.count, 0)} posts)
+                      {t("postsCount", { count: archive.months.reduce((sum, month) => sum + month.count, 0) })}
                     </span>
                   </button>
                   

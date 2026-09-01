@@ -3,7 +3,8 @@ import { cache } from "react";
 import ProjectDetailClient from "./ProjectDetailClient";
 import connectDB from "@/lib/mongoose";
 import { Project as ProjectModel } from "@/models";
-import { SITE_URL, SITE_NAME, getJpgOpenGraphImageUrl } from "@/lib/seo";
+import { SITE_URL, SITE_NAME, getJpgOpenGraphImageUrl, buildAlternates } from "@/lib/seo";
+import { localizeDoc, parseLocale } from "@/lib/localize";
 
 // Deduped between generateMetadata and the page body — one DB round-trip per request.
 const getProject = cache(async (slug: string) => {
@@ -13,15 +14,17 @@ const getProject = cache(async (slug: string) => {
 
 // Generate metadata for the project detail page
 export async function generateMetadata(
-  { params }: { params: Promise<{ slug: string }> }
+  { params }: { params: Promise<{ slug: string; locale: string }> }
 ): Promise<Metadata> {
-  const { slug } = await params;
-  const canonicalUrl = `${SITE_URL}/projects/${slug}`;
+  const { slug, locale: localeParam } = await params;
+  const locale = parseLocale(localeParam);
+  const canonicalUrl = `${SITE_URL}${locale === "nb" ? "/nb" : ""}/projects/${slug}`;
 
   try {
-    const project = await getProject(slug);
+    const rawProject = await getProject(slug);
 
-    if (project && project.status !== 'draft') {
+    if (rawProject && rawProject.status !== 'draft') {
+      const project = localizeDoc(rawProject, locale, ["title", "description", "projectstory"]);
       const description = project.description?.substring(0, 155) || `Case study for the ${project.title} project.`;
       const ogImageUrl = getJpgOpenGraphImageUrl(project.image);
 
@@ -29,14 +32,13 @@ export async function generateMetadata(
         title: project.title,
         description,
         keywords: project.technologies,
-        alternates: {
-          canonical: canonicalUrl,
-        },
+        alternates: buildAlternates(`/projects/${slug}`),
         openGraph: {
           title: project.title,
           description,
           url: canonicalUrl,
           siteName: SITE_NAME,
+          locale: locale === 'nb' ? 'nb_NO' : 'en_US',
           images: [
             {
               url: ogImageUrl,
@@ -62,9 +64,7 @@ export async function generateMetadata(
       title: 'Project Not Found',
       description: 'This project is not available.',
       robots: { index: false, follow: false },
-      alternates: {
-        canonical: canonicalUrl,
-      },
+      alternates: buildAlternates(`/projects/${slug}`),
     };
   } catch (error) {
     console.error('Project metadata fetch error:', error);
@@ -73,21 +73,21 @@ export async function generateMetadata(
   return {
     title: 'Project',
     description: 'View this project case study.',
-    alternates: {
-      canonical: canonicalUrl,
-    },
+    alternates: buildAlternates(`/projects/${slug}`),
   };
 }
 
 // Server component that just renders the client component
-export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const canonicalUrl = `${SITE_URL}/projects/${slug}`;
+export default async function ProjectDetailPage({ params }: { params: Promise<{ slug: string; locale: string }> }) {
+  const { slug, locale: localeParam } = await params;
+  const locale = parseLocale(localeParam);
+  const canonicalUrl = `${SITE_URL}${locale === "nb" ? "/nb" : ""}/projects/${slug}`;
 
   let projectJsonLd: Record<string, unknown> | null = null;
   try {
-    const project = await getProject(slug);
-    if (project && project.status !== 'draft') {
+    const rawProject = await getProject(slug);
+    if (rawProject && rawProject.status !== 'draft') {
+      const project = localizeDoc(rawProject, locale, ["title", "description", "projectstory"]);
       const ogImageUrl = getJpgOpenGraphImageUrl(project.image);
       projectJsonLd = {
         "@context": "https://schema.org",

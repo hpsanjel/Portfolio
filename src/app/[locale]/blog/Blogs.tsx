@@ -46,7 +46,7 @@ function BlogsContent() {
             let cancelled = false;
             async function loadBlogs() {
                 try {
-                    const res = await fetch("/api/blogs?status=published");
+                    const res = await fetch(`/api/blogs?status=published&locale=${locale}`);
                     const data = await res.json();
                     if (!cancelled) setBlogs(Array.isArray(data) ? data : []);
                 } catch {
@@ -59,7 +59,7 @@ function BlogsContent() {
             return () => {
                 cancelled = true;
             };
-        }, []);
+        }, [locale]);
 
     // Get available categories with blog counts for better UX
     const categoryCounts = blogs.reduce((acc, blog) => {

@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface IBlogTranslation {
+  title?: string;
+  content?: string;
+  excerpt?: string;
+}
+
 export interface IBlog extends Document {
   title: string;
   content: string;
@@ -12,9 +18,18 @@ export interface IBlog extends Document {
   tags: string[];
   status: 'draft' | 'published';
   order: number;
+  translations?: {
+    nb?: IBlogTranslation;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
+
+const BlogTranslationSchema = new Schema<IBlogTranslation>({
+  title: { type: String, trim: true },
+  content: { type: String },
+  excerpt: { type: String }
+}, { _id: false });
 
 const BlogSchema: Schema = new Schema({
   title: {
@@ -59,6 +74,9 @@ const BlogSchema: Schema = new Schema({
   order: {
     type: Number,
     default: 0
+  },
+  translations: {
+    nb: { type: BlogTranslationSchema, default: undefined }
   }
 }, {
   timestamps: true
@@ -74,6 +92,10 @@ BlogSchema.pre('validate', function (this: IBlog) {
   if (this.isModified('content') && !this.excerpt) {
     const plainText = stripHtml(this.content);
     this.excerpt = plainText.substring(0, 150) + '...';
+  }
+  if (this.translations?.nb?.content && !this.translations.nb.excerpt) {
+    const plainText = stripHtml(this.translations.nb.content);
+    this.translations.nb.excerpt = plainText.substring(0, 150) + '...';
   }
 });
 

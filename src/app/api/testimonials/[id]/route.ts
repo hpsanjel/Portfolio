@@ -9,7 +9,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { name, role, quote, rating, avatar } = body ?? {};
+		const { name, role, quote, rating, avatar, translations } = body ?? {};
 
 		if (!name || !role || !quote) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -41,6 +41,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			quote,
 			rating: rating || 5,
 			avatar: avatar || "",
+			translations: translations !== undefined ? translations : existingTestimonial.translations,
 		};
 
 		const updatedTestimonial = await Testimonial.findByIdAndUpdate(id, updateData, { new: true });

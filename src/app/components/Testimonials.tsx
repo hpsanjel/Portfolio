@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronLeft, ChevronRight, Quote, Star } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
@@ -94,6 +94,7 @@ function TestimonialSpotlight({ testimonials }: { testimonials: Testimonial[] })
 
 export default function Testimonials() {
 	const t = useTranslations("Testimonials");
+	const locale = useLocale();
 	const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
 	const [loading, setLoading] = useState(true);
 
@@ -101,7 +102,7 @@ export default function Testimonials() {
 		let cancelled = false;
 		async function loadTestimonials() {
 			try {
-				const res = await fetch("/api/testimonials");
+				const res = await fetch(`/api/testimonials?locale=${locale}`);
 				const data = await res.json();
 				if (!cancelled) setTestimonials(Array.isArray(data) ? data : []);
 			} catch {
@@ -114,7 +115,7 @@ export default function Testimonials() {
 		return () => {
 			cancelled = true;
 		};
-	}, []);
+	}, [locale]);
 
 	if (!loading && testimonials.length === 0) return null;
 

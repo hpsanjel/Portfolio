@@ -1,12 +1,15 @@
 import { NextResponse } from "next/server";
 import connectDB from "../../../../lib/mongoose";
 import { Blog } from "../../../../models";
+import { parseLocale } from "../../../../lib/localize";
 
 // GET /api/blogs/archives
-export async function GET() {
+export async function GET(request: Request) {
   try {
     await connectDB();
-    
+    const { searchParams } = new URL(request.url);
+    const locale = parseLocale(searchParams.get('locale'));
+
     // Fetch all published blogs
     const blogs = await Blog.find({ status: 'published' }).sort({ date: -1 });
     
@@ -30,11 +33,10 @@ export async function GET() {
     });
     
     // Convert to the expected format
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    
+    const monthNames = locale === 'nb'
+      ? ["Januar", "Februar", "Mars", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Desember"]
+      : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
     const result = Object.entries(archives)
       .map(([year, months]) => ({
         year: parseInt(year),

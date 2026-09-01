@@ -446,6 +446,14 @@
 		"startOver": "Start Over",
 		"removeEntry": "Remove {section} entry"
 	},
+	"BlogArchive": {
+		"blogArchive": "Blog Archive",
+		"recentPosts": "Recent posts",
+		"showingRecentPosts": "Showing 10 most recent posts",
+		"noArchivedPosts": "No archived posts yet.",
+		"browseByDate": "Browse by Date",
+		"postsCount": "({count} posts)"
+	},
 	"Footer": {
 		"tagline": "Crafting digital experiences with passion and precision. Let's build something amazing together.",
 		"quickLinks": "Quick Links",

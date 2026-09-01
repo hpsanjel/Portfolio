@@ -9,8 +9,8 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { title, description, icon } = body ?? {};
-		
+		const { title, description, icon, translations } = body ?? {};
+
 		if (!title || !description || !icon) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
@@ -40,6 +40,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			title,
 			description,
 			icon,
+			translations: translations !== undefined ? translations : existingService.translations,
 		};
 		
 		const updatedService = await Service.findByIdAndUpdate(id, updateData, { new: true });

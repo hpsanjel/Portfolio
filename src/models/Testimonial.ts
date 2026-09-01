@@ -1,14 +1,25 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface ITestimonialTranslation {
+  quote?: string;
+}
+
 export interface ITestimonial extends Document {
   name: string;
   role: string;
   quote: string;
   rating: number;
   avatar?: string;
+  translations?: {
+    nb?: ITestimonialTranslation;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
+
+const TestimonialTranslationSchema = new Schema<ITestimonialTranslation>({
+  quote: { type: String }
+}, { _id: false });
 
 const TestimonialSchema: Schema = new Schema({
   name: {
@@ -35,6 +46,9 @@ const TestimonialSchema: Schema = new Schema({
   avatar: {
     type: String,
     default: ''
+  },
+  translations: {
+    nb: { type: TestimonialTranslationSchema, default: undefined }
   }
 }, {
   timestamps: true

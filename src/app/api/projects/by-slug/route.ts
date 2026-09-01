@@ -1,11 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+import { localizeDoc, parseLocale } from '../../../../lib/localize';
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const slug = searchParams.get('slug');
-    
+    const locale = parseLocale(searchParams.get('locale'));
+
     if (!slug) {
       return NextResponse.json(
         { error: 'Slug parameter required' },
@@ -41,8 +43,8 @@ export async function GET(request: NextRequest) {
       _id: project._id.toString(),
       id: project._id.toString()
     };
-    
-    return NextResponse.json(projectData);
+
+    return NextResponse.json(localizeDoc(projectData, locale, ["title", "description", "projectstory"]));
   } catch (error) {
     console.error('Error fetching project:', error);
     return NextResponse.json(

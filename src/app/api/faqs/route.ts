@@ -2,13 +2,16 @@ import { NextResponse } from "next/server";
 import connectDB from "../../../lib/mongoose";
 import { FAQ } from "../../../models";
 import { ActivityLog } from "../../../models";
+import { localizeDocs, parseLocale } from "../../../lib/localize";
 
 // GET /api/faqs
-export async function GET() {
+export async function GET(request: Request) {
 	try {
 		await connectDB();
-		const faqs = await FAQ.find({}).sort({ order: 1, createdAt: 1 });
-		return NextResponse.json(faqs);
+		const { searchParams } = new URL(request.url);
+		const locale = parseLocale(searchParams.get('locale'));
+		const faqs = await FAQ.find({}).sort({ order: 1, createdAt: 1 }).lean();
+		return NextResponse.json(localizeDocs(faqs, locale, ["question", "answer"]));
 	} catch (error) {
 		console.error('Error fetching faqs:', error);
 		return NextResponse.json({ message: "Error fetching faqs" }, { status: 500 });
@@ -20,7 +23,7 @@ export async function POST(request: Request) {
 	try {
 		await connectDB();
 		const body = await request.json();
-		const { question, answer, order } = body ?? {};
+		const { question, answer, order, translations } = body ?? {};
 		if (!question || !answer) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
 		}
@@ -35,6 +38,7 @@ export async function POST(request: Request) {
 			question,
 			answer,
 			order: resolvedOrder,
+			translations,
 		});
 
 		await faq.save();

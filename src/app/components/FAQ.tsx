@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ChevronDown } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 
@@ -8,6 +8,7 @@ type FAQItem = { _id: string; question: string; answer: string; order: number };
 
 export default function FAQ() {
 	const t = useTranslations("Faq");
+	const locale = useLocale();
 	const [faqs, setFaqs] = useState<FAQItem[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [openIndex, setOpenIndex] = useState<number | null>(0);
@@ -16,7 +17,7 @@ export default function FAQ() {
 		let cancelled = false;
 		async function loadFaqs() {
 			try {
-				const res = await fetch("/api/faqs");
+				const res = await fetch(`/api/faqs?locale=${locale}`);
 				const data = await res.json();
 				if (!cancelled) setFaqs(Array.isArray(data) ? data : []);
 			} catch {
@@ -29,7 +30,7 @@ export default function FAQ() {
 		return () => {
 			cancelled = true;
 		};
-	}, []);
+	}, [locale]);
 
 	if (!loading && faqs.length === 0) return null;
 

@@ -8,7 +8,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { question, answer, order } = body ?? {};
+		const { question, answer, order, translations } = body ?? {};
 
 		if (!question || !answer) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -25,6 +25,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			question,
 			answer,
 			order: order ?? existingFAQ.order,
+			translations: translations !== undefined ? translations : existingFAQ.translations,
 		};
 
 		const updatedFAQ = await FAQ.findByIdAndUpdate(id, updateData, { new: true });

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 interface Project {
@@ -20,6 +20,7 @@ interface Project {
 
 export default function ProjectDetailClient({ slug }: { slug: string }) {
   const t = useTranslations("ProjectDetail");
+  const locale = useLocale();
   const [project, setProject] = useState<Project | null>(null);
   const [relatedProjects, setRelatedProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
@@ -30,14 +31,14 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
     async function fetchProjectData() {
       try {
         // Fetch current project using query parameter
-        const projectRes = await fetch(`/api/projects/by-slug?slug=${encodeURIComponent(slug)}`);
+        const projectRes = await fetch(`/api/projects/by-slug?slug=${encodeURIComponent(slug)}&locale=${locale}`);
         if (projectRes.ok) {
           const projectData = await projectRes.json();
           setProject(projectData.status === 'draft' ? null : projectData);
         }
 
         // Fetch all projects for sidebar
-        const allProjectsRes = await fetch("/api/projects?status=published");
+        const allProjectsRes = await fetch(`/api/projects?status=published&locale=${locale}`);
         if (allProjectsRes.ok) {
           const allProjects = await allProjectsRes.json();
           const filtered = allProjects.filter((p: Project) => p.slug !== slug);
@@ -51,7 +52,7 @@ export default function ProjectDetailClient({ slug }: { slug: string }) {
     }
 
     fetchProjectData();
-  }, [slug]);
+  }, [slug, locale]);
 
   if (loading) {
     return (

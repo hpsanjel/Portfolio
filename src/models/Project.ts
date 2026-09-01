@@ -1,5 +1,11 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
+export interface IProjectTranslation {
+  title?: string;
+  description?: string;
+  projectstory?: string;
+}
+
 export interface IProject extends Document {
   title: string;
   description: string;
@@ -11,9 +17,18 @@ export interface IProject extends Document {
   projectstory?: string;
   status: 'draft' | 'published';
   order: number;
+  translations?: {
+    nb?: IProjectTranslation;
+  };
   createdAt: Date;
   updatedAt: Date;
 }
+
+const ProjectTranslationSchema = new Schema<IProjectTranslation>({
+  title: { type: String, trim: true },
+  description: { type: String },
+  projectstory: { type: String }
+}, { _id: false });
 
 const ProjectSchema: Schema = new Schema({
   title: {
@@ -59,6 +74,9 @@ const ProjectSchema: Schema = new Schema({
   order: {
     type: Number,
     default: 0
+  },
+  translations: {
+    nb: { type: ProjectTranslationSchema, default: undefined }
   }
 }, {
   timestamps: true

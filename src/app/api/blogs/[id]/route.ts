@@ -3,21 +3,24 @@ import connectDB from "../../../../lib/mongoose";
 import { Blog } from "../../../../models";
 import { deleteImage, extractPublicId, isCloudinaryUrl } from "../../../../lib/cloudinary";
 import { ActivityLog } from "../../../../models";
+import { localizeDoc, parseLocale } from "../../../../lib/localize";
 
 // GET /api/blogs/[id]
 export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
 	try {
 		const { id } = await params;
-		
+		const { searchParams } = new URL(request.url);
+		const locale = parseLocale(searchParams.get('locale'));
+
 		await connectDB();
-		
-		const blog = await Blog.findById(id);
-		
+
+		const blog = await Blog.findById(id).lean();
+
 		if (!blog) {
 			return NextResponse.json({ message: "Blog not found" }, { status: 404 });
 		}
-		
-		return NextResponse.json(blog);
+
+		return NextResponse.json(localizeDoc(blog, locale, ["title", "content", "excerpt"]));
 	} catch (error) {
 		console.error('Error fetching blog:', error);
 		return NextResponse.json({ message: "Error fetching blog post" }, { status: 500 });
@@ -29,7 +32,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 	try {
 		const { id } = await params;
 		const body = await request.json();
-		const { title, content, image, date, categories, tags, status } = body ?? {};
+		const { title, content, image, date, categories, tags, status, translations } = body ?? {};
 		
 		if (!title || !content || !image || !date) {
 			return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
@@ -64,6 +67,7 @@ export async function PUT(request: Request, { params }: { params: Promise<{ id: 
 			categories: categories || existingBlog.categories,
 			tags: tags || existingBlog.tags,
 			status: status || existingBlog.status,
+			translations: translations !== undefined ? translations : existingBlog.translations,
 		};
 		
 		const updatedBlog = await Blog.findByIdAndUpdate(id, updateData, { returnDocument: 'after' });
