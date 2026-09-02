@@ -19,7 +19,8 @@ jobs:
           script: |
             set -e
             cd /home/hari/Portfolio
-            git pull origin main
+            git fetch origin main
+            git reset --hard origin/main
             npm ci
             npm run build
             pm2 restart portfolio
