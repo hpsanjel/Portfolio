@@ -770,6 +770,13 @@ function WYSIWYGEditor({ value, onChange, placeholder }: { value: string; onChan
 					color: #111827 !important;
 					-webkit-text-fill-color: #111827 !important;
 				}
+				.admin-wysiwyg-editor a,
+				.admin-wysiwyg-editor a * {
+					color: #2563eb !important;
+					-webkit-text-fill-color: #2563eb !important;
+					text-decoration: underline !important;
+					text-underline-offset: 2px;
+				}
 				.admin-wysiwyg-editor {
 					caret-color: #111827;
 				}
