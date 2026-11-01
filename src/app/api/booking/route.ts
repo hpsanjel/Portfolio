@@ -1,10 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import nodemailer from "nodemailer";
+import { NextRequest, NextResponse, after } from "next/server";
 import connectDB from "@/lib/mongoose";
 import { TimeSlot, ActivityLog } from "@/models";
 import { formatTimeLabel, isValidDateString, isValidMonthString, isValidTimeSlot, todayDateString } from "@/lib/booking";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
-import { escapeHtml } from "@/lib/email";
+import { sendBookingEmails } from "@/lib/email";
 
 // GET /api/booking?month=YYYY-MM — dates in the month that have at least one open slot
 // GET /api/booking?date=YYYY-MM-DD — open times for that date
@@ -99,49 +98,23 @@ export async function POST(request: NextRequest) {
 			details: `${name.trim()} booked a meeting for ${date} at ${formatTimeLabel(time)}.`,
 		});
 
-		const transporter = nodemailer.createTransport({
-			service: "gmail",
-			auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-		});
-
-		const results = await Promise.allSettled([
-			transporter.sendMail({
-				from: process.env.EMAIL_USER,
-				to: process.env.EMAIL_USER,
-				subject: `New meeting booking: ${date} at ${formatTimeLabel(time)}`,
-				html: `
-					<h3>New Meeting Booking</h3>
-					<p><strong>Date:</strong> ${escapeHtml(date)}</p>
-					<p><strong>Time:</strong> ${escapeHtml(formatTimeLabel(time))}</p>
-					<p><strong>Name:</strong> ${escapeHtml(name.trim())}</p>
-					<p><strong>Email:</strong> ${escapeHtml(email.trim())}</p>
-					<p><strong>Phone:</strong> ${escapeHtml(phone.trim())}</p>
-					${message ? `<p><strong>Message:</strong></p><p>${escapeHtml(message.trim()).replace(/\n/g, "<br>")}</p>` : ""}
-				`,
-			}),
-			transporter.sendMail({
-				from: process.env.EMAIL_USER,
-				to: email.trim(),
-				subject: `Booking confirmed: ${date} at ${formatTimeLabel(time)}`,
-				html: `
-					<h3>Your meeting is confirmed</h3>
-					<p>Hi ${escapeHtml(name.trim())},</p>
-					<p>Thanks for booking a meeting. Here are the details:</p>
-					<p><strong>Date:</strong> ${escapeHtml(date)}</p>
-					<p><strong>Time:</strong> ${escapeHtml(formatTimeLabel(time))}</p>
-					${message ? `<p><strong>Your message:</strong></p><p>${escapeHtml(message.trim()).replace(/\n/g, "<br>")}</p>` : ""}
-					<p>If you need to reschedule or cancel, just reply to this email.</p>
-					<p>Looking forward to speaking with you!</p>
-				`,
-			}),
-		]);
-
-		for (const [i, result] of results.entries()) {
-			if (result.status === "rejected") {
-				const recipient = i === 0 ? "admin" : "visitor";
-				console.error(`Booking was saved but the ${recipient} notification email failed to send:`, result.reason);
+		// Send notification emails in the background after the response is sent.
+		// This prevents slow SMTP handshakes, network latency, or blocked VPS ports
+		// from stalling the user's booking confirmation.
+		after(async () => {
+			try {
+				await sendBookingEmails({
+					date,
+					time,
+					name: name.trim(),
+					email: email.trim().toLowerCase(),
+					phone: phone.trim(),
+					message: message?.trim(),
+				});
+			} catch (emailError) {
+				console.error("Background error sending booking notification emails:", emailError);
 			}
-		}
+		});
 
 		return NextResponse.json({ message: "Booking confirmed", date, time }, { status: 201 });
 	} catch (error) {

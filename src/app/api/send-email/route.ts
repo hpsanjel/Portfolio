@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import nodemailer from "nodemailer";
 import { checkRateLimit, getClientIp } from "@/lib/rateLimit";
-import { escapeHtml } from "@/lib/email";
+import { escapeHtml, getEmailTransporter } from "@/lib/email";
 
 export async function POST(request: Request) {
   try {
@@ -22,19 +21,22 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create transporter using Gmail
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    const transporter = getEmailTransporter();
+    if (!transporter) {
+      console.error("Email service not configured (missing EMAIL_USER or EMAIL_PASS)");
+      return NextResponse.json(
+        { error: "Email service is temporarily unavailable." },
+        { status: 503 }
+      );
+    }
+
+    const adminEmail = process.env.EMAIL_USER?.trim();
 
     // Email options
     const mailOptions = {
-      from: process.env.EMAIL_USER,
-      to: process.env.EMAIL_USER, // Send to yourself
+      from: adminEmail,
+      to: adminEmail, // Send to yourself
+      replyTo: email.trim(),
       subject: `New Contact Form Message from ${name}`,
       html: `
         <h3>New Contact Form Submission</h3>
@@ -47,7 +49,7 @@ export async function POST(request: Request) {
       `,
     };
 
-    // Send email
+    // Send email with timeout protection
     await transporter.sendMail(mailOptions);
 
     return NextResponse.json(

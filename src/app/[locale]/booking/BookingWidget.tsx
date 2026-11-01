@@ -108,26 +108,47 @@ export default function BookingWidget() {
 		if (!selectedDate || !selectedTime) return;
 		setSubmitting(true);
 		setError("");
+
+		const controller = new AbortController();
+		const timeoutId = setTimeout(() => controller.abort(), 20000);
+
 		try {
 			const res = await fetch("/api/booking", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify({ date: selectedDate, time: selectedTime, ...form }),
+				signal: controller.signal,
 			});
-			const result = await res.json();
+			clearTimeout(timeoutId);
+
+			let result: { message?: string } | null = null;
+			try {
+				result = await res.json();
+			} catch {
+				// Non-JSON response (e.g. 504 / 502 gateway error)
+			}
+
 			if (res.ok) {
 				setConfirmed({ date: selectedDate, time: selectedTime });
 			} else if (res.status === 409) {
-				setError(result.message || t("slotTaken"));
+				setError(result?.message || t("slotTaken"));
 				setSelectedTime(null);
-				const timesRes = await fetch(`/api/booking?date=${selectedDate}`);
-				setAvailableTimes(await timesRes.json());
+				try {
+					const timesRes = await fetch(`/api/booking?date=${selectedDate}`);
+					if (timesRes.ok) {
+						setAvailableTimes(await timesRes.json());
+					}
+				} catch {
+					// ignore secondary fetch failure
+				}
 			} else {
-				setError(result.message || t("somethingWentWrong"));
+				setError(result?.message || t("somethingWentWrong"));
 			}
 		} catch {
+			clearTimeout(timeoutId);
 			setError(t("somethingWentWrong"));
 		} finally {
+			clearTimeout(timeoutId);
 			setSubmitting(false);
 		}
 	};
